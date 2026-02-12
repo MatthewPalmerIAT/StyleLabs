@@ -41,37 +41,42 @@ document.querySelectorAll('.scroll-play-btn').forEach(btn => {
         const trigger = panel.querySelector('.scroll-trigger');
         if (!trigger) return;
 
-        // 1. Stop the observer from interfering during replay
+        // 1. Stop the observer so it can't re-add the class mid-reset
         scrollTriggerObserver.unobserve(trigger);
 
-        // 2. Remove the triggered class
+        // 2. Collect every element involved
+        const allEls = [trigger, ...trigger.querySelectorAll('*')];
+
+        // 3. Kill all transitions + animations so elements snap instantly
+        allEls.forEach(el => {
+            el.style.setProperty('transition', 'none', 'important');
+            el.style.setProperty('animation', 'none', 'important');
+        });
+
+        // 4. Remove the triggered class — elements now hold their "before" CSS
         trigger.classList.remove('scroll-triggered');
 
-        // 3. Force ALL children to snap to their "before" state instantly
-        const allEls = [trigger, ...trigger.querySelectorAll('*')];
-        allEls.forEach(el => {
-            el.style.transition = 'none';
-            el.style.animation = 'none';
-        });
-
-        // 4. Force a synchronous reflow so the browser renders the reset state
+        // 5. Force synchronous reflow — browser commits the hidden/reset state
         void trigger.offsetHeight;
 
-        // 5. Remove inline overrides so CSS takes back over
+        // 6. Remove inline overrides so real CSS rules take over again
         allEls.forEach(el => {
-            el.style.transition = '';
-            el.style.animation = '';
+            el.style.removeProperty('transition');
+            el.style.removeProperty('animation');
         });
 
-        // 6. Let the reset state paint for a moment, then re-trigger
-        setTimeout(() => {
-            trigger.classList.add('scroll-triggered');
+        // 7. Double-rAF guarantees the reset frame actually paints to screen
+        //    before we trigger the entrance animation
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                trigger.classList.add('scroll-triggered');
 
-            // 7. Re-observe after the longest animation finishes
-            setTimeout(() => {
-                scrollTriggerObserver.observe(trigger);
-            }, 2000);
-        }, 80);
+                // 8. Hand control back to the observer after animations settle
+                setTimeout(() => {
+                    scrollTriggerObserver.observe(trigger);
+                }, 2500);
+            });
+        });
     });
 });
 
