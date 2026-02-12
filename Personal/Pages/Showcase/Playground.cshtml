@@ -1,0 +1,81 @@
+@page
+@model Personal.Pages.Showcase.PlaygroundModel
+@{
+    ViewData["Title"] = "Playground";
+}
+
+<div class="showcase-page playground-page">
+    <div class="showcase-header">
+        <h1>Live Playground</h1>
+        <p>Pick any effect from any section, preview it, then edit the code live.</p>
+    </div>
+
+    <!-- Section / Effect Selector -->
+    <div class="preset-bar reveal">
+        <div class="selector-group">
+            <label class="selector-label" for="section-select">Section</label>
+            <select id="section-select" class="selector-dropdown"></select>
+        </div>
+        <div class="selector-group">
+            <label class="selector-label" for="effect-select">Effect</label>
+            <select id="effect-select" class="selector-dropdown"></select>
+        </div>
+    </div>
+
+    <!-- Editor + Preview -->
+    <div class="playground-container reveal">
+        <!-- Editor Side -->
+        <div class="playground-editor-side">
+            <div class="editor-tabs">
+                <button class="editor-tab active" data-tab="html">
+                    <span class="tab-dot tab-dot-html"></span> HTML
+                </button>
+                <button class="editor-tab" data-tab="css">
+                    <span class="tab-dot tab-dot-css"></span> CSS
+                </button>
+                <button class="editor-tab" data-tab="js">
+                    <span class="tab-dot tab-dot-js"></span> JS
+                </button>
+                <div class="editor-actions">
+                    <button class="editor-action-btn" id="btn-copy" title="Copy current tab code">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5"/></svg>
+                        <span class="action-label">Copy</span>
+                    </button>
+                    <button class="editor-action-btn" id="btn-reset" title="Reset to original code">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" width="14" height="14"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.992 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182"/></svg>
+                        <span class="action-label">Reset</span>
+                    </button>
+                </div>
+            </div>
+            <div class="editor-panels">
+                <div class="editor-pane active" id="pane-html">
+                    <pre class="code-highlight" aria-hidden="true"><code id="highlight-html" class="language-markup"></code></pre>
+                    <textarea id="editor-html" class="code-editor" spellcheck="false"></textarea>
+                </div>
+                <div class="editor-pane" id="pane-css">
+                    <pre class="code-highlight" aria-hidden="true"><code id="highlight-css" class="language-css"></code></pre>
+                    <textarea id="editor-css" class="code-editor" spellcheck="false"></textarea>
+                </div>
+                <div class="editor-pane" id="pane-js">
+                    <pre class="code-highlight" aria-hidden="true"><code id="highlight-js" class="language-javascript"></code></pre>
+                    <textarea id="editor-js" class="code-editor" spellcheck="false"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Side -->
+        <div class="playground-preview-side">
+            <div class="preview-toolbar">
+                <span class="preview-title">
+                    <span class="preview-dot"></span> Live Preview
+                </span>
+                <button class="preview-run-btn" id="btn-run" title="Run (Ctrl+Enter)">&#9654; Run</button>
+            </div>
+            <iframe id="preview-frame" sandbox="allow-scripts allow-same-origin"></iframe>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/playground.js" asp-append-version="true"></script>
+}

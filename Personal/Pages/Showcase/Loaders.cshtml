@@ -1,0 +1,338 @@
+@page
+@model Personal.Pages.Showcase.LoadersModel
+@{
+    ViewData["Title"] = "Loaders";
+}
+
+<div class="showcase-page">
+    <div class="showcase-header">
+        <h1>Loaders &amp; Spinners</h1>
+        <p>Smooth loading indicators from orbital spinners to skeleton placeholders.</p>
+    </div>
+
+    <div class="showcase-grid">
+
+        <!-- Orbit Spinner -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Orbit Spinner <span class="badge">CSS</span></h3>
+            <div class="preview-panel">
+                <div class="loader-orbit">
+                    <div class="orbit-ring"></div>
+                    <div class="orbit-ring"></div>
+                    <div class="orbit-ring"></div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML + CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-markup">&lt;div class="loader-orbit"&gt;
+  &lt;div class="orbit-ring"&gt;&lt;/div&gt;
+  &lt;div class="orbit-ring"&gt;&lt;/div&gt;
+  &lt;div class="orbit-ring"&gt;&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.loader-orbit {
+  position: relative;
+  width: 60px; height: 60px;
+}
+
+.loader-orbit .orbit-ring {
+  position: absolute;
+  inset: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+}
+
+.orbit-ring:nth-child(1) {
+  border-top-color: #00e5ff;
+  animation: orbit 1.2s linear infinite;
+}
+
+.orbit-ring:nth-child(2) {
+  inset: 6px;
+  border-right-color: #8b5cf6;
+  animation: orbit 1.6s linear infinite reverse;
+}
+
+.orbit-ring:nth-child(3) {
+  inset: 12px;
+  border-bottom-color: #ec4899;
+  animation: orbit 2s linear infinite;
+}
+
+@@keyframes orbit {
+  to { transform: rotate(360deg); }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Pulse Ring -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Pulse Ring <span class="badge">CSS</span></h3>
+            <div class="preview-panel">
+                <div class="loader-pulse">
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                    <div class="ring"></div>
+                    <div class="core"></div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.loader-pulse {
+  position: relative;
+  width: 60px; height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-pulse .ring {
+  position: absolute;
+  width: 100%; height: 100%;
+  border: 2px solid #00e5ff;
+  border-radius: 50%;
+  animation: pulseRing 2s ease-out infinite;
+}
+
+.ring:nth-child(2) { animation-delay: 0.4s; }
+.ring:nth-child(3) { animation-delay: 0.8s; }
+
+.loader-pulse .core {
+  width: 12px; height: 12px;
+  background: #00e5ff;
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(0,229,255,0.5);
+}
+
+@@keyframes pulseRing {
+  0% { transform: scale(0.3); opacity: 1; }
+  100% { transform: scale(1.2); opacity: 0; }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Morphing Dots -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Morphing Dots <span class="badge">CSS</span></h3>
+            <div class="preview-panel">
+                <div class="loader-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.loader-dots {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.loader-dots .dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  animation: morphDot 1.4s ease-in-out infinite;
+}
+
+.dot:nth-child(1) {
+  background: #00e5ff;
+  animation-delay: 0s;
+}
+.dot:nth-child(2) {
+  background: #8b5cf6;
+  animation-delay: 0.2s;
+}
+.dot:nth-child(3) {
+  background: #ec4899;
+  animation-delay: 0.4s;
+}
+
+@@keyframes morphDot {
+  0%, 100% {
+    transform: scale(1) translateY(0);
+    border-radius: 50%;
+  }
+  25% {
+    transform: scale(1.3) translateY(-10px);
+    border-radius: 30%;
+  }
+  50% {
+    transform: scale(1) translateY(0);
+    border-radius: 50%;
+  }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Skeleton Loading -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Skeleton Loading <span class="badge">CSS</span></h3>
+            <div class="preview-panel">
+                <div class="loader-skeleton">
+                    <div class="skeleton-circle"></div>
+                    <div class="skeleton-line"></div>
+                    <div class="skeleton-line medium"></div>
+                    <div class="skeleton-line short"></div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.loader-skeleton {
+  width: 280px;
+  padding: 1.5rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+}
+
+.skeleton-line {
+  height: 12px;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  border-radius: 6px;
+  animation: shimmer 1.5s ease-in-out infinite;
+  margin-bottom: 0.75rem;
+}
+
+.skeleton-line.short { width: 60%; }
+.skeleton-line.medium { width: 80%; }
+
+.skeleton-circle {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0.04) 25%,
+    rgba(255,255,255,0.08) 50%,
+    rgba(255,255,255,0.04) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  margin-bottom: 1rem;
+}
+
+@@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Morph Loader -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Morph Loader <span class="badge">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <div class="loader-morph-container">
+                    <div class="loader-morph">
+                        <div class="morph-shape-demo"></div>
+                    </div>
+                    <span class="morph-loader-text">Loading</span>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML + CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.loader-morph-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.loader-morph {
+  width: 80px;
+  height: 80px;
+}
+
+.morph-shape-demo {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #00e5ff, #8b5cf6, #ec4899);
+  background-size: 400% 400%;
+  animation:
+    morphShape 3s ease-in-out infinite,
+    morphGradient 4s ease infinite,
+    morphSpin 6s linear infinite;
+  box-shadow:
+    0 0 40px rgba(0,229,255,0.3),
+    0 0 80px rgba(139,92,246,0.15);
+}
+
+@@keyframes morphShape {
+  0%, 100% { border-radius: 50%; }
+  25% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+  50% { border-radius: 50% 20% 50% 20% / 20% 50% 20% 50%; }
+  75% { border-radius: 70% 30% 30% 70% / 70% 70% 30% 30%; }
+}
+
+@@keyframes morphGradient {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@@keyframes morphSpin {
+  to { transform: rotate(360deg); }
+}
+
+.morph-loader-text {
+  color: #71717a;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  animation: morphPulse 2s ease-in-out infinite;
+}
+
+@@keyframes morphPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}</code></pre>
+            </div>
+        </div>
+
+    </div>
+</div>

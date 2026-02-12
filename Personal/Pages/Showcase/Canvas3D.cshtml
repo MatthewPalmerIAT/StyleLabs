@@ -1,0 +1,1753 @@
+@page
+@model Personal.Pages.Showcase.Canvas3DModel
+@{
+    ViewData["Title"] = "3D Canvas";
+}
+
+<div class="showcase-page">
+    <div class="showcase-header">
+        <h1>3D Canvas Animations</h1>
+        <p>Insane GPU-powered animations built purely with JavaScript Canvas API — no libraries.</p>
+    </div>
+
+    <div class="showcase-grid">
+
+        <!-- Particle Nebula -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Particle Nebula <span class="badge">JS Canvas</span></h3>
+            <div class="preview-panel canvas-preview">
+                <canvas id="nebula-canvas"></canvas>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">JavaScript</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-javascript">// Particle nebula — click to cycle shapes, type to spell words
+const P = 4000, particles = [];
+let time = 0, mode = 0, typedWord = '', focused = false;
+
+const off = document.createElement('canvas');
+const ox = off.getContext('2d');
+
+for (let i = 0; i &lt; P; i++) {
+  const a = Math.random()*Math.PI*2, p = Math.acos(2*Math.random()-1);
+  const r = 80 + Math.random()*180;
+  particles.push({
+    x: r*Math.sin(p)*Math.cos(a), y: r*Math.sin(p)*Math.sin(a),
+    z: r*Math.cos(p), tx:0, ty:0, tz:0, vx:0, vy:0, vz:0,
+    size: 0.6+Math.random()*1.4, hue: 195+Math.random()*40,
+    alpha: 0.7+Math.random()*0.3, speed: 0.001+Math.random()*0.003,
+    phase: Math.random()*Math.PI*2
+  });
+}
+
+function sampleText(text) {
+  off.width=canvas.width; off.height=canvas.height;
+  let fs = Math.min(200, canvas.height*0.55);
+  ox.font='bold '+fs+'px Arial'; ox.textAlign='center';
+  ox.textBaseline='middle';
+  while (ox.measureText(text).width &gt; canvas.width*0.85 &amp;&amp; fs&gt;8) {
+    fs-=2; ox.font='bold '+fs+'px Arial'; }
+  ox.fillStyle='white';
+  ox.fillText(text, canvas.width/2, canvas.height/2);
+  const d=ox.getImageData(0,0,canvas.width,canvas.height).data, pts=[];
+  for (let y=0;y&lt;canvas.height;y+=3) for(let x=0;x&lt;canvas.width;x+=3)
+    if(d[(y*canvas.width+x)*4+3]&gt;128) pts.push({x:x-canvas.width/2,y:y-canvas.height/2});
+  return pts;
+}
+
+// Click cycles: sphere ? ring ? spiral
+canvas.setAttribute('tabindex','0');
+canvas.addEventListener('click', () =&gt; {
+  focused=true; typedWord=''; canvas.focus();
+  mode=(mode+1)%3; setTargets(mode); burst();
+});
+// Type to spell words (mode 3)
+canvas.addEventListener('keydown', e =&gt; {
+  if (!focused) return;
+  if (e.key==='Backspace') typedWord=typedWord.slice(0,-1);
+  else if (e.key==='Escape') { typedWord=''; mode=0; setTargets(0); burst(); return; }
+  else if (e.key.length===1) typedWord+=e.key;
+  else return;
+  e.preventDefault();
+  if (typedWord) { mode=3; setTargets(3,typedWord.toUpperCase()); }
+  else { mode=0; setTargets(0); }
+  burst();
+});
+
+function animate() {
+  ctx.fillStyle='rgba(3,8,16,0.12)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  time+=.005;
+  const cx=canvas.width/2, cy=canvas.height/2;
+  const flat=mode===3, rot=flat?0:time*.3;
+  const cosA=Math.cos(rot), sinA=Math.sin(rot);
+  particles.forEach(p =&gt; {
+    p.vx+=(p.tx-p.x)*.008; p.vy+=(p.ty-p.y)*.008; p.vz+=(p.tz-p.z)*.008;
+    p.vx*=.96; p.vy*=.96; p.vz*=.96;
+    p.x+=p.vx; p.y+=p.vy; p.z+=p.vz;
+    var px,py,sc;
+    if (flat) { px=p.x+cx; py=p.y+cy; sc=1; }
+    else { /* 3D rotate + project */ }
+    if (sc&gt;0) {
+      const a=Math.min(1,p.alpha*sc*(.7+Math.sin(time*3+p.phase)*.3));
+      const r=p.size*sc;
+      ctx.fillStyle=`hsla(${p.hue},90%,65%,${a})`;
+      ctx.beginPath();ctx.arc(px,py,r,0,Math.PI*2);ctx.fill();
+      if(r&gt;.8){ctx.fillStyle=`hsla(${p.hue},60%,90%,${a*.5})`;
+        ctx.beginPath();ctx.arc(px,py,r*.35,0,Math.PI*2);ctx.fill();}
+    }
+  });
+  requestAnimationFrame(animate);
+}
+animate();</code></pre>
+            </div>
+        </div>
+
+        <!-- Wave Terrain -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Wave Terrain <span class="badge">JS Canvas</span></h3>
+            <div class="preview-panel canvas-preview">
+                <canvas id="terrain-canvas"></canvas>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">JavaScript</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-javascript">const canvas = document.getElementById('terrain-canvas');
+const ctx = canvas.getContext('2d');
+const cols = 50, rows = 30, spacing = 18;
+let time = 0;
+let mouse = { x: 0.5, y: 0.5, active: false };
+
+canvas.addEventListener('mousemove', e =&gt; {
+  const r = canvas.getBoundingClientRect();
+  mouse.x = (e.clientX - r.left) / r.width;
+  mouse.y = (e.clientY - r.top) / r.height;
+  mouse.active = true;
+});
+canvas.addEventListener('mouseleave', () =&gt; { mouse.active = false; });
+
+function isoProject(col, row, z) {
+  const gx = col-cols/2, gy = row-rows/2;
+  return {
+    x: canvas.width/2 + (gx - gy) * spacing * 0.7,
+    y: canvas.height/2 + (gx + gy) * spacing * 0.35 - z
+  };
+}
+
+function getZ(x, y, t) {
+  const d = Math.sqrt(x*x + y*y);
+  let mz = 0;
+  if (mouse.active) { // ripple from mouse position
+    const mx = (mouse.x - 0.5) * cols;
+    const my = (mouse.y - 0.5) * rows;
+    const md = Math.sqrt((x-mx)*(x-mx) + (y-my)*(y-my));
+    mz = Math.sin(md*0.8 - t*3) * 20 / (1 + md*0.15);
+  }
+  return Math.sin(d*0.4 - t*2)*25
+       + Math.sin(x*0.3 + t)*12
+       + Math.cos(y*0.4 + t*1.3)*8 + mz;
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  time += 0.025;
+  for (let row = 0; row &lt; rows; row++) {
+    for (let col = 0; col &lt; cols; col++) {
+      const x = col-cols/2, y = row-rows/2;
+      const z = getZ(x, y, time);
+      const p = isoProject(col, row, z);
+      const hue = 190 + z*1.5;
+      const d = Math.sqrt(x*x+y*y);
+      const alpha = Math.max(0.1, 1-(d/(cols*0.6)));
+      ctx.fillStyle = `hsla(${hue},75%,55%,${alpha})`;
+      ctx.beginPath(); ctx.arc(p.x,p.y,2,0,Math.PI*2); ctx.fill();
+    }
+  }
+  requestAnimationFrame(animate);
+}
+animate();</code></pre>
+            </div>
+        </div>
+
+        <!-- Geometric Vortex -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Geometric Vortex <span class="badge">JS Canvas</span></h3>
+            <div class="preview-panel canvas-preview">
+                <canvas id="vortex-canvas"></canvas>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">JavaScript</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-javascript">const canvas = document.getElementById('vortex-canvas');
+const ctx = canvas.getContext('2d');
+const shapes = [];
+const SHAPE_COUNT = 80;
+let time = 0;
+
+class Shape {
+  constructor(i) {
+    this.angle = (i / SHAPE_COUNT) * Math.PI * 2;
+    this.radius = 40 + Math.random() * 200;
+    this.z = Math.random() * 600 - 300;
+    this.speed = 0.008 + Math.random() * 0.012;
+    this.zSpeed = 1.5 + Math.random() * 2;
+    this.sides = Math.floor(Math.random() * 4) + 3;
+    this.size = 6 + Math.random() * 14;
+    this.hue = Math.random() * 80 + 250; // purple-pink
+    this.rotSpeed = (Math.random() - 0.5) * 0.04;
+    this.rot = 0;
+  }
+}
+
+for (let i = 0; i &lt; SHAPE_COUNT; i++) {
+  shapes.push(new Shape(i));
+}
+
+function drawPolygon(x, y, r, sides, rot, color, alpha) {
+  ctx.beginPath();
+  for (let i = 0; i &lt;= sides; i++) {
+    const a = rot + (i / sides) * Math.PI * 2;
+    const px = x + Math.cos(a) * r;
+    const py = y + Math.sin(a) * r;
+    if (i === 0) ctx.moveTo(px, py);
+    else ctx.lineTo(px, py);
+  }
+  ctx.closePath();
+  ctx.strokeStyle = color.replace('ALPHA', alpha);
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+}
+
+function animate() {
+  ctx.fillStyle = 'rgba(8,8,13,0.12)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  time += 0.01;
+
+  const cx = canvas.width / 2;
+  const cy = canvas.height / 2;
+  const fov = 500;
+
+  // Sort by depth
+  shapes.sort((a, b) =&gt; b.z - a.z);
+
+  shapes.forEach(s =&gt; {
+    s.angle += s.speed;
+    s.z -= s.zSpeed;
+    s.rot += s.rotSpeed;
+
+    if (s.z &lt; -300) s.z = 300;
+
+    const scale = fov / (fov + s.z);
+    const x = cx + Math.cos(s.angle) * s.radius * scale;
+    const y = cy + Math.sin(s.angle) * s.radius * scale;
+    const sz = s.size * scale;
+    const alpha = Math.max(0.1, scale);
+    const hue = (s.hue + time * 20) % 360;
+    const color = `hsla(${hue}, 80%, 65%, ALPHA)`;
+
+    drawPolygon(x, y, sz, s.sides, s.rot, color, alpha);
+
+    // Glow effect
+    ctx.shadowBlur = 15 * scale;
+    ctx.shadowColor = `hsla(${hue}, 80%, 65%, 0.3)`;
+    drawPolygon(x, y, sz, s.sides, s.rot, color, alpha * 0.5);
+    ctx.shadowBlur = 0;
+  });
+
+  requestAnimationFrame(animate);
+}
+
+animate();</code></pre>
+            </div>
+        </div>
+
+        <!-- Particle Burst Bear -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Particle Burst <span class="badge">JS Canvas</span></h3>
+            <div class="preview-panel canvas-preview">
+                <canvas id="burst-canvas"></canvas>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">JavaScript</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-javascript">const canvas = document.getElementById('burst-canvas');
+const ctx = canvas.getContext('2d');
+const particles = [];
+const mouse = { x:-9999, y:-9999, vx:0, vy:0, radius:150 };
+const RETURN_RATE = 0.12; // snappy ~0.4s reform
+
+function Particle(x, y) {
+  this.x = x; this.y = y;
+  this.baseX = x; this.baseY = y;
+  this.size = 0.4 + Math.random() * 1.0;
+  this.hue = Math.random() * 60 + 170;
+  this.vx = 0; this.vy = 0;
+  this.friction = 0.88;
+}
+
+// Tight bounds around bear shape
+const s=Math.min(canvas.width,canvas.height)*.005;
+const margin = s * 30;
+const bndL=canvas.width/2-s*55-margin, bndR=canvas.width/2+s*55+margin;
+const bndT=canvas.height/2-s*80-margin, bndB=canvas.height/2+s*107+margin;
+
+Particle.prototype.update = function() {
+  const dx = mouse.x-this.x, dy = mouse.y-this.y;
+  const dist = Math.sqrt(dx*dx+dy*dy);
+  if (dist &lt; mouse.radius &amp;&amp; dist &gt; 0.1) {
+    const ms = Math.sqrt(mouse.vx*mouse.vx+mouse.vy*mouse.vy);
+    if (ms &gt; 0.5) {
+      const prox = (mouse.radius-dist)/mouse.radius;
+      this.vx += mouse.vx*prox*0.3;
+      this.vy += mouse.vy*prox*0.3;
+    }
+  }
+  this.vx *= this.friction; this.vy *= this.friction;
+  this.x += this.vx; this.y += this.vy;
+  this.x += (this.baseX-this.x) * RETURN_RATE;
+  this.y += (this.baseY-this.y) * RETURN_RATE;
+  if(this.x&lt;bndL){this.x=bndL;this.vx*=-0.3}
+  if(this.x&gt;bndR){this.x=bndR;this.vx*=-0.3}
+  if(this.y&lt;bndT){this.y=bndT;this.vy*=-0.3}
+  if(this.y&gt;bndB){this.y=bndB;this.vy*=-0.3}
+};
+
+// Draw teddy bear (large), sample pixels
+ctx.fillStyle = 'white';
+const cx=canvas.width/2, cy=canvas.height/2;
+function c(bx,by,r){ctx.beginPath();ctx.arc(cx+bx*s,cy+by*s,r*s,0,Math.PI*2);ctx.fill()}
+c(0,40,55);c(0,-30,42);c(-32,-62,18);c(32,-62,18);
+c(-50,25,20);c(50,25,20);c(-25,85,22);c(25,85,22);
+const data=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+for(let y=0;y&lt;canvas.height;y+=3) for(let x=0;x&lt;canvas.width;x+=3)
+  if(data[(y*canvas.width+x)*4+3]&gt;128) particles.push(new Particle(x,y));
+
+canvas.addEventListener('mousemove', e =&gt; {
+  const r=canvas.getBoundingClientRect();
+  const nx=e.clientX-r.left, ny=e.clientY-r.top;
+  if (mouse.x&lt;-999) { mouse.x=nx; mouse.y=ny; mouse.vx=0; mouse.vy=0; }
+  else { mouse.vx=nx-mouse.x; mouse.vy=ny-mouse.y; mouse.x=nx; mouse.y=ny; }
+});
+
+function animate() {
+  ctx.fillStyle='rgba(8,8,13,0.1)';
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  mouse.vx*=0.8; mouse.vy*=0.8;
+  particles.forEach(p =&gt; { p.update(); p.draw(); });
+  requestAnimationFrame(animate);
+}
+animate();</code></pre>
+            </div>
+        </div>
+
+        <!-- Wave Canvas -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Wave Canvas <span class="badge">JS Canvas</span></h3>
+            <div class="preview-panel canvas-preview">
+                <canvas id="wave-canvas"></canvas>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">JavaScript</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-javascript">// Layered sine waves with glow stroke lines
+let time = 0;
+const waveCount = 5;
+const colors = [
+  'rgba(0,229,255,0.4)', 'rgba(139,92,246,0.35)',
+  'rgba(236,72,153,0.3)', 'rgba(16,185,129,0.25)',
+  'rgba(245,158,11,0.2)'
+];
+
+function drawWave(yBase, amp, freq, spd, color, lw) {
+  ctx.beginPath();
+  ctx.moveTo(0, canvas.height);
+  for (let x = 0; x &lt;= canvas.width; x += 2) {
+    const y = yBase
+      + Math.sin(x*freq + time*spd) * amp
+      + Math.sin(x*freq*0.5 + time*spd*1.3) * amp*0.5
+      + Math.cos(x*freq*0.3 + time*spd*0.7) * amp*0.3;
+    ctx.lineTo(x, y);
+  }
+  ctx.lineTo(canvas.width, canvas.height);
+  ctx.closePath();
+  ctx.fillStyle = color;
+  ctx.fill();
+}
+
+function animate() {
+  ctx.fillStyle = 'rgba(8,8,13,0.3)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  time += 0.015;
+  for (let i = waveCount-1; i &gt;= 0; i--) {
+    drawWave(canvas.height*0.5 + i*40,
+      30+i*8, 0.006-i*0.0005, 1.5+i*0.3,
+      colors[i], 1.5-i*0.15);
+  }
+  requestAnimationFrame(animate);
+}
+animate();</code></pre>
+            </div>
+        </div>
+
+        <!-- Starfield Warp -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Starfield Warp <span class="badge">JS Canvas</span></h3>
+            <div class="preview-panel canvas-preview">
+                <canvas id="starfield-canvas"></canvas>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">JavaScript</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-javascript">// 1000 stars streaking toward the camera
+const stars = [];
+for (let i = 0; i &lt; 1000; i++)
+  stars.push({
+    x: (Math.random()-0.5)*canvas.width*2,
+    y: (Math.random()-0.5)*canvas.height*2,
+    z: Math.random()*1500, pz: 0
+  });
+
+function animate() {
+  ctx.fillStyle = 'rgba(8,8,13,0.2)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  const cx = canvas.width/2, cy = canvas.height/2;
+
+  stars.forEach(s =&gt; {
+    s.pz = s.z;
+    s.z -= 8;
+    if (s.z &lt;= 0) {
+      s.x = (Math.random()-0.5)*canvas.width*2;
+      s.y = (Math.random()-0.5)*canvas.height*2;
+      s.z = 1500; s.pz = 1500;
+    }
+    const sx = cx + s.x/s.z * 400;
+    const sy = cy + s.y/s.z * 400;
+    const px = cx + s.x/s.pz * 400;
+    const py = cy + s.y/s.pz * 400;
+    const bright = 1 - s.z/1500;
+    const hue = 200 + bright * 40;
+    ctx.strokeStyle = `hsla(${hue},70%,${50+bright*50}%,${bright})`;
+    ctx.lineWidth = bright * 2.5;
+    ctx.beginPath();
+    ctx.moveTo(px, py);
+    ctx.lineTo(sx, sy);
+    ctx.stroke();
+  });
+  requestAnimationFrame(animate);
+}
+animate();</code></pre>
+            </div>
+        </div>
+
+        <!-- Matrix Rain -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Matrix Rain <span class="badge">JS Canvas</span></h3>
+            <div class="preview-panel canvas-preview">
+                <canvas id="matrix-canvas"></canvas>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">JavaScript</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-javascript">// Digital rain — falling characters
+const fontSize = 14;
+const cols = Math.floor(canvas.width / fontSize);
+const drops = new Array(cols).fill(1);
+const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+function animate() {
+  ctx.fillStyle = 'rgba(8,8,13,0.05)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.font = fontSize + 'px monospace';
+
+  for (let i = 0; i &lt; cols; i++) {
+    const ch = chars[Math.floor(Math.random()*chars.length)];
+    const y = drops[i] * fontSize;
+    // Head character is bright white-green
+    ctx.fillStyle = '#afffaf';
+    ctx.fillText(ch, i*fontSize, y);
+    // Trail glow
+    ctx.fillStyle = 'rgba(0,255,70,0.15)';
+    ctx.fillText(ch, i*fontSize, y - fontSize);
+
+    if (y &gt; canvas.height &amp;&amp; Math.random() &gt; 0.975)
+      drops[i] = 0;
+    drops[i]++;
+  }
+  requestAnimationFrame(animate);
+}
+animate();</code></pre>
+            </div>
+        </div>
+
+        <!-- Segmented Dome -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Segmented Dome <span class="badge">JS Canvas</span></h3>
+            <div class="preview-panel canvas-preview">
+                <canvas id="dome-canvas"></canvas>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">JavaScript</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-javascript">// Interactive dome: drag to rotate, click blocks to pop, double-click to explode all
+const R = Math.min(canvas.width, canvas.height) * 0.35;
+const blocks = [];
+let rotY = 0, rotX = 0, dragging = false, lastX = 0, lastY = 0;
+
+// Build dome rings
+for (let ring = 0; ring &lt; 8; ring++) {
+  const phi = ((ring+0.5)/8.5)*Math.PI*0.52;
+  const rY = R*Math.cos(phi), rR = R*Math.sin(phi);
+  const n = Math.max(6, Math.round(rR*2*Math.PI/35));
+  for (let i = 0; i &lt; n; i++) {
+    const th = (i/n)*Math.PI*2 + ring*0.2;
+    blocks.push({
+      hx:rR*Math.cos(th), hy:-rY, hz:rR*Math.sin(th),
+      ox:0,oy:0,oz:0, vx:0,vy:0,vz:0,
+      bw:(Math.PI*2*rR/n)*0.8, bh:(R/8)*0.75,
+      hue:195+Math.random()*25, lit:55+Math.random()*20
+    });
+  }
+}
+
+// Drag to orbit
+canvas.addEventListener('mousedown', e =&gt; { dragging=true; lastX=e.clientX; lastY=e.clientY });
+addEventListener('mouseup', () =&gt; dragging=false);
+addEventListener('mousemove', e =&gt; {
+  if (!dragging) return;
+  rotY += (e.clientX-lastX)*.005;
+  rotX = Math.max(-.8, Math.min(.8, rotX+(e.clientY-lastY)*.005));
+  lastX = e.clientX; lastY = e.clientY;
+});
+
+// Click a block to pop it out
+canvas.addEventListener('click', e =&gt; {
+  // hit-test projected blocks (hover idx set in render loop)
+});
+
+// Double-click to explode all
+canvas.addEventListener('dblclick', () =&gt; {
+  blocks.forEach(b =&gt; {
+    const d = Math.sqrt(b.hx*b.hx+b.hy*b.hy+b.hz*b.hz)||1;
+    const f = 5+Math.random()*5;
+    b.vx+=(b.hx/d)*f; b.vy+=(b.hy/d)*f-2; b.vz+=(b.hz/d)*f;
+  });
+});</code></pre>
+            </div>
+        </div>
+
+        <!-- Aurora Borealis -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Aurora Borealis <span class="badge">JS Canvas</span></h3>
+            <div class="preview-panel canvas-preview">
+                <canvas id="aurora-canvas"></canvas>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">JavaScript</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-javascript">// Northern lights — vertical curtains hanging from the sky
+const stars = [];
+for (let i = 0; i &lt; 200; i++)
+  stars.push({ x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+    r:Math.random()*1.5+0.3, tw:Math.random()*Math.PI*2,
+    sp:0.5+Math.random()*2 });
+let time = 0;
+
+function drawSky() {
+  const sky = ctx.createLinearGradient(0,0,0,canvas.height);
+  sky.addColorStop(0, '#010308');
+  sky.addColorStop(0.5, '#040a18');
+  sky.addColorStop(0.85, '#0a1520');
+  sky.addColorStop(1, '#101820');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  stars.forEach(s =&gt; {
+    const f = 0.3 + Math.sin(time*s.sp + s.tw)*0.4;
+    ctx.fillStyle = `rgba(255,255,255,${f})`;
+    ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2); ctx.fill();
+  });
+}
+
+function drawAurora() {
+  ctx.globalCompositeOperation = 'screen';
+  // Vertical curtain columns
+  for (let x = 0; x &lt; canvas.width; x += 3) {
+    const wave = Math.sin(x*0.008+time*0.5)
+               + Math.sin(x*0.003+time*0.8)*0.6
+               + Math.sin(x*0.015+time*0.3)*0.3;
+    const intensity = 0.5 + wave * 0.3;
+    const curtainTop = canvas.height*0.02 + wave*20;
+    const curtainLen = canvas.height*(0.3+intensity*0.2);
+    const hue = 130 + Math.sin(x*0.005+time*0.2)*25;
+    const g = ctx.createLinearGradient(x,curtainTop,x,curtainTop+curtainLen);
+    g.addColorStop(0, `hsla(${hue},85%,65%,${intensity*0.5})`);
+    g.addColorStop(0.15, `hsla(${hue+10},80%,55%,${intensity*0.35})`);
+    g.addColorStop(0.5, `hsla(${hue+20},70%,45%,${intensity*0.12})`);
+    g.addColorStop(1, 'transparent');
+    ctx.fillStyle = g;
+    ctx.fillRect(x,curtainTop,3,curtainLen);
+  }
+  ctx.globalCompositeOperation = 'source-over';
+}
+
+function animate() {
+  time += 0.005;
+  drawSky();
+  drawAurora();
+  requestAnimationFrame(animate);
+}
+animate();</code></pre>
+            </div>
+        </div>
+
+        <!-- DNA Helix -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">DNA Helix <span class="badge">JS Canvas</span></h3>
+            <div class="preview-panel canvas-preview">
+                <canvas id="dna-canvas"></canvas>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">JavaScript</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-javascript">// Rotating double helix with connected rungs
+let time = 0;
+const cx = canvas.width/2, cy = canvas.height/2;
+const HR = 100, HL = canvas.height * 0.7, NODES = 60;
+const rungColors = ['#00e5ff','#8b5cf6','#ec4899','#10b981'];
+
+function animate() {
+  ctx.fillStyle = 'rgba(8,8,13,0.1)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  time += 0.02;
+  const p1 = [], p2 = [];
+
+  for (let i = 0; i &lt; NODES; i++) {
+    const t = (i/NODES) * Math.PI * 4 + time;
+    const y = cy - HL/2 + (i/NODES) * HL;
+    const fov = 400;
+    const z1 = Math.sin(t) * HR, z2 = Math.sin(t+Math.PI) * HR;
+    const s1 = fov/(fov+z1+200), s2 = fov/(fov+z2+200);
+    p1.push({ x: cx + Math.cos(t)*HR*s1, y: cy+(y-cy)*s1, s:s1 });
+    p2.push({ x: cx + Math.cos(t+Math.PI)*HR*s2, y: cy+(y-cy)*s2, s:s2 });
+  }
+
+  // Rungs
+  for (let i = 0; i &lt; NODES; i += 3) {
+    const a = p1[i], b = p2[i];
+    ctx.strokeStyle = rungColors[i%4].replace(')', ','+(.15+Math.min(a.s,b.s)*.3)+')').replace('rgb','rgba').replace('#','');
+    ctx.strokeStyle = `rgba(${parseInt(rungColors[i%4].slice(1,3),16)},${parseInt(rungColors[i%4].slice(3,5),16)},${parseInt(rungColors[i%4].slice(5,7),16)},${0.12+Math.min(a.s,b.s)*.3})`;
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
+  }
+
+  // Strands
+  [{ pts:p1, h:180 }, { pts:p2, h:320 }].forEach(({ pts, h }) =&gt; {
+    ctx.beginPath();
+    pts.forEach((p,i) =&gt; i===0 ? ctx.moveTo(p.x,p.y) : ctx.lineTo(p.x,p.y));
+    ctx.strokeStyle = `hsla(${h},80%,65%,0.7)`;
+    ctx.lineWidth = 3; ctx.stroke();
+    pts.forEach(p =&gt; {
+      ctx.fillStyle = `hsla(${h},80%,70%,${.5+p.s*.4})`;
+      ctx.beginPath(); ctx.arc(p.x,p.y,3*p.s,0,Math.PI*2); ctx.fill();
+    });
+  });
+  requestAnimationFrame(animate);
+}
+animate();</code></pre>
+            </div>
+        </div>
+
+
+
+
+
+    </div>
+</div>
+
+@section Scripts {
+<script>
+(function() {
+    // ==================== PLAY/PAUSE CONTROLLER ====================
+    const animState = {};   // canvasId -> { running, animFn, rafId, panel, overlay, cvs }
+
+    function pauseCanvas(id) {
+        const s = animState[id];
+        if (!s || !s.running) return;
+        s.running = false;
+        if (s.rafId) cancelAnimationFrame(s.rafId);
+        s.overlay.style.opacity = '1';
+        s.overlay.style.pointerEvents = 'auto';
+        s.overlay.querySelector('.canvas-play-btn').innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32"><polygon points="6,3 20,12 6,21"/></svg>';
+        s.cvs.style.filter = 'blur(6px)';
+    }
+
+    document.querySelectorAll('.canvas-preview').forEach(panel => {
+        const cvs = panel.querySelector('canvas');
+        if (!cvs) return;
+
+        cvs.style.filter = 'blur(6px)';
+
+        const overlay = document.createElement('div');
+        overlay.className = 'canvas-play-overlay';
+        overlay.innerHTML = '<button class="canvas-play-btn"><svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32"><polygon points="6,3 20,12 6,21"/></svg></button>';
+        panel.appendChild(overlay);
+
+        overlay.addEventListener('click', () => {
+            const id = cvs.id;
+            const s = animState[id];
+            if (!s) return;
+
+            if (s.running) {
+                pauseCanvas(id);
+            } else {
+                s.running = true;
+                overlay.style.opacity = '0';
+                overlay.style.pointerEvents = 'none';
+                cvs.style.filter = 'none';
+                s.animFn();
+            }
+        });
+    });
+
+    // Auto-pause when scrolled out of view
+    const visObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) {
+                const cvs = entry.target.querySelector('canvas');
+                if (cvs && animState[cvs.id]) pauseCanvas(cvs.id);
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.canvas-preview').forEach(panel => {
+        visObserver.observe(panel);
+    });
+
+    function registerAnim(canvasId, animFn) {
+        const cvs = document.getElementById(canvasId);
+        const panel = cvs ? cvs.closest('.canvas-preview') : null;
+        const overlay = panel ? panel.querySelector('.canvas-play-overlay') : null;
+        animState[canvasId] = { running: false, animFn: animFn, rafId: null, panel: panel, overlay: overlay, cvs: cvs };
+    }
+
+    function loopAnim(canvasId, frameFn) {
+        const s = animState[canvasId];
+        if (!s || !s.running) return;
+        frameFn();
+        s.rafId = requestAnimationFrame(() => loopAnim(canvasId, frameFn));
+    }
+        // ==================== PARTICLE NEBULA ====================
+        const nebulaCanvas = document.getElementById('nebula-canvas');
+        if (nebulaCanvas) {
+            const ctx = nebulaCanvas.getContext('2d');
+            let nTime = 0;
+            let nMode = 0; // 0=sphere,1=ring,2=spiral,3=text
+            let nTypedWord = '';
+            let nFocused = false;
+            const nParts = [];
+            const NP = 4000;
+
+            // Offscreen canvas for text sampling
+            const nTextCanvas = document.createElement('canvas');
+            const nTextCtx = nTextCanvas.getContext('2d');
+
+            function resizeNebula() {
+                const rect = nebulaCanvas.parentElement.getBoundingClientRect();
+                nebulaCanvas.width = rect.width;
+                nebulaCanvas.height = Math.max(rect.height, 400);
+            }
+            resizeNebula();
+            window.addEventListener('resize', resizeNebula);
+
+            for (let i = 0; i < NP; i++) {
+                const a = Math.random() * Math.PI * 2;
+                const phi = Math.acos(2 * Math.random() - 1);
+                const r = 80 + Math.random() * 180;
+                nParts.push({
+                    x: r * Math.sin(phi) * Math.cos(a),
+                    y: r * Math.sin(phi) * Math.sin(a),
+                    z: r * Math.cos(phi),
+                    tx: 0, ty: 0, tz: 0,
+                    vx: 0, vy: 0, vz: 0,
+                    size: 0.6 + Math.random() * 1.4,
+                    hue: 195 + Math.random() * 40,
+                    alpha: 0.7 + Math.random() * 0.3,
+                    speed: 0.001 + Math.random() * 0.003,
+                    phase: Math.random() * Math.PI * 2
+                });
+            }
+
+            function sampleTextPoints(text) {
+                const W = nebulaCanvas.width, H = nebulaCanvas.height;
+                nTextCanvas.width = W;
+                nTextCanvas.height = H;
+                nTextCtx.clearRect(0, 0, W, H);
+                let fontSize = Math.min(200, H * 0.55);
+                nTextCtx.font = 'bold ' + fontSize + 'px Arial, sans-serif';
+                nTextCtx.textAlign = 'center';
+                nTextCtx.textBaseline = 'middle';
+                while (nTextCtx.measureText(text).width > W * 0.85 && fontSize > 8) {
+                    fontSize -= 2;
+                    nTextCtx.font = 'bold ' + fontSize + 'px Arial, sans-serif';
+                }
+                nTextCtx.fillStyle = 'white';
+                nTextCtx.fillText(text, W / 2, H / 2);
+                const imgData = nTextCtx.getImageData(0, 0, W, H).data;
+                const points = [];
+                const step = 3;
+                for (let y = 0; y < H; y += step) {
+                    for (let x = 0; x < W; x += step) {
+                        if (imgData[(y * W + x) * 4 + 3] > 128) {
+                            points.push({ x: x - W / 2, y: y - H / 2 });
+                        }
+                    }
+                }
+                return points;
+            }
+
+            function setNebulaTargets(m, text) {
+                if (m === 3 && text) {
+                    const pts = sampleTextPoints(text);
+                    if (pts.length === 0) { setNebulaTargets(0); return; }
+                    nParts.forEach((p, i) => {
+                        const pt = pts[i % pts.length];
+                        p.tx = pt.x + (Math.random() - 0.5) * 3;
+                        p.ty = pt.y + (Math.random() - 0.5) * 3;
+                        p.tz = (Math.random() - 0.5) * 30;
+                    });
+                } else {
+                    nParts.forEach((p, i) => {
+                        const a = Math.random() * Math.PI * 2;
+                        const phi = Math.acos(2 * Math.random() - 1);
+                        if (m === 0) {
+                            const r = 80 + Math.random() * 180;
+                            p.tx = r * Math.sin(phi) * Math.cos(a);
+                            p.ty = r * Math.sin(phi) * Math.sin(a);
+                            p.tz = r * Math.cos(phi);
+                        } else if (m === 1) {
+                            const ring = i % 2 === 0 ? 120 : 200;
+                            const angle = (i / NP) * Math.PI * 2 * 8;
+                            p.tx = Math.cos(angle) * ring;
+                            p.ty = (Math.random() - 0.5) * 40;
+                            p.tz = Math.sin(angle) * ring;
+                        } else {
+                            const t = (i / NP) * Math.PI * 12;
+                            const strand = i % 2 === 0 ? 1 : -1;
+                            p.tx = Math.cos(t) * 100 * strand;
+                            p.ty = (i / NP - 0.5) * 400;
+                            p.tz = Math.sin(t) * 100 * strand;
+                        }
+                    });
+                }
+            }
+            setNebulaTargets(0);
+
+            function nebulaBurst() {
+                nParts.forEach(p => {
+                    p.vx += (Math.random() - 0.5) * 5;
+                    p.vy += (Math.random() - 0.5) * 5;
+                    p.vz += (Math.random() - 0.5) * 5;
+                });
+            }
+
+            nebulaCanvas.setAttribute('tabindex', '0');
+            nebulaCanvas.style.outline = 'none';
+
+            nebulaCanvas.addEventListener('click', () => {
+                nFocused = true;
+                nTypedWord = '';
+                nebulaCanvas.focus();
+                nMode = (nMode + 1) % 3;
+                setNebulaTargets(nMode);
+                nebulaBurst();
+            });
+
+            nebulaCanvas.addEventListener('blur', () => { nFocused = false; });
+
+            nebulaCanvas.addEventListener('keydown', (e) => {
+                if (!nFocused) return;
+                if (e.key === 'Backspace') {
+                    nTypedWord = nTypedWord.slice(0, -1);
+                } else if (e.key === 'Escape') {
+                    nTypedWord = '';
+                    nMode = 0;
+                    setNebulaTargets(0);
+                    nebulaBurst();
+                    return;
+                } else if (e.key.length === 1) {
+                    nTypedWord += e.key;
+                } else {
+                    return;
+                }
+                e.preventDefault();
+                if (nTypedWord.length > 0) {
+                    nMode = 3;
+                    setNebulaTargets(3, nTypedWord.toUpperCase());
+                    nebulaBurst();
+                } else {
+                    nMode = 0;
+                    setNebulaTargets(0);
+                    nebulaBurst();
+                }
+            });
+
+            function animateNebula() {
+                const W = nebulaCanvas.width, H = nebulaCanvas.height;
+                const cx = W / 2, cy = H / 2;
+                ctx.fillStyle = 'rgba(3,8,16,0.12)';
+                ctx.fillRect(0, 0, W, H);
+                nTime += 0.005;
+
+                const flatMode = nMode === 3;
+                const rotSpeed = flatMode ? 0 : nTime * 0.3;
+                const cosA = Math.cos(rotSpeed), sinA = Math.sin(rotSpeed);
+
+                const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 200);
+                glow.addColorStop(0, 'rgba(0,160,255,0.12)');
+                glow.addColorStop(0.4, 'rgba(0,100,255,0.04)');
+                glow.addColorStop(1, 'transparent');
+                ctx.fillStyle = glow;
+                ctx.fillRect(0, 0, W, H);
+
+                nParts.forEach(p => {
+                    p.vx += (p.tx - p.x) * 0.008;
+                    p.vy += (p.ty - p.y) * 0.008;
+                    p.vz += (p.tz - p.z) * 0.008;
+                    p.vx *= 0.96; p.vy *= 0.96; p.vz *= 0.96;
+                    p.x += p.vx; p.y += p.vy; p.z += p.vz;
+                    let px, py, sc;
+                    if (nMode >= 3) {
+                        // Bear/text mode: direct screen coords
+                        px = p.x + cx;
+                        py = p.y + cy;
+                        sc = 1;
+                    } else {
+                        const c = Math.cos(p.speed), s = Math.sin(p.speed);
+                        const nx = p.x * c - p.z * s; p.z = p.x * s + p.z * c; p.x = nx;
+                        const rx = p.x * cosA - p.z * sinA, rz = p.x * sinA + p.z * cosA;
+                        sc = 500 / (500 + rz + 250);
+                        px = rx * sc + cx;
+                        py = p.y * sc + cy;
+                    }
+                    if (sc > 0) {
+                        const pulse = 0.7 + Math.sin(nTime * 3 + p.phase) * 0.3;
+                        const a = Math.min(1, p.alpha * sc * pulse);
+                        const r = p.size * sc;
+                        ctx.fillStyle = `hsla(${p.hue},90%,65%,${a})`;
+                        ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2); ctx.fill();
+                        if (r > 0.8) {
+                            ctx.fillStyle = `hsla(${p.hue},60%,90%,${a * 0.5})`;
+                            ctx.beginPath(); ctx.arc(px, py, r * 0.35, 0, Math.PI * 2); ctx.fill();
+                        }
+                    }
+                });
+
+                if (nFocused && nTypedWord.length > 0) {
+                    ctx.fillStyle = 'rgba(0,180,255,0.25)';
+                    ctx.font = '12px Arial, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(nTypedWord, cx, H - 15);
+                }
+            }
+
+            registerAnim('nebula-canvas', function() { loopAnim('nebula-canvas', animateNebula); });
+        }
+
+        // ==================== WAVE TERRAIN ====================
+        const terrainCanvas = document.getElementById('terrain-canvas');
+        if (terrainCanvas) {
+            const ctx2 = terrainCanvas.getContext('2d');
+            const cols = 50, rows = 30, spacing = 18;
+            let time2 = 0;
+            let terrainMouse = { x: 0.5, y: 0.5, active: false };
+
+            function resizeTerrain() {
+                const rect = terrainCanvas.parentElement.getBoundingClientRect();
+                terrainCanvas.width = rect.width;
+                terrainCanvas.height = Math.max(rect.height, 400);
+            }
+            resizeTerrain();
+            window.addEventListener('resize', resizeTerrain);
+
+            terrainCanvas.addEventListener('mousemove', e => {
+                const r = terrainCanvas.getBoundingClientRect();
+                terrainMouse.x = (e.clientX - r.left) / r.width;
+                terrainMouse.y = (e.clientY - r.top) / r.height;
+                terrainMouse.active = true;
+            });
+            terrainCanvas.addEventListener('mouseleave', () => {
+                terrainMouse.active = false;
+            });
+
+            function isoProject(col, row, z) {
+                const cx = terrainCanvas.width / 2;
+                const cy = terrainCanvas.height / 2;
+                const gx = col - cols / 2;
+                const gy = row - rows / 2;
+                return {
+                    x: cx + (gx - gy) * spacing * 0.7,
+                    y: cy + (gx + gy) * spacing * 0.35 - z
+                };
+            }
+
+            function getZ(x, y, t) {
+                const d = Math.sqrt(x * x + y * y);
+                // Mouse influence: create a ripple centered on mouse grid position
+                let mz = 0;
+                if (terrainMouse.active) {
+                    const mx = (terrainMouse.x - 0.5) * cols;
+                    const my = (terrainMouse.y - 0.5) * rows;
+                    const md = Math.sqrt((x - mx) * (x - mx) + (y - my) * (y - my));
+                    mz = Math.sin(md * 0.8 - t * 3) * 20 / (1 + md * 0.15);
+                }
+                return Math.sin(d * 0.4 - t * 2) * 25
+                     + Math.sin(x * 0.3 + t) * 12
+                     + Math.cos(y * 0.4 + t * 1.3) * 8
+                     + mz;
+            }
+
+            function animateTerrain() {
+                ctx2.clearRect(0, 0, terrainCanvas.width, terrainCanvas.height);
+                time2 += 0.025;
+
+                for (let row = 0; row < rows; row++) {
+                    for (let col = 0; col < cols; col++) {
+                        const x = col - cols / 2;
+                        const y = row - rows / 2;
+                        const d = Math.sqrt(x * x + y * y);
+                        const z = getZ(x, y, time2);
+                        const p = isoProject(col, row, z);
+                        const hue = 190 + z * 1.5;
+                        const alpha = Math.max(0.1, 1 - (d / (cols * 0.6)));
+
+                        ctx2.fillStyle = `hsla(${hue}, 75%, 55%, ${alpha})`;
+                        ctx2.beginPath();
+                        ctx2.arc(p.x, p.y, 2, 0, Math.PI * 2);
+                        ctx2.fill();
+
+                        if (col > 0) {
+                            const px = col - 1 - cols / 2;
+                            const pz = getZ(px, y, time2);
+                            const pp = isoProject(col - 1, row, pz);
+                            ctx2.strokeStyle = `hsla(${hue}, 60%, 45%, ${alpha * 0.4})`;
+                            ctx2.lineWidth = 0.5;
+                            ctx2.beginPath();
+                            ctx2.moveTo(pp.x, pp.y);
+                            ctx2.lineTo(p.x, p.y);
+                            ctx2.stroke();
+                        }
+                        if (row > 0) {
+                            const py = row - 1 - rows / 2;
+                            const pz = getZ(x, py, time2);
+                            const pp = isoProject(col, row - 1, pz);
+                            ctx2.strokeStyle = `hsla(${hue}, 60%, 45%, ${alpha * 0.4})`;
+                            ctx2.lineWidth = 0.5;
+                            ctx2.beginPath();
+                            ctx2.moveTo(pp.x, pp.y);
+                            ctx2.lineTo(p.x, p.y);
+                            ctx2.stroke();
+                        }
+                    }
+                }
+            }
+            registerAnim('terrain-canvas', function() { loopAnim('terrain-canvas', animateTerrain); });
+        }
+
+        // ==================== GEOMETRIC VORTEX ====================
+        const vortexCanvas = document.getElementById('vortex-canvas');
+        if (vortexCanvas) {
+            const ctx3 = vortexCanvas.getContext('2d');
+            const shapes = [];
+            const SHAPE_COUNT = 80;
+            let time3 = 0;
+
+            function resizeVortex() {
+                const rect = vortexCanvas.parentElement.getBoundingClientRect();
+                vortexCanvas.width = rect.width;
+                vortexCanvas.height = Math.max(rect.height, 400);
+            }
+            resizeVortex();
+            window.addEventListener('resize', resizeVortex);
+
+            class Shape {
+                constructor(i) {
+                    this.angle = (i / SHAPE_COUNT) * Math.PI * 2;
+                    this.radius = 40 + Math.random() * 200;
+                    this.z = Math.random() * 600 - 300;
+                    this.speed = 0.008 + Math.random() * 0.012;
+                    this.zSpeed = 1.5 + Math.random() * 2;
+                    this.sides = Math.floor(Math.random() * 4) + 3;
+                    this.size = 6 + Math.random() * 14;
+                    this.hue = Math.random() * 80 + 250;
+                    this.rotSpeed = (Math.random() - 0.5) * 0.04;
+                    this.rot = 0;
+                }
+            }
+
+            for (let i = 0; i < SHAPE_COUNT; i++) shapes.push(new Shape(i));
+
+            function drawPolygon(x, y, r, sides, rot, hue, alpha) {
+                ctx3.beginPath();
+                for (let i = 0; i <= sides; i++) {
+                    const a = rot + (i / sides) * Math.PI * 2;
+                    const px = x + Math.cos(a) * r;
+                    const py = y + Math.sin(a) * r;
+                    if (i === 0) ctx3.moveTo(px, py); else ctx3.lineTo(px, py);
+                }
+                ctx3.closePath();
+                ctx3.strokeStyle = `hsla(${hue}, 80%, 65%, ${alpha})`;
+                ctx3.lineWidth = 1.5;
+                ctx3.stroke();
+            }
+
+            function animateVortex() {
+                ctx3.fillStyle = 'rgba(8,8,13,0.12)';
+                ctx3.fillRect(0, 0, vortexCanvas.width, vortexCanvas.height);
+                time3 += 0.01;
+
+                const cx = vortexCanvas.width / 2;
+                const cy = vortexCanvas.height / 2;
+                const fov = 500;
+
+                shapes.sort((a, b) => b.z - a.z);
+
+                shapes.forEach(s => {
+                    s.angle += s.speed;
+                    s.z -= s.zSpeed;
+                    s.rot += s.rotSpeed;
+                    if (s.z < -300) s.z = 300;
+
+                    const scale = fov / (fov + s.z);
+                    const x = cx + Math.cos(s.angle) * s.radius * scale;
+                    const y = cy + Math.sin(s.angle) * s.radius * scale;
+                    const sz = s.size * scale;
+                    const alpha = Math.max(0.1, scale);
+                    const hue = (s.hue + time3 * 20) % 360;
+
+                    ctx3.shadowBlur = 15 * scale;
+                    ctx3.shadowColor = `hsla(${hue}, 80%, 65%, 0.3)`;
+                    drawPolygon(x, y, sz, s.sides, s.rot, hue, alpha);
+                    ctx3.shadowBlur = 0;
+                });
+
+            }
+            registerAnim('vortex-canvas', function() { loopAnim('vortex-canvas', animateVortex); });
+        }
+
+        // ==================== PARTICLE BURST TEXT ====================
+        const burstCanvas = document.getElementById('burst-canvas');
+        if (burstCanvas) {
+            const ctx4 = burstCanvas.getContext('2d');
+            const burstParticles = [];
+            let burstMouse = { x: -9999, y: -9999, px: -9999, py: -9999, vx: 0, vy: 0, radius: 150 };
+
+            function resizeBurst() {
+                const rect = burstCanvas.parentElement.getBoundingClientRect();
+                burstCanvas.width = rect.width;
+                burstCanvas.height = Math.max(rect.height, 400);
+            }
+            resizeBurst();
+
+            function BurstParticle(x, y) {
+                this.x = x; this.y = y;
+                this.baseX = x; this.baseY = y;
+                this.size = 0.4 + Math.random() * 1.0;
+                this.hue = Math.random() * 60 + 170;
+                this.vx = 0; this.vy = 0;
+                this.friction = 0.88;
+            }
+
+            const burstReturnRate = 0.12;
+
+            // Tight containment around the bear shape
+            const bW = burstCanvas.width, bH = burstCanvas.height;
+            const bearScale = Math.min(bW, bH) * 0.005;
+            const bearMargin = bearScale * 30;
+            const boundL = bW / 2 - bearScale * 55 - bearMargin;
+            const boundR = bW / 2 + bearScale * 55 + bearMargin;
+            const boundT = bH / 2 - bearScale * 80 - bearMargin;
+            const boundB = bH / 2 + bearScale * 107 + bearMargin;
+
+            BurstParticle.prototype.update = function () {
+                // Fling particles in cursor movement direction
+                const dx = burstMouse.x - this.x;
+                const dy = burstMouse.y - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < burstMouse.radius && dist > 0.1) {
+                    const mouseSpeed = Math.sqrt(burstMouse.vx * burstMouse.vx + burstMouse.vy * burstMouse.vy);
+                    if (mouseSpeed > 0.5) {
+                        const proximity = (burstMouse.radius - dist) / burstMouse.radius;
+                        const strength = proximity * proximity * Math.min(mouseSpeed * 0.4, 12);
+                        this.vx += burstMouse.vx * proximity * 0.3;
+                        this.vy += burstMouse.vy * proximity * 0.3;
+                        this.vx += (Math.random() - 0.5) * strength * 0.15;
+                        this.vy += (Math.random() - 0.5) * strength * 0.15;
+                    }
+                }
+                // Apply velocity with friction
+                this.vx *= this.friction;
+                this.vy *= this.friction;
+                this.x += this.vx; this.y += this.vy;
+                // Consistent return: fixed-rate lerp toward base
+                this.x += (this.baseX - this.x) * burstReturnRate;
+                this.y += (this.baseY - this.y) * burstReturnRate;
+                // Contain within bounds — bounce softly off edges
+                if (this.x < boundL) { this.x = boundL; this.vx *= -0.3; }
+                if (this.x > boundR) { this.x = boundR; this.vx *= -0.3; }
+                if (this.y < boundT) { this.y = boundT; this.vy *= -0.3; }
+                if (this.y > boundB) { this.y = boundB; this.vy *= -0.3; }
+            };
+
+            BurstParticle.prototype.draw = function () {
+                const speed = Math.sqrt(this.vx * this.vx + this.vy * this.vy);
+                const hue = this.hue + speed * 12;
+                const alpha = Math.min(1, 0.55 + speed * 0.1);
+                ctx4.fillStyle = 'hsla(' + hue + ', 90%, 65%, ' + alpha + ')';
+                ctx4.beginPath();
+                ctx4.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx4.fill();
+                if (this.size > 0.6) {
+                    ctx4.fillStyle = 'hsla(' + hue + ', 60%, 90%, ' + (alpha * 0.4) + ')';
+                    ctx4.beginPath();
+                    ctx4.arc(this.x, this.y, this.size * 0.3, 0, Math.PI * 2);
+                    ctx4.fill();
+                }
+            };
+
+            // Draw teddy bear silhouette, sample pixels
+            const bCx = bW / 2, bCy = bH / 2;
+            const bS = bearScale;
+            function bearCircle(bx, by, br) {
+                ctx4.beginPath();
+                ctx4.arc(bCx + bx * bS, bCy + by * bS, br * bS, 0, Math.PI * 2);
+                ctx4.fill();
+            }
+            ctx4.fillStyle = 'white';
+            bearCircle(0, 40, 55);   // body
+            bearCircle(0, -30, 42);  // head
+            bearCircle(-32, -62, 18); bearCircle(32, -62, 18); // ears
+            bearCircle(-50, 25, 20); bearCircle(50, 25, 20);   // arms
+            bearCircle(-25, 85, 22); bearCircle(25, 85, 22);   // legs
+            ctx4.fillStyle = '#ddd';
+            bearCircle(0, -16, 14);  // muzzle
+            const imgData = ctx4.getImageData(0, 0, bW, bH).data;
+            ctx4.clearRect(0, 0, bW, bH);
+
+            for (let y = 0; y < bH; y += 3) {
+                for (let x = 0; x < bW; x += 3) {
+                    if (imgData[(y * bW + x) * 4 + 3] > 128) {
+                        burstParticles.push(new BurstParticle(x, y));
+                    }
+                }
+            }
+
+            burstCanvas.addEventListener('mousemove', e => {
+                const r = burstCanvas.getBoundingClientRect();
+                const nx = e.clientX - r.left;
+                const ny = e.clientY - r.top;
+                if (burstMouse.x < -999) {
+                    // First move after enter — seed position, zero velocity
+                    burstMouse.x = nx; burstMouse.y = ny;
+                    burstMouse.vx = 0; burstMouse.vy = 0;
+                } else {
+                    burstMouse.vx = nx - burstMouse.x;
+                    burstMouse.vy = ny - burstMouse.y;
+                    burstMouse.x = nx;
+                    burstMouse.y = ny;
+                }
+            });
+            burstCanvas.addEventListener('mouseleave', () => {
+                burstMouse.x = -9999; burstMouse.y = -9999;
+                burstMouse.vx = 0; burstMouse.vy = 0;
+            });
+
+            function animateBurst() {
+                ctx4.fillStyle = 'rgba(8,8,13,0.1)';
+                ctx4.fillRect(0, 0, burstCanvas.width, burstCanvas.height);
+                // Decay mouse velocity each frame so stationary cursor does nothing
+                burstMouse.vx *= 0.8;
+                burstMouse.vy *= 0.8;
+                for (let i = 0; i < burstParticles.length; i++) {
+                    burstParticles[i].update();
+                    burstParticles[i].draw();
+                }
+            }
+            registerAnim('burst-canvas', function() { loopAnim('burst-canvas', animateBurst); });
+        }
+
+        // ==================== WAVE CANVAS ====================
+        const waveCanvas = document.getElementById('wave-canvas');
+        if (waveCanvas) {
+            const ctx5 = waveCanvas.getContext('2d');
+            let wTime = 0;
+            const wColors = ['rgba(0,229,255,0.4)','rgba(139,92,246,0.35)','rgba(236,72,153,0.3)','rgba(16,185,129,0.25)','rgba(245,158,11,0.2)'];
+            function resizeWave() {
+                const r = waveCanvas.parentElement.getBoundingClientRect();
+                waveCanvas.width = r.width;
+                waveCanvas.height = Math.max(r.height, 400);
+            }
+            resizeWave();
+            window.addEventListener('resize', resizeWave);
+            function drawWave(yBase, amp, freq, spd, color) {
+                ctx5.beginPath();
+                ctx5.moveTo(0, waveCanvas.height);
+                for (let x = 0; x <= waveCanvas.width; x += 2) {
+                    const y = yBase + Math.sin(x*freq+wTime*spd)*amp + Math.sin(x*freq*0.5+wTime*spd*1.3)*amp*0.5 + Math.cos(x*freq*0.3+wTime*spd*0.7)*amp*0.3;
+                    ctx5.lineTo(x, y);
+                }
+                ctx5.lineTo(waveCanvas.width, waveCanvas.height);
+                ctx5.closePath();
+                ctx5.fillStyle = color;
+                ctx5.fill();
+                ctx5.beginPath();
+                for (let x = 0; x <= waveCanvas.width; x += 2) {
+                    const y = yBase + Math.sin(x*freq+wTime*spd)*amp + Math.sin(x*freq*0.5+wTime*spd*1.3)*amp*0.5 + Math.cos(x*freq*0.3+wTime*spd*0.7)*amp*0.3;
+                    x === 0 ? ctx5.moveTo(x, y) : ctx5.lineTo(x, y);
+                }
+                const parts = color.split(','); parts[parts.length-1] = '0.8)';
+                ctx5.strokeStyle = parts.join(',');
+                ctx5.lineWidth = 1.5;
+                ctx5.stroke();
+            }
+            function animateWave() {
+                ctx5.fillStyle = 'rgba(8,8,13,0.3)';
+                ctx5.fillRect(0, 0, waveCanvas.width, waveCanvas.height);
+                wTime += 0.015;
+                for (let i = 4; i >= 0; i--) {
+                    drawWave(waveCanvas.height*0.5+i*40, 30+i*8, 0.006-i*0.0005, 1.5+i*0.3, wColors[i]);
+                }
+            }
+            registerAnim('wave-canvas', function() { loopAnim('wave-canvas', animateWave); });
+        }
+
+        // ==================== STARFIELD WARP ====================
+        const starCanvas = document.getElementById('starfield-canvas');
+        if (starCanvas) {
+            const ctx6 = starCanvas.getContext('2d');
+            const stars = [];
+            function resizeStar() {
+                const r = starCanvas.parentElement.getBoundingClientRect();
+                starCanvas.width = r.width;
+                starCanvas.height = Math.max(r.height, 400);
+            }
+            resizeStar();
+            window.addEventListener('resize', resizeStar);
+            for (let i = 0; i < 1000; i++) {
+                stars.push({
+                    x: (Math.random()-0.5)*starCanvas.width*2,
+                    y: (Math.random()-0.5)*starCanvas.height*2,
+                    z: Math.random()*1500, pz: 0
+                });
+            }
+            function animateStar() {
+                ctx6.fillStyle = 'rgba(8,8,13,0.2)';
+                ctx6.fillRect(0, 0, starCanvas.width, starCanvas.height);
+                const cx = starCanvas.width/2, cy = starCanvas.height/2;
+                stars.forEach(s => {
+                    s.pz = s.z;
+                    s.z -= 8;
+                    if (s.z <= 0) {
+                        s.x = (Math.random()-0.5)*starCanvas.width*2;
+                        s.y = (Math.random()-0.5)*starCanvas.height*2;
+                        s.z = 1500; s.pz = 1500;
+                    }
+                    const sx = cx + s.x/s.z*400;
+                    const sy = cy + s.y/s.z*400;
+                    const px = cx + s.x/s.pz*400;
+                    const py = cy + s.y/s.pz*400;
+                    const bright = 1 - s.z/1500;
+                    const hue = 200 + bright*40;
+                    ctx6.strokeStyle = `hsla(${hue},70%,${50+bright*50}%,${bright})`;
+                    ctx6.lineWidth = bright * 2.5;
+                    ctx6.beginPath();
+                    ctx6.moveTo(px, py);
+                    ctx6.lineTo(sx, sy);
+                    ctx6.stroke();
+                });
+            }
+            registerAnim('starfield-canvas', function() { loopAnim('starfield-canvas', animateStar); });
+        }
+
+
+        // ==================== MATRIX RAIN ====================
+        const matrixCanvas = document.getElementById('matrix-canvas');
+        if (matrixCanvas) {
+            const ctx8 = matrixCanvas.getContext('2d');
+            function resizeMatrix() {
+                const r = matrixCanvas.parentElement.getBoundingClientRect();
+                matrixCanvas.width = r.width;
+                matrixCanvas.height = Math.max(r.height, 400);
+            }
+            resizeMatrix();
+            window.addEventListener('resize', resizeMatrix);
+            const mFontSize = 14;
+            const mCols = Math.floor(matrixCanvas.width / mFontSize);
+            const mDrops = new Array(mCols).fill(1);
+            const mChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            function animateMatrix() {
+                ctx8.fillStyle = 'rgba(8,8,13,0.05)';
+                ctx8.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+                ctx8.font = mFontSize + 'px monospace';
+                for (let i = 0; i < mCols; i++) {
+                    const ch = mChars[Math.floor(Math.random()*mChars.length)];
+                    const y = mDrops[i] * mFontSize;
+                    ctx8.fillStyle = '#afffaf';
+                    ctx8.fillText(ch, i*mFontSize, y);
+                    ctx8.fillStyle = 'rgba(0,255,70,0.15)';
+                    ctx8.fillText(ch, i*mFontSize, y - mFontSize);
+                    if (y > matrixCanvas.height && Math.random() > 0.975) mDrops[i] = 0;
+                    mDrops[i]++;
+                }
+            }
+            registerAnim('matrix-canvas', function() { loopAnim('matrix-canvas', animateMatrix); });
+        }
+
+        // ==================== SEGMENTED DOME ====================
+        const domeCanvas = document.getElementById('dome-canvas');
+        if (domeCanvas) {
+            const ctx9 = domeCanvas.getContext('2d');
+            const dBlocks = [];
+            let dRotY = 0, dRotX = 0;
+            let dDragging = false, dLastX = 0, dLastY = 0;
+            let dAutoRotate = true;
+            let dMouse = { x: -999, y: -999 };
+            let dHovered = -1;
+
+            function resizeDome() {
+                const r = domeCanvas.parentElement.getBoundingClientRect();
+                domeCanvas.width = r.width;
+                domeCanvas.height = Math.max(r.height, 400);
+            }
+            resizeDome();
+            window.addEventListener('resize', resizeDome);
+
+            const dR = Math.min(domeCanvas.width, domeCanvas.height) * 0.35;
+
+            for (let ring = 0; ring < 8; ring++) {
+                const phi = ((ring + 0.5) / 8.5) * Math.PI * 0.52;
+                const ringY = dR * Math.cos(phi);
+                const ringRad = dR * Math.sin(phi);
+                const count = Math.max(6, Math.round(ringRad * 2 * Math.PI / 35));
+                for (let i = 0; i < count; i++) {
+                    const theta = (i / count) * Math.PI * 2 + ring * 0.2;
+                    dBlocks.push({
+                        hx: ringRad * Math.cos(theta), hy: -ringY, hz: ringRad * Math.sin(theta),
+                        ox: 0, oy: 0, oz: 0, vx: 0, vy: 0, vz: 0,
+                        bw: (Math.PI * 2 * ringRad / count) * 0.8,
+                        bh: (dR / 8) * 0.75,
+                        hue: 195 + Math.random() * 25,
+                        lit: 55 + Math.random() * 20
+                    });
+                }
+            }
+
+            // Drag to rotate
+            domeCanvas.addEventListener('mousedown', e => {
+                dDragging = true;
+                dAutoRotate = false;
+                dLastX = e.clientX;
+                dLastY = e.clientY;
+            });
+            window.addEventListener('mouseup', () => { dDragging = false; });
+            window.addEventListener('mousemove', e => {
+                if (dDragging) {
+                    dRotY += (e.clientX - dLastX) * 0.005;
+                    dRotX += (e.clientY - dLastY) * 0.005;
+                    dRotX = Math.max(-0.8, Math.min(0.8, dRotX));
+                    dLastX = e.clientX;
+                    dLastY = e.clientY;
+                }
+            });
+
+            // Track mouse for hover/click
+            domeCanvas.addEventListener('mousemove', e => {
+                const rect = domeCanvas.getBoundingClientRect();
+                dMouse.x = e.clientX - rect.left;
+                dMouse.y = e.clientY - rect.top;
+            });
+            domeCanvas.addEventListener('mouseleave', () => { dMouse.x = -999; dMouse.y = -999; });
+
+            // Click individual block
+            domeCanvas.addEventListener('click', e => {
+                if (dHovered >= 0 && dHovered < dBlocks.length) {
+                    const b = dBlocks[dHovered];
+                    const d = Math.sqrt(b.hx * b.hx + b.hy * b.hy + b.hz * b.hz) || 1;
+                    const f = 6 + Math.random() * 4;
+                    b.vx += (b.hx / d) * f;
+                    b.vy += (b.hy / d) * f - 3;
+                    b.vz += (b.hz / d) * f;
+                }
+            });
+
+            // Double-click to explode all
+            domeCanvas.addEventListener('dblclick', () => {
+                dBlocks.forEach(b => {
+                    const d = Math.sqrt(b.hx * b.hx + b.hy * b.hy + b.hz * b.hz) || 1;
+                    const f = 4 + Math.random() * 5;
+                    b.vx += (b.hx / d) * f * (0.5 + Math.random());
+                    b.vy += (b.hy / d) * f * (0.5 + Math.random()) - 2;
+                    b.vz += (b.hz / d) * f * (0.5 + Math.random());
+                });
+            });
+
+            function animateDome() {
+                ctx9.clearRect(0, 0, domeCanvas.width, domeCanvas.height);
+                ctx9.fillStyle = '#08080d';
+                ctx9.fillRect(0, 0, domeCanvas.width, domeCanvas.height);
+
+                if (dAutoRotate) dRotY += 0.003;
+                const dcx = domeCanvas.width / 2;
+                const dcy = domeCanvas.height / 2 + dR * 0.1;
+                const cosRY = Math.cos(dRotY), sinRY = Math.sin(dRotY);
+                const cosRX = Math.cos(dRotX), sinRX = Math.sin(dRotX);
+
+                const proj = [];
+                dHovered = -1;
+                let closestDist = 20;
+
+                dBlocks.forEach((b, idx) => {
+                    // Spring physics
+                    b.vx -= b.ox * 0.025; b.vy -= b.oy * 0.025; b.vz -= b.oz * 0.025;
+                    b.vx *= 0.96; b.vy *= 0.96; b.vz *= 0.96;
+                    b.ox += b.vx; b.oy += b.vy; b.oz += b.vz;
+
+                    const wx = b.hx + b.ox, wy = b.hy + b.oy, wz = b.hz + b.oz;
+                    // Rotate Y then X
+                    const ryx = wx * cosRY - wz * sinRY;
+                    const ryz = wx * sinRY + wz * cosRY;
+                    const rxy = wy * cosRX - ryz * sinRX;
+                    const rxz = wy * sinRX + ryz * cosRX;
+
+                    const sc = 600 / (600 + rxz + dR);
+                    const px = dcx + ryx * sc;
+                    const py = dcy + rxy * sc;
+                    const w = b.bw * sc, h = b.bh * sc;
+
+                    // Hit test for hover
+                    const dx = dMouse.x - px, dy = dMouse.y - py;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < Math.max(w, h) * 0.6 && dist < closestDist) {
+                        closestDist = dist;
+                        dHovered = idx;
+                    }
+
+                    proj.push({ x: px, y: py, s: sc, z: rxz, w: b.bw, h: b.bh, hue: b.hue, lit: b.lit, idx: idx });
+                });
+
+                proj.sort((a, b) => a.z - b.z);
+
+                proj.forEach(p => {
+                    const w = p.w * p.s, h = p.h * p.s;
+                    const br = p.lit * p.s;
+                    const isHov = p.idx === dHovered;
+                    const alpha = 0.4 + p.s * 0.55;
+
+                    if (isHov) {
+                        ctx9.fillStyle = `hsla(${p.hue - 20},50%,${Math.min(95, br + 20)}%,${alpha + 0.15})`;
+                        ctx9.strokeStyle = `hsla(180,60%,70%,${0.5 + p.s * 0.4})`;
+                        ctx9.lineWidth = 2;
+                    } else {
+                        ctx9.fillStyle = `hsla(${p.hue},15%,${Math.min(90, br)}%,${alpha})`;
+                        ctx9.strokeStyle = `hsla(${p.hue},30%,${Math.min(95, br + 15)}%,${0.12 + p.s * 0.25})`;
+                        ctx9.lineWidth = Math.max(0.5, p.s);
+                    }
+                    ctx9.fillRect(p.x - w / 2, p.y - h / 2, w, h);
+                    ctx9.strokeRect(p.x - w / 2, p.y - h / 2, w, h);
+                });
+
+                domeCanvas.style.cursor = dHovered >= 0 ? 'pointer' : (dDragging ? 'grabbing' : 'grab');
+            }
+            registerAnim('dome-canvas', function() { loopAnim('dome-canvas', animateDome); });
+        }
+
+        // ==================== AURORA BOREALIS ====================
+        const auroraCanvas = document.getElementById('aurora-canvas');
+        if (auroraCanvas) {
+            const ctx10 = auroraCanvas.getContext('2d');
+            let aTime = 0;
+            const aStars = [];
+
+            function resizeAurora() {
+                const r = auroraCanvas.parentElement.getBoundingClientRect();
+                auroraCanvas.width = r.width;
+                auroraCanvas.height = Math.max(r.height, 400);
+                aStars.length = 0;
+                for (let i = 0; i < 200; i++) {
+                    aStars.push({
+                        x: Math.random() * auroraCanvas.width,
+                        y: Math.random() * auroraCanvas.height,
+                        r: Math.random() * 1.5 + 0.3,
+                        twinkle: Math.random() * Math.PI * 2,
+                        speed: 0.5 + Math.random() * 2
+                    });
+                }
+            }
+            resizeAurora();
+            window.addEventListener('resize', resizeAurora);
+
+            function drawAuroraSky() {
+                const sky = ctx10.createLinearGradient(0, 0, 0, auroraCanvas.height);
+                sky.addColorStop(0, '#010308');
+                sky.addColorStop(0.5, '#040a18');
+                sky.addColorStop(0.85, '#0a1520');
+                sky.addColorStop(1, '#101820');
+                ctx10.fillStyle = sky;
+                ctx10.fillRect(0, 0, auroraCanvas.width, auroraCanvas.height);
+                aStars.forEach(s => {
+                    const flicker = 0.3 + Math.sin(aTime * s.speed + s.twinkle) * 0.4;
+                    ctx10.fillStyle = `rgba(255,255,255,${flicker})`;
+                    ctx10.beginPath(); ctx10.arc(s.x, s.y, s.r, 0, Math.PI * 2); ctx10.fill();
+                });
+            }
+
+            function drawAuroraCurtains() {
+                ctx10.globalCompositeOperation = 'screen';
+                const W = auroraCanvas.width, H = auroraCanvas.height;
+                // Draw vertical curtain columns from top
+                for (let x = 0; x < W; x += 3) {
+                    const wave = Math.sin(x * 0.008 + aTime * 0.5)
+                               + Math.sin(x * 0.003 + aTime * 0.8) * 0.6
+                               + Math.sin(x * 0.015 + aTime * 0.3) * 0.3;
+                    const intensity = 0.5 + wave * 0.3;
+                    const curtainTop = H * 0.02 + wave * 20;
+                    const curtainLen = H * (0.3 + intensity * 0.2);
+                    const hue = 130 + Math.sin(x * 0.005 + aTime * 0.2) * 25;
+                    const g = ctx10.createLinearGradient(x, curtainTop, x, curtainTop + curtainLen);
+                    g.addColorStop(0, `hsla(${hue},85%,65%,${intensity * 0.5})`);
+                    g.addColorStop(0.15, `hsla(${hue + 10},80%,55%,${intensity * 0.35})`);
+                    g.addColorStop(0.5, `hsla(${hue + 20},70%,45%,${intensity * 0.12})`);
+                    g.addColorStop(1, 'transparent');
+                    ctx10.fillStyle = g;
+                    ctx10.fillRect(x, curtainTop, 3, curtainLen);
+                }
+                ctx10.globalCompositeOperation = 'source-over';
+            }
+
+            function animateAurora() {
+                aTime += 0.005;
+                drawAuroraSky();
+                drawAuroraCurtains();
+            }
+            registerAnim('aurora-canvas', function() { loopAnim('aurora-canvas', animateAurora); });
+        }
+
+        // ==================== DNA HELIX ====================
+        const dnaCanvas = document.getElementById('dna-canvas');
+        if (dnaCanvas) {
+            const ctx11 = dnaCanvas.getContext('2d');
+            let dnaTime = 0;
+
+            function resizeDna() {
+                const r = dnaCanvas.parentElement.getBoundingClientRect();
+                dnaCanvas.width = r.width;
+                dnaCanvas.height = Math.max(r.height, 400);
+            }
+            resizeDna();
+            window.addEventListener('resize', resizeDna);
+
+            const HR = 100;
+            const rColors = [[0,229,255],[139,92,246],[236,72,153],[16,185,129]];
+
+            function animateDna() {
+                ctx11.fillStyle = 'rgba(8,8,13,0.1)';
+                ctx11.fillRect(0, 0, dnaCanvas.width, dnaCanvas.height);
+                dnaTime += 0.02;
+
+                const dcx = dnaCanvas.width / 2;
+                const dcy = dnaCanvas.height / 2;
+                const HL = dnaCanvas.height * 0.7;
+                const NODES = 60;
+                const p1 = [], p2 = [];
+
+                for (let i = 0; i < NODES; i++) {
+                    const t = (i / NODES) * Math.PI * 4 + dnaTime;
+                    const y = dcy - HL / 2 + (i / NODES) * HL;
+                    const fov = 400;
+                    const z1 = Math.sin(t) * HR, z2 = Math.sin(t + Math.PI) * HR;
+                    const s1 = fov / (fov + z1 + 200), s2 = fov / (fov + z2 + 200);
+                    p1.push({ x: dcx + Math.cos(t) * HR * s1, y: dcy + (y - dcy) * s1, s: s1 });
+                    p2.push({ x: dcx + Math.cos(t + Math.PI) * HR * s2, y: dcy + (y - dcy) * s2, s: s2 });
+                }
+
+                for (let i = 0; i < NODES; i += 3) {
+                    const a = p1[i], b = p2[i];
+                    const c = rColors[i % 4];
+                    const alpha = 0.12 + Math.min(a.s, b.s) * 0.3;
+                    ctx11.strokeStyle = `rgba(${c[0]},${c[1]},${c[2]},${alpha})`;
+                    ctx11.lineWidth = 2;
+                    ctx11.beginPath(); ctx11.moveTo(a.x, a.y); ctx11.lineTo(b.x, b.y); ctx11.stroke();
+                }
+
+                [{pts:p1, h:180}, {pts:p2, h:320}].forEach(({pts, h}) => {
+                    ctx11.beginPath();
+                    pts.forEach((p, i) => { i === 0 ? ctx11.moveTo(p.x, p.y) : ctx11.lineTo(p.x, p.y); });
+                    ctx11.strokeStyle = `hsla(${h},80%,65%,0.7)`;
+                    ctx11.lineWidth = 3;
+                    ctx11.stroke();
+                    pts.forEach(p => {
+                        ctx11.fillStyle = `hsla(${h},80%,70%,${0.5 + p.s * 0.4})`;
+                        ctx11.beginPath();
+                        ctx11.arc(p.x, p.y, 3 * p.s, 0, Math.PI * 2);
+                        ctx11.fill();
+                    });
+                });
+
+            }
+            registerAnim('dna-canvas', function() { loopAnim('dna-canvas', animateDna); });
+        }
+
+
+    })();
+    </script>
+}

@@ -1,0 +1,272 @@
+@page
+@model Personal.Pages.Showcase.ButtonsModel
+@{
+    ViewData["Title"] = "Buttons";
+}
+
+<div class="showcase-page">
+    <div class="showcase-header">
+        <h1>Button Effects</h1>
+        <p>Interactive button styles with hover animations, glows, micro-interactions, and water effects.</p>
+    </div>
+
+    <div class="showcase-grid">
+
+        <!-- Neon Glow Button -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Neon Glow <span class="badge">CSS</span></h3>
+            <div class="preview-panel">
+                <button class="btn-neon">Hover Me</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.btn-neon {
+  position: relative;
+  padding: 0.85rem 2.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #00e5ff;
+  background: transparent;
+  border: 2px solid #00e5ff;
+  border-radius: 12px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.btn-neon:hover {
+  color: #000;
+  background: #00e5ff;
+  box-shadow:
+    0 0 20px rgba(0,229,255,0.4),
+    0 0 60px rgba(0,229,255,0.2),
+    inset 0 0 20px rgba(0,229,255,0.1);
+}
+
+.btn-neon::before {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 0; height: 300%;
+  background: #00e5ff;
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition: width 0.5s ease;
+  z-index: -1;
+}
+
+.btn-neon:hover::before {
+  width: 300%;
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Gradient Shift Button -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Gradient Shift <span class="badge">CSS</span></h3>
+            <div class="preview-panel">
+                <button class="btn-gradient-shift">Hover Me</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.btn-gradient-shift {
+  padding: 0.85rem 2.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(
+    135deg, #00e5ff, #8b5cf6, #ec4899, #00e5ff
+  );
+  background-size: 300% 300%;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  animation: gradientMove 4s ease infinite;
+}
+
+.btn-gradient-shift:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 40px rgba(139,92,246,0.3);
+}
+
+@@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Ripple Button -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Ripple Effect <span class="badge">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="btn-ripple">Click Me</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS + JS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">/* CSS */
+.btn-ripple {
+  position: relative;
+  padding: 0.85rem 2.5rem;
+  color: #fff;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 12px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.btn-ripple .ripple-effect {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  transform: scale(0);
+  animation: ripple 0.6s linear;
+}
+
+@@keyframes ripple {
+  to { transform: scale(4); opacity: 0; }
+}
+
+/* JavaScript */
+btn.addEventListener('click', function(e) {
+  const rect = this.getBoundingClientRect();
+  const ripple = document.createElement('span');
+  ripple.classList.add('ripple-effect');
+  const size = Math.max(rect.width, rect.height);
+  ripple.style.width = ripple.style.height = size + 'px';
+  ripple.style.left = (e.clientX - rect.left - size/2) + 'px';
+  ripple.style.top = (e.clientY - rect.top - size/2) + 'px';
+  this.appendChild(ripple);
+  ripple.onanimationend = () => ripple.remove();
+});</code></pre>
+            </div>
+        </div>
+
+        <!-- Magnetic Button -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Magnetic Pull <span class="badge">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="btn-magnetic">Move Around Me</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS + JS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">/* CSS */
+.btn-magnetic {
+  padding: 0.85rem 2.5rem;
+  color: #e4e4e7;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.3s cubic-bezier(0.23, 1, 0.32, 1),
+              background 0.3s ease;
+  will-change: transform;
+}
+
+/* JavaScript */
+btn.addEventListener('mousemove', (e) => {
+  const rect = btn.getBoundingClientRect();
+  const x = e.clientX - rect.left - rect.width / 2;
+  const y = e.clientY - rect.top - rect.height / 2;
+  btn.style.transform =
+    `translate(${x * 0.15}px, ${y * 0.15}px)`;
+});
+
+btn.addEventListener('mouseleave', () => {
+  btn.style.transform = 'translate(0, 0)';
+});</code></pre>
+            </div>
+        </div>
+
+        <!-- Droplet Morph Button -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Droplet Morph <span class="badge badge-water">CSS</span></h3>
+            <div class="preview-panel">
+                <button class="btn-droplet">Hover Me</button>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.btn-droplet {
+  position: relative;
+  padding: 0.85rem 2.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(200,240,255,0.9);
+  background: linear-gradient(
+    180deg,
+    rgba(0,229,255,0.1),
+    rgba(0,100,150,0.15)
+  );
+  border: 1px solid rgba(0,229,255,0.18);
+  border-radius: 50px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all 0.5s
+    cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Specular highlight */
+.btn-droplet::before {
+  content: '';
+  position: absolute;
+  top: 3px; left: 15%;
+  width: 70%; height: 40%;
+  background: linear-gradient(
+    180deg,
+    rgba(255,255,255,0.12),
+    transparent
+  );
+  border-radius: 50px;
+  pointer-events: none;
+  transition: all 0.5s ease;
+}
+
+.btn-droplet:hover {
+  border-radius:
+    48% 52% 52% 48% / 40% 40% 60% 60%;
+  transform: scale(1.08) translateY(-2px);
+  border-color: rgba(0,229,255,0.35);
+  box-shadow:
+    0 10px 30px rgba(0,229,255,0.15),
+    0 5px 15px rgba(0,0,0,0.2);
+  color: #fff;
+}</code></pre>
+            </div>
+        </div>
+
+    </div>
+</div>

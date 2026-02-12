@@ -1,0 +1,459 @@
+@page
+@model Personal.Pages.Showcase.ScrollEffectsModel
+@{
+    ViewData["Title"] = "Scroll Effects";
+}
+
+<div class="showcase-page">
+    <div class="showcase-header">
+        <h1>Scroll Effects</h1>
+        <p>Scroll-triggered animations and transitions — from clean reveals to wild entrances. Hit the play button or scroll away and back to replay.</p>
+    </div>
+
+    <div class="showcase-grid">
+
+        <!-- 1. Fade Rise -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Fade Rise <span class="badge">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="scroll-play-btn" title="Replay"><i class="fas fa-play"></i></button>
+                <div class="scroll-demo-row scroll-trigger fx-fade-rise">
+                    <div class="scroll-demo-box">01</div>
+                    <div class="scroll-demo-box">02</div>
+                    <div class="scroll-demo-box">03</div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS + JS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.item { opacity:0; transform:translateY(40px);
+  transition: opacity .6s, transform .6s; }
+.container.visible .item { opacity:1; transform:translateY(0); }
+.container.visible .item:nth-child(2) { transition-delay:.12s; }
+.container.visible .item:nth-child(3) { transition-delay:.24s; }</code></pre>
+            </div>
+        </div>
+
+        <!-- 2. Slide In -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Slide In <span class="badge">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="scroll-play-btn" title="Replay"><i class="fas fa-play"></i></button>
+                <div class="scroll-demo-row scroll-trigger fx-slide-in">
+                    <div class="scroll-demo-box slide-left"><i class="fas fa-arrow-left"></i></div>
+                    <div class="scroll-demo-box slide-right"><i class="fas fa-arrow-right"></i></div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.slide-left { opacity:0; transform:translateX(-80px);
+  transition: opacity .6s, transform .7s cubic-bezier(.25,1,.5,1); }
+.slide-right { opacity:0; transform:translateX(80px);
+  transition: opacity .6s, transform .7s cubic-bezier(.25,1,.5,1); }
+.container.visible .slide-left,
+.container.visible .slide-right { opacity:1; transform:translateX(0); }
+.container.visible .slide-right { transition-delay:.15s; }</code></pre>
+            </div>
+        </div>
+
+        <!-- 3. Scale Pop -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Scale Pop <span class="badge">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="scroll-play-btn" title="Replay"><i class="fas fa-play"></i></button>
+                <div class="scroll-demo-row scroll-trigger fx-scale-pop">
+                    <div class="scroll-demo-box">A</div>
+                    <div class="scroll-demo-box">B</div>
+                    <div class="scroll-demo-box">C</div>
+                    <div class="scroll-demo-box">D</div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.item { opacity:0; transform:scale(0.3);
+  transition: opacity .4s, transform .6s cubic-bezier(.34,1.56,.64,1); }
+.container.visible .item { opacity:1; transform:scale(1); }
+.container.visible .item:nth-child(2) { transition-delay:.08s; }
+.container.visible .item:nth-child(3) { transition-delay:.16s; }
+.container.visible .item:nth-child(4) { transition-delay:.24s; }</code></pre>
+            </div>
+        </div>
+
+        <!-- 4. Blur Unveil -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Blur Unveil <span class="badge">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="scroll-play-btn" title="Replay"><i class="fas fa-play"></i></button>
+                <div class="scroll-trigger fx-blur-unveil">
+                    <div class="scroll-demo-block">
+                        <div class="demo-heading">Crystal Clear</div>
+                        <div class="demo-desc">Content sharpens from a frosted blur as it enters the viewport. Premium, cinematic feel.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.blur-unveil { opacity:0; filter:blur(20px);
+  transform:scale(.92); transition: opacity .8s, filter 1s, transform .8s; }
+.blur-unveil.visible { opacity:1; filter:blur(0); transform:scale(1); }</code></pre>
+            </div>
+        </div>
+
+        <!-- 5. Stagger Cascade -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Stagger Cascade <span class="badge">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="scroll-play-btn" title="Replay"><i class="fas fa-play"></i></button>
+                <div class="scroll-demo-row scroll-trigger fx-stagger">
+                    <div class="scroll-demo-box">1</div>
+                    <div class="scroll-demo-box">2</div>
+                    <div class="scroll-demo-box">3</div>
+                    <div class="scroll-demo-box">4</div>
+                    <div class="scroll-demo-box">5</div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.item { opacity:0; transform:translateY(30px) scale(.8);
+  transition: opacity .5s, transform .5s cubic-bezier(.25,1,.5,1); }
+.container.visible .item { opacity:1; transform:translateY(0) scale(1); }
+/* stagger: nth-child(n) { transition-delay: n*0.1s } */</code></pre>
+            </div>
+        </div>
+
+        <!-- 6. Clip Circle Reveal -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Clip Circle Reveal <span class="badge badge-unique">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="scroll-play-btn" title="Replay"><i class="fas fa-play"></i></button>
+                <div class="scroll-trigger fx-clip-circle">
+                    <div class="scroll-demo-block scroll-demo-block--accent">
+                        <div class="demo-heading"><i class="fas fa-star"></i> Revealed</div>
+                        <div class="demo-desc">An expanding circular clip-path unmasks the content from the center outward.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.clip-reveal { clip-path: circle(0% at 50% 50%);
+  transition: clip-path 1s cubic-bezier(.4,0,.2,1); }
+.clip-reveal.visible { clip-path: circle(100% at 50% 50%); }</code></pre>
+            </div>
+        </div>
+
+        <!-- 7. 3D Flip In -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">3D Flip In <span class="badge badge-unique">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="scroll-play-btn" title="Replay"><i class="fas fa-play"></i></button>
+                <div class="scroll-demo-row scroll-trigger fx-flip-in">
+                    <div class="scroll-demo-card">
+                        <div class="demo-icon"><i class="fas fa-rocket"></i></div>
+                        <div class="demo-title">Launch</div>
+                        <div class="demo-text">Flip in from 3D</div>
+                    </div>
+                    <div class="scroll-demo-card">
+                        <div class="demo-icon"><i class="fas fa-bolt"></i></div>
+                        <div class="demo-title">Speed</div>
+                        <div class="demo-text">Stagger delay</div>
+                    </div>
+                    <div class="scroll-demo-card">
+                        <div class="demo-icon"><i class="fas fa-star"></i></div>
+                        <div class="demo-title">Impact</div>
+                        <div class="demo-text">Perspective depth</div>
+                    </div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.container { perspective: 800px; }
+.card { opacity:0; transform:rotateX(-80deg) translateY(20px);
+  transform-origin:top center;
+  transition: opacity .5s, transform .7s cubic-bezier(.25,1,.5,1); }
+.container.visible .card { opacity:1; transform:rotateX(0) translateY(0); }
+.container.visible .card:nth-child(2) { transition-delay:.12s; }
+.container.visible .card:nth-child(3) { transition-delay:.24s; }</code></pre>
+            </div>
+        </div>
+
+        <!-- 8. Elastic Bounce -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Elastic Bounce <span class="badge badge-unique">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="scroll-play-btn" title="Replay"><i class="fas fa-play"></i></button>
+                <div class="scroll-trigger fx-elastic">
+                    <div class="scroll-demo-block">
+                        <div class="demo-heading"><i class="fas fa-volleyball-ball"></i> Boing!</div>
+                        <div class="demo-desc">Extreme spring physics with overshoot. Launches upward and bounces past resting position before settling.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.elastic { opacity:0; transform:translateY(120px) scaleY(.6);
+  transition: opacity .3s, transform 1.2s cubic-bezier(.175,.885,.32,1.275); }
+.elastic.visible { opacity:1; transform:translateY(0) scaleY(1); }</code></pre>
+            </div>
+        </div>
+
+        <!-- 9. Split Curtain -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Split Curtain <span class="badge badge-unique">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="scroll-play-btn" title="Replay"><i class="fas fa-play"></i></button>
+                <div class="scroll-trigger fx-split-curtain">
+                    <div class="curtain-half curtain-left"></div>
+                    <div class="curtain-half curtain-right"></div>
+                    <div class="curtain-content">
+                        <p class="demo-heading"><i class="fas fa-theater-masks"></i> Unveiled</p>
+                    </div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.curtain-half { position:absolute; top:0; width:50%; height:100%;
+  background:#0e0e16; z-index:2;
+  transition: transform .8s cubic-bezier(.77,0,.175,1); }
+.curtain-left { left:0; } .curtain-right { right:0; }
+.container.visible .curtain-left { transform:translateX(-101%); }
+.container.visible .curtain-right { transform:translateX(101%); }</code></pre>
+            </div>
+        </div>
+
+        <!-- 10. Glitch Materialize -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Glitch Materialize <span class="badge badge-unique">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="scroll-play-btn" title="Replay"><i class="fas fa-play"></i></button>
+                <div class="scroll-trigger fx-glitch-in">
+                    <div class="scroll-demo-block">
+                        <div class="demo-heading"><i class="fas fa-ghost"></i> Materialized</div>
+                        <div class="demo-desc">Glitch distortion with skew, clip-path slicing, and horizontal jitter. Corrupts itself into existence.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.glitch-in { opacity: 0; }
+.glitch-in.visible { animation: glitchIn .8s ease forwards; }
+@@keyframes glitchIn {
+  0%  { opacity:0; transform:translateX(-8px) skewX(-10deg); clip-path:inset(40% 0 40% 0); }
+  15% { opacity:1; transform:translateX(5px) skewX(5deg); clip-path:inset(10% 0 70% 0); }
+  35% { transform:translateX(3px) skewX(2deg); clip-path:inset(5% 0 40% 0); }
+  70% { transform:none; clip-path:inset(0); }
+  100%{ opacity:1; transform:none; clip-path:none; }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- 11. Rotate Zoom -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Rotate Zoom <span class="badge badge-unique">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="scroll-play-btn" title="Replay"><i class="fas fa-play"></i></button>
+                <div class="scroll-trigger fx-rotate-zoom">
+                    <div class="scroll-demo-block scroll-demo-block--accent">
+                        <div class="demo-heading"><i class="fas fa-sync-alt"></i> Whoooosh</div>
+                        <div class="demo-desc">Spins 720 degrees while zooming from nothing to full size. Pure rotational chaos tamed into elegance.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.rotate-zoom { opacity:0; transform:scale(0) rotate(720deg);
+  transition: opacity .3s, transform 1.2s cubic-bezier(.25,1,.5,1); }
+.rotate-zoom.visible { opacity:1; transform:scale(1) rotate(0); }</code></pre>
+            </div>
+        </div>
+
+        <!-- 12. Rubber Band -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Rubber Band <span class="badge badge-unique">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="scroll-play-btn" title="Replay"><i class="fas fa-play"></i></button>
+                <div class="scroll-trigger fx-rubber">
+                    <div class="scroll-demo-block">
+                        <div class="demo-heading"><i class="fas fa-compress-arrows-alt"></i> Snap!</div>
+                        <div class="demo-desc">Stretches wide, squashes tall, oscillates back and forth then snaps into its final shape. Pure elastic energy.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.rubber { opacity:0; transform:scaleX(0); }
+.rubber.visible { animation: rubberSnap .9s forwards; }
+@@keyframes rubberSnap {
+  0%   { opacity:0; transform:scaleX(0); }
+  30%  { opacity:1; transform:scaleX(1.4) scaleY(.7); }
+  50%  { transform:scaleX(.85) scaleY(1.1); }
+  70%  { transform:scaleX(1.1) scaleY(.95); }
+  85%  { transform:scaleX(.97) scaleY(1.02); }
+  100% { opacity:1; transform:scale(1); }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- 13. Drop & Smash -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Drop &amp; Smash <span class="badge badge-unique">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="scroll-play-btn" title="Replay"><i class="fas fa-play"></i></button>
+                <div class="scroll-trigger fx-drop">
+                    <div class="scroll-demo-block">
+                        <div class="demo-heading"><i class="fas fa-meteor"></i> Impact!</div>
+                        <div class="demo-desc">Falls from above, smashes flat on landing, then bounces and settles. Cartoon physics meet web animation.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.drop { opacity:0; transform:translateY(-200px); }
+.drop.visible { animation: dropSmash .7s forwards; }
+@@keyframes dropSmash {
+  0%   { opacity:0; transform:translateY(-200px); }
+  50%  { opacity:1; transform:translateY(0); }
+  55%  { transform:translateY(5px) scaleX(1.15) scaleY(.85); }
+  65%  { transform:translateY(-10px) scaleX(.95) scaleY(1.05); }
+  80%  { transform:translateY(3px) scaleX(1.03) scaleY(.97); }
+  100% { opacity:1; transform:none; }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- 14. Diagonal Wipe -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Diagonal Wipe <span class="badge badge-unique">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="scroll-play-btn" title="Replay"><i class="fas fa-play"></i></button>
+                <div class="scroll-trigger fx-diagonal-wipe">
+                    <div class="scroll-demo-block scroll-demo-block--accent">
+                        <div class="demo-heading"><i class="fas fa-cut"></i> Sliced In</div>
+                        <div class="demo-desc">A diagonal clip-path sweeps across, carving the element into view with a sharp angular reveal.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.diagonal-wipe {
+  clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  transition: clip-path .8s cubic-bezier(.4,0,.2,1); }
+.diagonal-wipe.visible {
+  clip-path: polygon(0 0, 120% 0, 100% 100%, 0 100%); }</code></pre>
+            </div>
+        </div>
+
+        <!-- 15. Spiral Vortex -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Spiral Vortex <span class="badge badge-unique">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <button class="scroll-play-btn" title="Replay"><i class="fas fa-play"></i></button>
+                <div class="scroll-demo-row scroll-trigger fx-vortex">
+                    <div class="scroll-demo-box"><i class="fas fa-wind"></i></div>
+                    <div class="scroll-demo-box"><i class="fas fa-hurricane"></i></div>
+                    <div class="scroll-demo-box"><i class="fas fa-tornado"></i></div>
+                    <div class="scroll-demo-box"><i class="fas fa-yin-yang"></i></div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.item { opacity:0; transform:scale(0) rotate(360deg);
+  transition: opacity .3s, transform .8s cubic-bezier(.25,1,.5,1); }
+.container.visible .item { opacity:1; transform:scale(1) rotate(0); }
+/* stagger each child for spiral cascade */
+.container.visible .item:nth-child(2) { transition-delay:.08s; }
+.container.visible .item:nth-child(3) { transition-delay:.16s; }
+.container.visible .item:nth-child(4) { transition-delay:.24s; }</code></pre>
+            </div>
+        </div>
+
+    </div>
+</div>
