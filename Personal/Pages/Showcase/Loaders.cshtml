@@ -575,15 +575,80 @@
             </div>
         </div>
 
-        <!-- Ring Cascade -->
+        <!-- Plasma Ring -->
         <div class="showcase-item reveal">
-            <h3 class="showcase-item-title">Ring Cascade <span class="badge">CSS</span></h3>
+            <h3 class="showcase-item-title">Plasma Ring <span class="badge">CSS</span></h3>
             <div class="preview-panel">
-                <div class="loader-cascade">
-                    <div class="cascade-ring"></div>
-                    <div class="cascade-ring"></div>
-                    <div class="cascade-ring"></div>
-                    <div class="cascade-ring"></div>
+                <div class="loader-plasma"></div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.loader-plasma {
+  width: 60px; height: 60px;
+  border-radius: 50%;
+  position: relative;
+}
+
+.loader-plasma::before,
+.loader-plasma::after {
+  content: '';
+  position: absolute;
+  border-radius: 50%;
+  background: conic-gradient(
+    #00e5ff, #8b5cf6, #ec4899,
+    #f59e0b, #10b981, #00e5ff
+  );
+  animation: plasmaRotate 1.5s linear infinite;
+}
+
+/* Sharp ring */
+.loader-plasma::before {
+  inset: 0;
+  padding: 3px;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Glow ring */
+.loader-plasma::after {
+  inset: -6px;
+  padding: 5px;
+  filter: blur(10px);
+  opacity: 0.5;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+@@keyframes plasmaRotate {
+  to { transform: rotate(360deg); }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Pendulum Wave -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Pendulum Wave <span class="badge">CSS</span></h3>
+            <div class="preview-panel">
+                <div class="loader-pendulum">
+                    <div class="pend"></div>
+                    <div class="pend"></div>
+                    <div class="pend"></div>
+                    <div class="pend"></div>
+                    <div class="pend"></div>
+                    <div class="pend"></div>
+                    <div class="pend"></div>
                 </div>
             </div>
             <div class="code-panel">
@@ -594,34 +659,299 @@
                         <span class="copy-text">Copy</span>
                     </button>
                 </div>
-                <pre><code class="language-css">.loader-cascade {
-  position: relative;
-  width: 60px; height: 60px;
+                <pre><code class="language-css">.loader-pendulum {
+  display: flex; gap: 8px;
+  align-items: flex-start; height: 70px;
 }
 
-.cascade-ring {
-  position: absolute; inset: 0;
-  border: 2px solid #00e5ff;
+.loader-pendulum .pend {
+  width: 2px; height: 44px;
+  background: rgba(255,255,255,0.08);
+  transform-origin: top center;
+  animation: pendSwing 1.6s ease-in-out infinite;
+}
+
+.loader-pendulum .pend::after {
+  content: '';
+  position: absolute;
+  bottom: -5px; left: 50%;
+  width: 10px; height: 10px;
   border-radius: 50%;
-  animation: cascadeExpand 2s ease-out infinite;
+  transform: translateX(-50%);
+  background: #00e5ff;
+  box-shadow: 0 0 8px rgba(0,229,255,0.4);
 }
 
-.cascade-ring:nth-child(2) {
+/* Each pendulum uses a slightly different
+   duration to create the wave effect */
+.pend:nth-child(2) { animation-duration: 1.7s; }
+.pend:nth-child(3) { animation-duration: 1.8s; }
+.pend:nth-child(4) { animation-duration: 1.9s; }
+.pend:nth-child(5) { animation-duration: 2.0s; }
+.pend:nth-child(6) { animation-duration: 2.1s; }
+.pend:nth-child(7) { animation-duration: 2.2s; }
+
+@@keyframes pendSwing {
+  0%, 100% { transform: rotate(25deg); }
+  50% { transform: rotate(-25deg); }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Newton's Cradle -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Newton's Cradle <span class="badge">CSS</span></h3>
+            <div class="preview-panel">
+                <div class="loader-newton">
+                    <div class="newton-ball"></div>
+                    <div class="newton-ball"></div>
+                    <div class="newton-ball"></div>
+                    <div class="newton-ball"></div>
+                    <div class="newton-ball"></div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.loader-newton {
+  display: flex;
+  align-items: flex-start;
+  height: 64px; gap: 0;
+}
+
+.newton-ball {
+  width: 14px; height: 42px;
+  position: relative;
+  transform-origin: top center;
+}
+
+/* String */
+.newton-ball::before {
+  content: '';
+  position: absolute; top: 0; left: 50%;
+  width: 1px; height: 28px;
+  background: rgba(255,255,255,0.12);
+  transform: translateX(-50%);
+}
+
+/* Ball */
+.newton-ball::after {
+  content: '';
+  position: absolute; bottom: 0; left: 50%;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    135deg, rgba(255,255,255,0.2),
+    rgba(255,255,255,0.05)
+  );
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.newton-ball:first-child {
+  animation: newtonL 1.2s ease-in-out infinite;
+}
+.newton-ball:first-child::after {
+  background: linear-gradient(135deg, #00e5ff, #0891b2);
+  border: none;
+  box-shadow: 0 0 12px rgba(0,229,255,0.3);
+}
+
+.newton-ball:last-child {
+  animation: newtonR 1.2s ease-in-out infinite;
+}
+.newton-ball:last-child::after {
+  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+  border: none;
+  box-shadow: 0 0 12px rgba(139,92,246,0.3);
+}
+
+@@keyframes newtonL {
+  0%      { transform: rotate(0); }
+  25%     { transform: rotate(-30deg); }
+  50%,100%{ transform: rotate(0); }
+}
+@@keyframes newtonR {
+  0%,50%  { transform: rotate(0); }
+  75%     { transform: rotate(30deg); }
+  100%    { transform: rotate(0); }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Glitch Bar -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Glitch Bar <span class="badge">CSS</span></h3>
+            <div class="preview-panel">
+                <div class="loader-glitch-bar">
+                    <div class="glitch-track"></div>
+                    <div class="glitch-ghost"></div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.loader-glitch-bar {
+  width: 180px; height: 4px;
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Main beam */
+.glitch-track {
+  position: absolute; top: 0;
+  width: 40%; height: 100%;
+  background: #00e5ff;
+  border-radius: 4px;
+  animation: glitchSlide 1.8s ease-in-out infinite;
+  box-shadow: 0 0 12px rgba(0,229,255,0.5);
+}
+
+/* Chromatic ghost (pink offset) */
+.glitch-ghost {
+  position: absolute; top: -2px;
+  width: 40%; height: calc(100% + 4px);
+  background: #ec4899;
+  border-radius: 4px;
+  animation: glitchSlide 1.8s ease-in-out infinite,
+    glitchJitter 1.8s step-end infinite;
+  opacity: 0.35;
+  filter: blur(2px);
+}
+
+@@keyframes glitchSlide {
+  0%   { left: -40%; }
+  100% { left: 100%; }
+}
+@@keyframes glitchJitter {
+  0%  { transform: translateY(0); }
+  15% { transform: translateY(-3px); }
+  17% { transform: translateY(2px); }
+  19% { transform: translateY(0); }
+  50% { transform: translateY(0); }
+  65% { transform: translateY(3px); }
+  67% { transform: translateY(-2px); }
+  69% { transform: translateY(0); }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Heartbeat -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Heartbeat <span class="badge">SVG + CSS</span></h3>
+            <div class="preview-panel">
+                <div class="loader-heartbeat-wrap">
+                    <svg class="loader-heartbeat" viewBox="0 0 200 60" width="200" height="60">
+                        <polyline class="hb-line" points="0,30 50,30 60,30 68,8 76,52 84,22 90,38 96,30 200,30" />
+                    </svg>
+                    <div class="hb-glow"></div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">SVG + CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-markup">&lt;svg class="loader-heartbeat" viewBox="0 0 200 60"&gt;
+  &lt;polyline class="hb-line"
+    points="0,30 50,30 60,30 68,8
+            76,52 84,22 90,38 96,30 200,30"/&gt;
+&lt;/svg&gt;
+
+&lt;style&gt;
+.hb-line {
+  fill: none;
+  stroke: #00e5ff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 20 280;
+  stroke-dashoffset: 0;
+  animation: heartDraw 1.8s linear infinite;
+  filter:
+    drop-shadow(0 0 3px rgba(0,229,255,0.6));
+}
+
+@@keyframes heartDraw {
+  to { stroke-dashoffset: -300; }
+}
+&lt;/style&gt;</code></pre>
+            </div>
+        </div>
+
+        <!-- Breathing Orb -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Breathing Orb <span class="badge">CSS</span></h3>
+            <div class="preview-panel">
+                <div class="loader-breathe">
+                    <div class="breathe-core"></div>
+                    <div class="breathe-ring"></div>
+                    <div class="breathe-ring breathe-ring--2"></div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.loader-breathe {
+  width: 70px; height: 70px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.breathe-core {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle, #00e5ff, #0891b2
+  );
+  box-shadow: 0 0 20px rgba(0,229,255,0.5),
+    0 0 60px rgba(0,229,255,0.15);
+  animation: breatheIn 3s ease-in-out infinite;
+  z-index: 1;
+}
+
+.breathe-ring {
+  position: absolute; inset: 0;
+  border: 1px solid rgba(0,229,255,0.15);
+  border-radius: 50%;
+  animation: breatheRing 3s ease-in-out infinite;
+}
+
+.breathe-ring--2 {
+  inset: -10px;
+  border-color: rgba(139,92,246,0.1);
   animation-delay: 0.4s;
-  border-color: #8b5cf6;
-}
-.cascade-ring:nth-child(3) {
-  animation-delay: 0.8s;
-  border-color: #ec4899;
-}
-.cascade-ring:nth-child(4) {
-  animation-delay: 1.2s;
-  border-color: #10b981;
 }
 
-@@keyframes cascadeExpand {
-  0%   { transform: scale(.2); opacity: 1; border-width: 4px; }
-  100% { transform: scale(1.3); opacity: 0; border-width: 1px; }
+@@keyframes breatheIn {
+  0%, 100% { transform: scale(0.85); opacity: 0.7; }
+  50% { transform: scale(1.15); opacity: 1; }
+}
+@@keyframes breatheRing {
+  0%, 100% { transform: scale(0.9); opacity: 0.3; }
+  50% { transform: scale(1.1); opacity: 0.8; }
 }</code></pre>
             </div>
         </div>

@@ -83,42 +83,48 @@ document.querySelectorAll('.scroll-play-btn').forEach(btn => {
 // ==============================================
 // NAV SCROLL EFFECT
 // ==============================================
-const nav = document.querySelector('.nav-glass');
-if (nav) {
-    window.addEventListener('scroll', () => {
-        nav.classList.toggle('scrolled', window.scrollY > 20);
-    }, { passive: true });
-}
+// (Removed — top nav replaced by sidebar)
 
 // ==============================================
-// MOBILE NAV TOGGLE
+// SIDEBAR TOGGLE
 // ==============================================
-const hamburger = document.querySelector('.nav-hamburger');
-const navLinks = document.querySelector('.nav-links');
-if (hamburger && navLinks) {
-    hamburger.addEventListener('click', () => {
-        navLinks.classList.toggle('open');
-        const spans = hamburger.querySelectorAll('span');
-        if (navLinks.classList.contains('open')) {
-            spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-            spans[1].style.opacity = '0';
-            spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)';
+const sidebarToggle = document.getElementById('sidebarToggle');
+const sidebarNav = document.getElementById('sidebarNav');
+const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+function openSidebar() {
+    sidebarToggle.classList.add('active');
+    sidebarNav.classList.add('open');
+    sidebarOverlay.classList.add('active');
+}
+
+function closeSidebar() {
+    sidebarToggle.classList.remove('active');
+    sidebarNav.classList.remove('open');
+    sidebarOverlay.classList.remove('active');
+}
+
+if (sidebarToggle && sidebarNav && sidebarOverlay) {
+    sidebarToggle.addEventListener('click', () => {
+        if (sidebarNav.classList.contains('open')) {
+            closeSidebar();
         } else {
-            spans[0].style.transform = '';
-            spans[1].style.opacity = '';
-            spans[2].style.transform = '';
+            openSidebar();
         }
     });
 
+    sidebarOverlay.addEventListener('click', closeSidebar);
+
     // Close on link click
-    navLinks.querySelectorAll('a').forEach(link => {
-        link.addEventListener('click', () => {
-            navLinks.classList.remove('open');
-            hamburger.querySelectorAll('span').forEach(s => {
-                s.style.transform = '';
-                s.style.opacity = '';
-            });
-        });
+    sidebarNav.querySelectorAll('.sidebar-links a').forEach(link => {
+        link.addEventListener('click', closeSidebar);
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && sidebarNav.classList.contains('open')) {
+            closeSidebar();
+        }
     });
 }
 

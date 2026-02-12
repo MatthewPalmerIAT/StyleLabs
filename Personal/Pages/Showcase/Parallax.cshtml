@@ -2,37 +2,57 @@
 @model Personal.Pages.Showcase.ParallaxModel
 @{
     ViewData["Title"] = "Parallax";
+    var copyIcon = "<svg xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5\" /></svg>";
 }
+
+<div class="showcase-page" style="padding-bottom:0;">
+    <div class="showcase-header">
+        <h1>Parallax Effects</h1>
+        <p>Scroll-driven depth, rotation, scale, and motion — every element moves independently at 60fps, powered by pure CSS transforms.</p>
+    </div>
+</div>
 
 <div class="plx-page">
 
-    <!-- ========== 1. DEPTH FIELD ========== -->
-    <section class="plx-section plx-depth">
-        <div class="plx-layer" data-plx-y="-0.35">
-            <div class="plx-shape plx-dot" style="top:8%;left:12%;width:4px;height:4px;opacity:0.25;"></div>
-            <div class="plx-shape plx-dot" style="top:25%;left:75%;width:3px;height:3px;opacity:0.2;"></div>
-            <div class="plx-shape plx-dot" style="top:60%;left:90%;width:5px;height:5px;opacity:0.3;"></div>
-            <div class="plx-shape plx-dot" style="top:80%;left:20%;width:3px;height:3px;opacity:0.15;"></div>
-            <div class="plx-shape plx-dot" style="top:45%;left:50%;width:4px;height:4px;opacity:0.2;"></div>
-            <div class="plx-shape plx-dot" style="top:15%;left:40%;width:3px;height:3px;opacity:0.18;"></div>
-            <div class="plx-shape plx-dot" style="top:70%;left:65%;width:5px;height:5px;opacity:0.22;"></div>
+    <div class="plx-code-ref">
+        <div class="showcase-item">
+            <h3 class="showcase-item-title">Parallax Engine <span class="badge">JS</span></h3>
+            <div class="preview-panel" style="flex-direction:column;text-align:center;gap:0.5rem;">
+                <p style="color:var(--text-secondary);font-size:0.95rem;max-width:520px;line-height:1.7;margin:0;">This script powers every effect on the page. On each scroll frame it measures each element's distance from the viewport center, then multiplies that distance by the element's <code style="color:var(--accent-cyan);font-size:0.85em;">data-plx-*</code> factor to compute translate, rotate, scale, and skew values — all applied via a single <code style="color:var(--accent-cyan);font-size:0.85em;">transform</code> update at 60 fps.</p>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">JavaScript</span>
+                    <button class="copy-btn" onclick="copyCode(this)">@Html.Raw(copyIcon)<span class="copy-text">Copy</span></button>
+                </div>
+                <pre><code class="language-javascript">const els = document.querySelectorAll(
+  '[data-plx-y],[data-plx-x],[data-plx-rotate],' +
+  '[data-plx-scale],[data-plx-opacity],[data-plx-skew]'
+);
+
+function update() {
+  const center = window.scrollY + innerHeight * 0.5;
+  els.forEach(el =&gt; {
+    const rect = el.getBoundingClientRect();
+    const dist = center - (scrollY + rect.top + rect.height * 0.5);
+    let ty=0, tx=0, rot=0, sc=1, skew=0;
+    if (el.dataset.plxY)      ty   = dist * parseFloat(el.dataset.plxY);
+    if (el.dataset.plxX)      tx   = dist * parseFloat(el.dataset.plxX);
+    if (el.dataset.plxRotate) rot  = dist * parseFloat(el.dataset.plxRotate);
+    if (el.dataset.plxSkew)   skew = dist * parseFloat(el.dataset.plxSkew);
+    el.style.transform =
+      `translate3d(${tx}px,${ty}px,0) rotate(${rot}deg)` +
+      (sc!==1 ? ` scale(${sc})` : '') +
+      (skew   ? ` skewX(${skew}deg)` : '');
+  });
+}
+
+window.addEventListener('scroll', () =&gt;
+  requestAnimationFrame(update), { passive: true });
+update();</code></pre>
+            </div>
         </div>
-        <div class="plx-layer" data-plx-y="-0.2">
-            <div class="plx-shape plx-ring" style="top:15%;right:18%;width:60px;height:60px;"></div>
-            <div class="plx-shape plx-ring" style="top:65%;left:10%;width:40px;height:40px;opacity:0.4;"></div>
-            <div class="plx-shape plx-cross" style="top:35%;left:80%;"></div>
-            <div class="plx-shape plx-cross" style="top:75%;left:55%;opacity:0.3;"></div>
-        </div>
-        <div class="plx-layer" data-plx-y="-0.08">
-            <div class="plx-shape plx-line" style="top:30%;left:5%;width:80px;transform:rotate(25deg);"></div>
-            <div class="plx-shape plx-line" style="top:55%;right:8%;width:60px;transform:rotate(-15deg);"></div>
-        </div>
-        <div class="plx-content" data-plx-y="-0.03">
-            <div class="plx-tag">Scroll down</div>
-            <h2 class="plx-title">Depth Field</h2>
-            <p class="plx-subtitle">Layers moving at different speeds create a sense of three-dimensional depth as you scroll.</p>
-        </div>
-    </section>
+    </div>
 
     <!-- ========== 2. DRIFT SPLIT ========== -->
     <section class="plx-section plx-drift-section">
@@ -59,6 +79,37 @@
         </div>
     </section>
 
+    <div class="plx-code-ref">
+        <div class="showcase-item">
+            <h3 class="showcase-item-title">Drift Split <span class="badge">HTML + CSS</span></h3>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML + CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">@Html.Raw(copyIcon)<span class="copy-text">Copy</span></button>
+                </div>
+                <pre><code class="language-markup">&lt;!-- Opposing data-plx-x values make cards converge/diverge --&gt;
+&lt;div class="plx-drift-row"&gt;
+  &lt;div class="plx-drift-card" data-plx-x="-0.15" data-plx-y="-0.04"&gt;
+    Float Left
+  &lt;/div&gt;
+  &lt;div class="plx-drift-card" data-plx-x="0.15" data-plx-y="-0.08"&gt;
+    Float Right
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.plx-drift-card {
+  padding: 2rem;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  will-change: transform;
+}
+&lt;/style&gt;</code></pre>
+            </div>
+        </div>
+    </div>
+
     <!-- ========== 3. ZOOM REVEAL ========== -->
     <section class="plx-section plx-zoom-section">
         <div class="plx-section-label" data-plx-y="-0.05">
@@ -75,6 +126,31 @@
         <div class="plx-zoom-bg-ring" data-plx-y="-0.15" data-plx-rotate="0.08"></div>
         <div class="plx-zoom-bg-ring plx-zoom-bg-ring--sm" data-plx-y="-0.25" data-plx-rotate="-0.12"></div>
     </section>
+
+    <div class="plx-code-ref">
+        <div class="showcase-item">
+            <h3 class="showcase-item-title">Zoom Reveal <span class="badge">HTML + JS</span></h3>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML + JS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">@Html.Raw(copyIcon)<span class="copy-text">Copy</span></button>
+                </div>
+                <pre><code class="language-markup">&lt;!-- data-plx-scale drives scale + blur --&gt;
+&lt;div class="plx-zoom-target" data-plx-scale="1"&gt;
+  &lt;h3&gt;Scale on Scroll&lt;/h3&gt;
+&lt;/div&gt;
+
+&lt;script&gt;
+if (el.dataset.plxScale) {
+  const norm = Math.max(0, Math.min(1,
+    1 - Math.abs(dist) / (viewH * 0.8)));
+  scale = 0.4 + norm * 0.6;
+  blur  = (1 - norm) * 12;
+}
+&lt;/script&gt;</code></pre>
+            </div>
+        </div>
+    </div>
 
     <!-- ========== 4. ROTATION ORBIT ========== -->
     <section class="plx-section plx-rotate-section">
@@ -102,6 +178,30 @@
         </div>
     </section>
 
+    <div class="plx-code-ref">
+        <div class="showcase-item">
+            <h3 class="showcase-item-title">Rotation Orbit <span class="badge">HTML + CSS</span></h3>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML + CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">@Html.Raw(copyIcon)<span class="copy-text">Copy</span></button>
+                </div>
+                <pre><code class="language-markup">&lt;!-- data-plx-rotate: positive = CW, negative = CCW --&gt;
+&lt;div class="plx-orbit-wrap"&gt;
+  &lt;div class="plx-orbit-card" data-plx-rotate="0.12" data-plx-y="-0.06"&gt;
+    Clockwise
+  &lt;/div&gt;
+  &lt;div class="plx-orbit-card" data-plx-rotate="-0.18" data-plx-y="-0.1"&gt;
+    Counter
+  &lt;/div&gt;
+  &lt;div class="plx-orbit-card" data-plx-rotate="0.25" data-plx-y="-0.04"&gt;
+    Fast
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+            </div>
+        </div>
+    </div>
+
     <!-- ========== 5. TEXT SHEAR ========== -->
     <section class="plx-section plx-shear-section">
         <div class="plx-section-label" data-plx-y="-0.05">
@@ -116,6 +216,34 @@
             <div class="plx-shear-line" data-plx-x="-0.18">of diagonal motion</div>
         </div>
     </section>
+
+    <div class="plx-code-ref">
+        <div class="showcase-item">
+            <h3 class="showcase-item-title">Text Shear <span class="badge">HTML + CSS</span></h3>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML + CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">@Html.Raw(copyIcon)<span class="copy-text">Copy</span></button>
+                </div>
+                <pre><code class="language-markup">&lt;!-- Alternate data-plx-x signs create diagonal cascade --&gt;
+&lt;div class="plx-shear-wrap"&gt;
+  &lt;div class="plx-shear-line" data-plx-x="-0.15"&gt;Every line&lt;/div&gt;
+  &lt;div class="plx-shear-line" data-plx-x="0.12"&gt;moves at its own&lt;/div&gt;
+  &lt;div class="plx-shear-line" data-plx-x="-0.22"&gt;horizontal speed&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.plx-shear-line {
+  font-size: clamp(1.8rem, 5vw, 3.5rem);
+  font-weight: 900;
+  background: linear-gradient(90deg, #00e5ff, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+&lt;/style&gt;</code></pre>
+            </div>
+        </div>
+    </div>
 
     <!-- ========== 6. PERSPECTIVE DEPTH ========== -->
     <section class="plx-section plx-perspective-section">
@@ -140,12 +268,378 @@
         <p class="plx-persp-hint" data-plx-y="-0.08">Cards at different depths create a natural perspective effect as you scroll.</p>
     </section>
 
+    <div class="plx-code-ref">
+        <div class="showcase-item">
+            <h3 class="showcase-item-title">Perspective Depth <span class="badge">HTML + CSS</span></h3>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML + CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">@Html.Raw(copyIcon)<span class="copy-text">Copy</span></button>
+                </div>
+                <pre><code class="language-markup">&lt;!-- Different data-plx-y speeds simulate Z-depth --&gt;
+&lt;div class="plx-persp-card" data-plx-y="-0.04" data-plx-rotate="0.04"&gt;
+  Far (slow)
+&lt;/div&gt;
+&lt;div class="plx-persp-card" data-plx-y="-0.1" data-plx-rotate="-0.02"&gt;
+  Mid
+&lt;/div&gt;
+&lt;div class="plx-persp-card" data-plx-y="-0.18"&gt;
+  Near (fast)
+&lt;/div&gt;</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 7. HORIZONTAL MARQUEE ========== -->
+    <section class="plx-section plx-marquee-section">
+        <div class="plx-section-label" data-plx-y="-0.05">
+            <span class="plx-num">07</span>
+            <h2 class="plx-section-title">Horizontal Marquee</h2>
+        </div>
+        <div class="plx-marquee-wrap">
+            <div class="plx-marquee-band" data-plx-x="-0.3">
+                <span>PARALLAX&nbsp;&bull;&nbsp;MOTION&nbsp;&bull;&nbsp;DEPTH&nbsp;&bull;&nbsp;SCROLL&nbsp;&bull;&nbsp;LAYERS&nbsp;&bull;&nbsp;PARALLAX&nbsp;&bull;&nbsp;MOTION&nbsp;&bull;&nbsp;DEPTH&nbsp;&bull;&nbsp;SCROLL&nbsp;&bull;&nbsp;LAYERS&nbsp;&bull;&nbsp;</span>
+            </div>
+            <div class="plx-marquee-band plx-marquee-band--reverse" data-plx-x="0.25">
+                <span>STYLE&nbsp;&bull;&nbsp;DESIGN&nbsp;&bull;&nbsp;CREATE&nbsp;&bull;&nbsp;ANIMATE&nbsp;&bull;&nbsp;BUILD&nbsp;&bull;&nbsp;STYLE&nbsp;&bull;&nbsp;DESIGN&nbsp;&bull;&nbsp;CREATE&nbsp;&bull;&nbsp;ANIMATE&nbsp;&bull;&nbsp;BUILD&nbsp;&bull;&nbsp;</span>
+            </div>
+            <div class="plx-marquee-band plx-marquee-band--sm" data-plx-x="-0.18">
+                <span>CSS&nbsp;/&nbsp;TRANSFORMS&nbsp;/&nbsp;GPU&nbsp;/&nbsp;60FPS&nbsp;/&nbsp;SMOOTH&nbsp;/&nbsp;CSS&nbsp;/&nbsp;TRANSFORMS&nbsp;/&nbsp;GPU&nbsp;/&nbsp;60FPS&nbsp;/&nbsp;SMOOTH&nbsp;/&nbsp;</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="plx-code-ref">
+        <div class="showcase-item">
+            <h3 class="showcase-item-title">Horizontal Marquee <span class="badge">HTML + CSS</span></h3>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML + CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">@Html.Raw(copyIcon)<span class="copy-text">Copy</span></button>
+                </div>
+                <pre><code class="language-markup">&lt;!-- Large data-plx-x values sweep text across --&gt;
+&lt;div class="plx-marquee-band" data-plx-x="-0.3"&gt;
+  PARALLAX &amp;bull; MOTION &amp;bull; DEPTH &amp;bull;
+&lt;/div&gt;
+&lt;div class="plx-marquee-band" data-plx-x="0.25"&gt;
+  STYLE &amp;bull; DESIGN &amp;bull; CREATE &amp;bull;
+&lt;/div&gt;
+
+&lt;style&gt;
+.plx-marquee-band {
+  white-space: nowrap;
+  font-size: clamp(2rem, 5vw, 4rem);
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.1);
+}
+&lt;/style&gt;</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 8. STAGGER CASCADE ========== -->
+    <section class="plx-section plx-stagger-section">
+        <div class="plx-section-label" data-plx-y="-0.05">
+            <span class="plx-num">08</span>
+            <h2 class="plx-section-title">Stagger Cascade</h2>
+        </div>
+        <div class="plx-stagger-grid">
+            <div class="plx-stagger-item" data-plx-y="-0.04" data-plx-opacity="1"><i class="fas fa-bolt"></i><span>Speed</span></div>
+            <div class="plx-stagger-item" data-plx-y="-0.08" data-plx-opacity="1"><i class="fas fa-palette"></i><span>Color</span></div>
+            <div class="plx-stagger-item" data-plx-y="-0.12" data-plx-opacity="1"><i class="fas fa-feather-alt"></i><span>Light</span></div>
+            <div class="plx-stagger-item" data-plx-y="-0.06" data-plx-opacity="1"><i class="fas fa-gem"></i><span>Polish</span></div>
+            <div class="plx-stagger-item" data-plx-y="-0.14" data-plx-opacity="1"><i class="fas fa-fire"></i><span>Power</span></div>
+            <div class="plx-stagger-item" data-plx-y="-0.03" data-plx-opacity="1"><i class="fas fa-eye"></i><span>Focus</span></div>
+            <div class="plx-stagger-item" data-plx-y="-0.1" data-plx-opacity="1"><i class="fas fa-star"></i><span>Shine</span></div>
+            <div class="plx-stagger-item" data-plx-y="-0.07" data-plx-opacity="1"><i class="fas fa-heart"></i><span>Love</span></div>
+            <div class="plx-stagger-item" data-plx-y="-0.16" data-plx-opacity="1"><i class="fas fa-rocket"></i><span>Launch</span></div>
+        </div>
+    </section>
+
+    <div class="plx-code-ref">
+        <div class="showcase-item">
+            <h3 class="showcase-item-title">Stagger Cascade <span class="badge">HTML + CSS</span></h3>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML + CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">@Html.Raw(copyIcon)<span class="copy-text">Copy</span></button>
+                </div>
+                <pre><code class="language-markup">&lt;!-- Each item has unique data-plx-y + data-plx-opacity --&gt;
+&lt;div class="plx-stagger-grid"&gt;
+  &lt;div class="plx-stagger-item" data-plx-y="-0.04" data-plx-opacity="1"&gt;Speed&lt;/div&gt;
+  &lt;div class="plx-stagger-item" data-plx-y="-0.08" data-plx-opacity="1"&gt;Color&lt;/div&gt;
+  &lt;div class="plx-stagger-item" data-plx-y="-0.12" data-plx-opacity="1"&gt;Light&lt;/div&gt;
+  &lt;!-- ...more items with increasing data-plx-y --&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.plx-stagger-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 120px);
+  gap: 1.5rem;
+}
+&lt;/style&gt;</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 9. COLOR MORPH ========== -->
+    <section class="plx-section plx-colormorph-section" data-plx-hue="1">
+        <div class="plx-colormorph-bg"></div>
+        <div class="plx-section-label" data-plx-y="-0.05" style="position:relative;z-index:2;">
+            <span class="plx-num">09</span>
+            <h2 class="plx-section-title">Color Morph</h2>
+        </div>
+        <p class="plx-subtitle" data-plx-y="-0.03" style="position:relative;z-index:2;">The background gradient shifts its hue as you scroll through the viewport — driven entirely by scroll position.</p>
+        <div class="plx-colormorph-orbs">
+            <div class="plx-colormorph-orb" data-plx-y="-0.2" data-plx-x="-0.08"></div>
+            <div class="plx-colormorph-orb plx-colormorph-orb--2" data-plx-y="-0.12" data-plx-x="0.1"></div>
+            <div class="plx-colormorph-orb plx-colormorph-orb--3" data-plx-y="-0.06" data-plx-x="-0.05"></div>
+        </div>
+    </section>
+
+    <div class="plx-code-ref">
+        <div class="showcase-item">
+            <h3 class="showcase-item-title">Color Morph <span class="badge">HTML + JS</span></h3>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML + JS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">@Html.Raw(copyIcon)<span class="copy-text">Copy</span></button>
+                </div>
+                <pre><code class="language-markup">&lt;!-- data-plx-hue drives hue-rotate on the background --&gt;
+&lt;section data-plx-hue="1"&gt;
+  &lt;div class="plx-colormorph-bg"&gt;&lt;/div&gt;
+  &lt;div class="plx-colormorph-orb" data-plx-y="-0.2"&gt;&lt;/div&gt;
+&lt;/section&gt;
+
+&lt;script&gt;
+// Hue handler (inside the engine):
+const hue = dist * 0.15;
+bg.style.filter = `hue-rotate(${hue}deg)`;
+&lt;/script&gt;</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 10. SPLIT TYPOGRAPHY ========== -->
+    <section class="plx-section plx-split-section">
+        <div class="plx-section-label" data-plx-y="-0.05">
+            <span class="plx-num">10</span>
+            <h2 class="plx-section-title">Split Typography</h2>
+        </div>
+        <div class="plx-split-word">
+            <span class="plx-split-char" data-plx-y="-0.2" data-plx-x="-0.12" data-plx-rotate="0.08">P</span>
+            <span class="plx-split-char" data-plx-y="-0.08" data-plx-x="0.06" data-plx-rotate="-0.04">A</span>
+            <span class="plx-split-char" data-plx-y="-0.15" data-plx-x="-0.08" data-plx-rotate="0.12">R</span>
+            <span class="plx-split-char" data-plx-y="-0.06" data-plx-x="0.1" data-plx-rotate="-0.06">A</span>
+            <span class="plx-split-char" data-plx-y="-0.18" data-plx-x="-0.05" data-plx-rotate="0.1">L</span>
+            <span class="plx-split-char" data-plx-y="-0.1" data-plx-x="0.14" data-plx-rotate="-0.08">L</span>
+            <span class="plx-split-char" data-plx-y="-0.22" data-plx-x="-0.1" data-plx-rotate="0.06">A</span>
+            <span class="plx-split-char" data-plx-y="-0.04" data-plx-x="0.08" data-plx-rotate="-0.12">X</span>
+        </div>
+        <p class="plx-subtitle" data-plx-y="-0.03">Each letter has its own velocity vector — they scatter apart, then converge as you scroll through.</p>
+    </section>
+
+    <div class="plx-code-ref">
+        <div class="showcase-item">
+            <h3 class="showcase-item-title">Split Typography <span class="badge">HTML + CSS</span></h3>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML + CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">@Html.Raw(copyIcon)<span class="copy-text">Copy</span></button>
+                </div>
+                <pre><code class="language-markup">&lt;!-- Each letter gets its own velocity vector --&gt;
+&lt;div class="plx-split-word"&gt;
+  &lt;span data-plx-y="-0.2" data-plx-x="-0.12" data-plx-rotate="0.08"&gt;P&lt;/span&gt;
+  &lt;span data-plx-y="-0.08" data-plx-x="0.06" data-plx-rotate="-0.04"&gt;A&lt;/span&gt;
+  &lt;span data-plx-y="-0.15" data-plx-x="-0.08" data-plx-rotate="0.12"&gt;R&lt;/span&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.plx-split-char {
+  font-size: clamp(3rem, 10vw, 8rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, #00e5ff, #8b5cf6, #ec4899);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+&lt;/style&gt;</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 11. SKEW WAVE ========== -->
+    <section class="plx-section plx-skewwave-section">
+        <div class="plx-section-label" data-plx-y="-0.05">
+            <span class="plx-num">11</span>
+            <h2 class="plx-section-title">Skew Wave</h2>
+        </div>
+        <div class="plx-skewwave-wrap">
+            <div class="plx-skewwave-bar" data-plx-skew="-0.06" data-plx-y="-0.02"></div>
+            <div class="plx-skewwave-bar" data-plx-skew="0.08" data-plx-y="-0.04"></div>
+            <div class="plx-skewwave-bar" data-plx-skew="-0.1" data-plx-y="-0.06"></div>
+            <div class="plx-skewwave-bar" data-plx-skew="0.12" data-plx-y="-0.08"></div>
+            <div class="plx-skewwave-bar" data-plx-skew="-0.07" data-plx-y="-0.1"></div>
+            <div class="plx-skewwave-bar" data-plx-skew="0.09" data-plx-y="-0.12"></div>
+        </div>
+    </section>
+
+    <div class="plx-code-ref">
+        <div class="showcase-item">
+            <h3 class="showcase-item-title">Skew Wave <span class="badge">HTML + CSS</span></h3>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML + CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">@Html.Raw(copyIcon)<span class="copy-text">Copy</span></button>
+                </div>
+                <pre><code class="language-markup">&lt;!-- data-plx-skew alternates sign for wave effect --&gt;
+&lt;div class="plx-skewwave-wrap"&gt;
+  &lt;div class="plx-skewwave-bar" data-plx-skew="-0.06" data-plx-y="-0.02"&gt;&lt;/div&gt;
+  &lt;div class="plx-skewwave-bar" data-plx-skew="0.08" data-plx-y="-0.04"&gt;&lt;/div&gt;
+  &lt;div class="plx-skewwave-bar" data-plx-skew="-0.1" data-plx-y="-0.06"&gt;&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.plx-skewwave-bar {
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #00e5ff, #8b5cf6, #ec4899);
+  opacity: 0.4;
+  will-change: transform;
+}
+&lt;/style&gt;</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 12. PARTICLE CONSTELLATION ========== -->
+    <section class="plx-section plx-constellation-section">
+        <div class="plx-section-label" data-plx-y="-0.05" style="position:relative;z-index:2;">
+            <span class="plx-num">12</span>
+            <h2 class="plx-section-title">Particle Constellation</h2>
+        </div>
+        <canvas class="plx-constellation-canvas" id="plxConstellation"></canvas>
+        <p class="plx-subtitle" data-plx-y="-0.03" style="position:relative;z-index:2;">Points drift in response to scroll, connecting with nearby neighbours to form organic constellations.</p>
+    </section>
+
+    <div class="plx-code-ref">
+        <div class="showcase-item">
+            <h3 class="showcase-item-title">Particle Constellation <span class="badge">Canvas + JS</span></h3>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">JavaScript</span>
+                    <button class="copy-btn" onclick="copyCode(this)">@Html.Raw(copyIcon)<span class="copy-text">Copy</span></button>
+                </div>
+                <pre><code class="language-javascript">const canvas = document.getElementById('plxConstellation');
+const ctx = canvas.getContext('2d');
+const POINT_COUNT = 60, CONNECT_DIST = 120;
+
+function draw() {
+  ctx.clearRect(0, 0, cW, cH);
+  const scrollOffset = window.scrollY * 0.02;
+
+  points.forEach((p, i) =&gt; {
+    // Scroll-driven wobble
+    const px = p.x + Math.sin(scrollOffset + i) * 15;
+    const py = p.y + Math.cos(scrollOffset + i * 0.7) * 10;
+
+    ctx.beginPath();
+    ctx.arc(px, py, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0,229,255,0.5)';
+    ctx.fill();
+
+    // Connect nearby points
+    points.forEach((q, j) =&gt; {
+      if (j &lt;= i) return;
+      const dist = Math.hypot(px - qx, py - qy);
+      if (dist &lt; CONNECT_DIST) {
+        ctx.strokeStyle = `rgba(0,229,255,${
+          (0.15 * (1 - dist/CONNECT_DIST)).toFixed(3)})`;
+        ctx.lineWidth = 0.6;
+        ctx.beginPath();
+        ctx.moveTo(px, py); ctx.lineTo(qx, qy);
+        ctx.stroke();
+      }
+    });
+  });
+  requestAnimationFrame(draw);
+}</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========== 13. ACCORDION REVEAL ========== -->
+    <section class="plx-section plx-accordion-section">
+        <div class="plx-section-label" data-plx-y="-0.05">
+            <span class="plx-num">13</span>
+            <h2 class="plx-section-title">Accordion Reveal</h2>
+        </div>
+        <div class="plx-accordion-stack">
+            <div class="plx-accordion-panel" data-plx-y="-0.04">
+                <div class="plx-accordion-num">01</div>
+                <h3>Translate</h3>
+                <p>Elements shift vertically at unique speeds, creating layered depth.</p>
+            </div>
+            <div class="plx-accordion-panel" data-plx-y="-0.09">
+                <div class="plx-accordion-num">02</div>
+                <h3>Rotate</h3>
+                <p>Subtle angular momentum adds liveliness without disorienting the viewer.</p>
+            </div>
+            <div class="plx-accordion-panel" data-plx-y="-0.14">
+                <div class="plx-accordion-num">03</div>
+                <h3>Scale</h3>
+                <p>Growing and shrinking elements simulate moving toward or away from the camera.</p>
+            </div>
+            <div class="plx-accordion-panel" data-plx-y="-0.19">
+                <div class="plx-accordion-num">04</div>
+                <h3>Opacity</h3>
+                <p>Fading elements in and out based on distance creates atmospheric depth.</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="plx-code-ref">
+        <div class="showcase-item">
+            <h3 class="showcase-item-title">Accordion Reveal <span class="badge">HTML + CSS</span></h3>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML + CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">@Html.Raw(copyIcon)<span class="copy-text">Copy</span></button>
+                </div>
+                <pre><code class="language-markup">&lt;!-- Increasing data-plx-y makes panels fan out --&gt;
+&lt;div class="plx-accordion-stack"&gt;
+  &lt;div class="plx-accordion-panel" data-plx-y="-0.04"&gt;Translate&lt;/div&gt;
+  &lt;div class="plx-accordion-panel" data-plx-y="-0.09"&gt;Rotate&lt;/div&gt;
+  &lt;div class="plx-accordion-panel" data-plx-y="-0.14"&gt;Scale&lt;/div&gt;
+  &lt;div class="plx-accordion-panel" data-plx-y="-0.19"&gt;Opacity&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+.plx-accordion-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 550px;
+}
+.plx-accordion-panel {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  will-change: transform;
+}
+&lt;/style&gt;</code></pre>
+            </div>
+        </div>
+    </div>
+
     <!-- ========== END ========== -->
     <section class="plx-section plx-end-section">
         <div class="plx-content" data-plx-y="-0.05">
             <i class="fas fa-check-circle plx-end-icon"></i>
             <h2 class="plx-title">That's Parallax</h2>
-            <p class="plx-subtitle">Every element on this page moved independently — driven by pure scroll position and CSS transforms.</p>
+            <p class="plx-subtitle">12 effects — every element driven by pure scroll position and CSS transforms, all at 60fps.</p>
         </div>
     </section>
 
@@ -157,8 +651,9 @@
     const page = document.querySelector('.plx-page');
     if (!page) return;
 
-    const els = page.querySelectorAll('[data-plx-y],[data-plx-x],[data-plx-rotate],[data-plx-scale]');
-    const viewH = window.innerHeight;
+    const els = page.querySelectorAll('[data-plx-y],[data-plx-x],[data-plx-rotate],[data-plx-scale],[data-plx-opacity],[data-plx-skew]');
+    const hueSections = page.querySelectorAll('[data-plx-hue]');
+    let viewH = window.innerHeight;
     let ticking = false;
 
     function update() {
@@ -170,11 +665,12 @@
             const elCenter = scrollY + rect.top + rect.height * 0.5;
             const dist = center - elCenter;
 
-            let ty = 0, tx = 0, rot = 0, sc = 1, blur = 0;
+            let ty = 0, tx = 0, rot = 0, sc = 1, blur = 0, skew = 0;
 
             if (el.dataset.plxY) ty = dist * parseFloat(el.dataset.plxY);
             if (el.dataset.plxX) tx = dist * parseFloat(el.dataset.plxX);
             if (el.dataset.plxRotate) rot = dist * parseFloat(el.dataset.plxRotate);
+            if (el.dataset.plxSkew) skew = dist * parseFloat(el.dataset.plxSkew);
 
             if (el.dataset.plxScale) {
                 const norm = Math.max(0, Math.min(1, 1 - Math.abs(dist) / (viewH * 0.8)));
@@ -182,14 +678,30 @@
                 blur = (1 - norm) * 12;
             }
 
+            if (el.dataset.plxOpacity) {
+                const norm = Math.max(0, Math.min(1, 1 - Math.abs(dist) / (viewH * 0.6)));
+                el.style.opacity = (0.15 + norm * 0.85).toFixed(3);
+            }
+
             let tf = 'translate3d(' + tx.toFixed(1) + 'px,' + ty.toFixed(1) + 'px,0)';
             if (rot) tf += ' rotate(' + rot.toFixed(2) + 'deg)';
             if (sc !== 1) tf += ' scale(' + sc.toFixed(3) + ')';
+            if (skew) tf += ' skewX(' + skew.toFixed(2) + 'deg)';
 
             el.style.transform = tf;
             if (blur > 0.1) el.style.filter = 'blur(' + blur.toFixed(1) + 'px)';
             else el.style.filter = '';
         });
+
+        hueSections.forEach(sec => {
+            const rect = sec.getBoundingClientRect();
+            const secCenter = scrollY + rect.top + rect.height * 0.5;
+            const d = center - secCenter;
+            const hue = d * 0.15;
+            const bg = sec.querySelector('.plx-colormorph-bg');
+            if (bg) bg.style.filter = 'hue-rotate(' + hue.toFixed(1) + 'deg)';
+        });
+
         ticking = false;
     }
 
@@ -197,7 +709,81 @@
         if (!ticking) { requestAnimationFrame(update); ticking = true; }
     }, { passive: true });
 
+    window.addEventListener('resize', function () { viewH = window.innerHeight; });
+
     update();
+
+    // --- Constellation Canvas ---
+    const canvas = document.getElementById('plxConstellation');
+    if (canvas) {
+        const ctx = canvas.getContext('2d');
+        let cW, cH, points = [];
+        const POINT_COUNT = 60;
+        const CONNECT_DIST = 120;
+
+        function resize() {
+            const rect = canvas.parentElement.getBoundingClientRect();
+            cW = canvas.width = rect.width;
+            cH = canvas.height = rect.height;
+        }
+
+        function init() {
+            resize();
+            points = [];
+            for (let i = 0; i < POINT_COUNT; i++) {
+                points.push({
+                    x: Math.random() * cW,
+                    y: Math.random() * cH,
+                    vx: (Math.random() - 0.5) * 0.3,
+                    vy: (Math.random() - 0.5) * 0.3,
+                    r: Math.random() * 2 + 1
+                });
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, cW, cH);
+            const scrollOffset = window.scrollY * 0.02;
+
+            for (let i = 0; i < points.length; i++) {
+                const p = points[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                if (p.x < 0 || p.x > cW) p.vx *= -1;
+                if (p.y < 0 || p.y > cH) p.vy *= -1;
+
+                const dx = Math.sin(scrollOffset + i) * 15;
+                const dy = Math.cos(scrollOffset + i * 0.7) * 10;
+                const px = p.x + dx;
+                const py = p.y + dy;
+
+                ctx.beginPath();
+                ctx.arc(px, py, p.r, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(0,229,255,0.5)';
+                ctx.fill();
+
+                for (let j = i + 1; j < points.length; j++) {
+                    const q = points[j];
+                    const qx = q.x + Math.sin(scrollOffset + j) * 15;
+                    const qy = q.y + Math.cos(scrollOffset + j * 0.7) * 10;
+                    const dist = Math.hypot(px - qx, py - qy);
+                    if (dist < CONNECT_DIST) {
+                        ctx.beginPath();
+                        ctx.moveTo(px, py);
+                        ctx.lineTo(qx, qy);
+                        ctx.strokeStyle = 'rgba(0,229,255,' + (0.15 * (1 - dist / CONNECT_DIST)).toFixed(3) + ')';
+                        ctx.lineWidth = 0.6;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(draw);
+        }
+
+        init();
+        draw();
+        window.addEventListener('resize', resize);
+    }
 })();
 </script>
 }
