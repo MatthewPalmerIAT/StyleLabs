@@ -12,11 +12,11 @@
 
     <div class="showcase-grid">
 
-        <!-- Particle Nebula -->
+        <!-- Particle Text Effect -->
         <div class="showcase-item reveal">
-            <h3 class="showcase-item-title">Particle Nebula <span class="badge">JS Canvas</span></h3>
+            <h3 class="showcase-item-title">Particle Text Effect <span class="badge">JS Canvas</span></h3>
             <div class="preview-panel canvas-preview">
-                <canvas id="nebula-canvas"></canvas>
+                <canvas id="particle-text-canvas"></canvas>
             </div>
             <div class="code-panel">
                 <div class="code-header">
@@ -26,85 +26,64 @@
                         <span class="copy-text">Copy</span>
                     </button>
                 </div>
-                <pre><code class="language-javascript">// Particle nebula — click to cycle shapes, type to spell words
-const P = 4000, particles = [];
-let time = 0, mode = 0, typedWord = '', focused = false;
+                <pre><code class="language-javascript">// Particle Text Effect — steering particles form words
+// Particles seek target positions with proximity slowdown
+// Right-click to destroy · Words cycle every 4s
 
-const off = document.createElement('canvas');
-const ox = off.getContext('2d');
+class Particle {
+  pos = {x:0, y:0}; vel = {x:0, y:0};
+  acc = {x:0, y:0}; target = {x:0, y:0};
+  maxSpeed = 1; maxForce = 0.1;
+  particleSize = 10; isKilled = false;
+  startColor = {r:0,g:0,b:0};
+  targetColor = {r:0,g:0,b:0};
+  colorWeight = 0; colorBlendRate = 0.01;
 
-for (let i = 0; i &lt; P; i++) {
-  const a = Math.random()*Math.PI*2, p = Math.acos(2*Math.random()-1);
-  const r = 80 + Math.random()*180;
-  particles.push({
-    x: r*Math.sin(p)*Math.cos(a), y: r*Math.sin(p)*Math.sin(a),
-    z: r*Math.cos(p), tx:0, ty:0, tz:0, vx:0, vy:0, vz:0,
-    size: 0.6+Math.random()*1.4, hue: 195+Math.random()*40,
-    alpha: 0.7+Math.random()*0.3, speed: 0.001+Math.random()*0.003,
-    phase: Math.random()*Math.PI*2
-  });
-}
+  move() {
+    let proxMult = 1;
+    const dx = this.pos.x - this.target.x;
+    const dy = this.pos.y - this.target.y;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+    if (dist &lt; 100) proxMult = dist / 100;
 
-function sampleText(text) {
-  off.width=canvas.width; off.height=canvas.height;
-  let fs = Math.min(200, canvas.height*0.55);
-  ox.font='bold '+fs+'px Arial'; ox.textAlign='center';
-  ox.textBaseline='middle';
-  while (ox.measureText(text).width &gt; canvas.width*0.85 &amp;&amp; fs&gt;8) {
-    fs-=2; ox.font='bold '+fs+'px Arial'; }
-  ox.fillStyle='white';
-  ox.fillText(text, canvas.width/2, canvas.height/2);
-  const d=ox.getImageData(0,0,canvas.width,canvas.height).data, pts=[];
-  for (let y=0;y&lt;canvas.height;y+=3) for(let x=0;x&lt;canvas.width;x+=3)
-    if(d[(y*canvas.width+x)*4+3]&gt;128) pts.push({x:x-canvas.width/2,y:y-canvas.height/2});
-  return pts;
-}
-
-// Click cycles: sphere ? ring ? spiral
-canvas.setAttribute('tabindex','0');
-canvas.addEventListener('click', () =&gt; {
-  focused=true; typedWord=''; canvas.focus();
-  mode=(mode+1)%3; setTargets(mode); burst();
-});
-// Type to spell words (mode 3)
-canvas.addEventListener('keydown', e =&gt; {
-  if (!focused) return;
-  if (e.key==='Backspace') typedWord=typedWord.slice(0,-1);
-  else if (e.key==='Escape') { typedWord=''; mode=0; setTargets(0); burst(); return; }
-  else if (e.key.length===1) typedWord+=e.key;
-  else return;
-  e.preventDefault();
-  if (typedWord) { mode=3; setTargets(3,typedWord.toUpperCase()); }
-  else { mode=0; setTargets(0); }
-  burst();
-});
-
-function animate() {
-  ctx.fillStyle='rgba(3,8,16,0.12)';
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-  time+=.005;
-  const cx=canvas.width/2, cy=canvas.height/2;
-  const flat=mode===3, rot=flat?0:time*.3;
-  const cosA=Math.cos(rot), sinA=Math.sin(rot);
-  particles.forEach(p =&gt; {
-    p.vx+=(p.tx-p.x)*.008; p.vy+=(p.ty-p.y)*.008; p.vz+=(p.tz-p.z)*.008;
-    p.vx*=.96; p.vy*=.96; p.vz*=.96;
-    p.x+=p.vx; p.y+=p.vy; p.z+=p.vz;
-    var px,py,sc;
-    if (flat) { px=p.x+cx; py=p.y+cy; sc=1; }
-    else { /* 3D rotate + project */ }
-    if (sc&gt;0) {
-      const a=Math.min(1,p.alpha*sc*(.7+Math.sin(time*3+p.phase)*.3));
-      const r=p.size*sc;
-      ctx.fillStyle=`hsla(${p.hue},90%,65%,${a})`;
-      ctx.beginPath();ctx.arc(px,py,r,0,Math.PI*2);ctx.fill();
-      if(r&gt;.8){ctx.fillStyle=`hsla(${p.hue},60%,90%,${a*.5})`;
-        ctx.beginPath();ctx.arc(px,py,r*.35,0,Math.PI*2);ctx.fill();}
+    // Steer towards target
+    const tow = {
+      x: this.target.x - this.pos.x,
+      y: this.target.y - this.pos.y };
+    const mag = Math.sqrt(
+      tow.x*tow.x + tow.y*tow.y);
+    if (mag &gt; 0) {
+      tow.x = tow.x/mag * this.maxSpeed
+        * proxMult;
+      tow.y = tow.y/mag * this.maxSpeed
+        * proxMult;
     }
-  });
-  requestAnimationFrame(animate);
+    const steer = {
+      x: tow.x - this.vel.x,
+      y: tow.y - this.vel.y };
+    // Limit steer force, apply physics
+    this.vel.x += steer.x;
+    this.vel.y += steer.y;
+    this.pos.x += this.vel.x;
+    this.pos.y += this.vel.y;
+  }
+
+  draw(ctx) {
+    // Blend color over time
+    this.colorWeight = Math.min(
+      this.colorWeight + this.colorBlendRate, 1);
+    const w = this.colorWeight;
+    const r = this.startColor.r
+      + (this.targetColor.r - this.startColor.r)*w;
+    ctx.fillStyle = `rgb(${r|0},${g|0},${b|0})`;
+    ctx.fillRect(this.pos.x, this.pos.y, 2, 2);
+  }
 }
-animate();</code></pre>
+
+// Render text to offscreen canvas, sample pixels
+// at step=6 to get target positions
+// Shuffle coords for fluid transition
+// Cycle words every 240 frames</code></pre>
             </div>
         </div>
 
@@ -810,6 +789,70 @@ const displayFS = `precision highp float;
             </div>
         </div>
 
+        <!-- Spiral Galaxy -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Spiral Galaxy <span class="badge">JS Canvas + GSAP</span></h3>
+            <div class="preview-panel canvas-preview">
+                <canvas id="spiral-canvas"></canvas>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">JavaScript</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-javascript">// Spiral Galaxy — 5000 stars with 3D projection
+// Stars follow a spiral path then disperse with
+// multi-phase easing: linear ? curved ? elastic spiral
+
+const CAMERA_Z = -400;
+const CAMERA_TRAVEL = 3400;
+const VIEW_ZOOM = 100;
+const NUM_STARS = 5000;
+const TRAIL_LEN = 80;
+const CHANGE_TIME = 0.32;
+
+class Star {
+  constructor() {
+    this.angle = Math.random() * Math.PI * 2;
+    this.dist = 30 * Math.random() + 15;
+    this.rotDir = Math.random() &gt; 0.5 ? 1 : -1;
+    this.expand = 1.2 + Math.random() * 0.8;
+    this.dx = this.dist * Math.cos(this.angle);
+    this.dy = this.dist * Math.sin(this.angle);
+    this.spiralLoc = (1 - Math.pow(
+      1 - Math.random(), 3)) / 1.3;
+    this.z = lerp(
+      rand(0.5*CAMERA_Z, CAMERA_TRAVEL+CAMERA_Z),
+      CAMERA_TRAVEL/2, 0.3 * this.spiralLoc);
+    this.sw = Math.pow(Math.random(), 2);
+  }
+  render(p, controller) {
+    const sp = controller.spiralPath(this.spiralLoc);
+    const q = p - this.spiralLoc;
+    if (q &lt;= 0) return;
+    const dp = constrain(4 * q, 0, 1);
+    // Multi-phase displacement:
+    //   0-30%: linear move
+    //  30-70%: curved with perpendicular offset
+    //  70-100%: elastic spiral expansion
+    // Project 2D screen ? 3D position ? perspective
+    const vx = (this.z - CAMERA_Z) * sx / VIEW_ZOOM;
+    const vy = (this.z - CAMERA_Z) * sy / VIEW_ZOOM;
+    controller.projectDot({x:vx,y:vy,z:this.z}, size);
+  }
+}
+
+// spiralPath(p): 6-turn Fermat spiral
+//   theta = 2? * 6 * ?p,  r = 170 * ?p
+// Trail: 80 dots tracing the spiral head
+// Camera: flies forward through z-axis over time
+// Easing: power(1.8) + elastic(4.5) blend</code></pre>
+            </div>
+        </div>
+
 
 
     </div>
@@ -887,223 +930,6 @@ const displayFS = `precision highp float;
         frameFn();
         s.rafId = requestAnimationFrame(() => loopAnim(canvasId, frameFn));
     }
-        // ==================== PARTICLE NEBULA ====================
-        const nebulaCanvas = document.getElementById('nebula-canvas');
-        if (nebulaCanvas) {
-            const ctx = nebulaCanvas.getContext('2d');
-            let nTime = 0;
-            let nMode = 0; // 0=sphere,1=ring,2=spiral,3=text
-            let nTypedWord = '';
-            let nFocused = false;
-            const nParts = [];
-            const NP = 4000;
-
-            // Offscreen canvas for text sampling
-            const nTextCanvas = document.createElement('canvas');
-            const nTextCtx = nTextCanvas.getContext('2d');
-
-            function resizeNebula() {
-                const rect = nebulaCanvas.parentElement.getBoundingClientRect();
-                nebulaCanvas.width = rect.width;
-                nebulaCanvas.height = Math.max(rect.height, 400);
-            }
-            resizeNebula();
-            window.addEventListener('resize', resizeNebula);
-
-            for (let i = 0; i < NP; i++) {
-                const a = Math.random() * Math.PI * 2;
-                const phi = Math.acos(2 * Math.random() - 1);
-                const r = 80 + Math.random() * 180;
-                nParts.push({
-                    x: r * Math.sin(phi) * Math.cos(a),
-                    y: r * Math.sin(phi) * Math.sin(a),
-                    z: r * Math.cos(phi),
-                    tx: 0, ty: 0, tz: 0,
-                    vx: 0, vy: 0, vz: 0,
-                    size: 0.6 + Math.random() * 1.4,
-                    hue: 195 + Math.random() * 40,
-                    alpha: 0.7 + Math.random() * 0.3,
-                    speed: 0.001 + Math.random() * 0.003,
-                    phase: Math.random() * Math.PI * 2
-                });
-            }
-
-            function sampleTextPoints(text) {
-                const W = nebulaCanvas.width, H = nebulaCanvas.height;
-                nTextCanvas.width = W;
-                nTextCanvas.height = H;
-                nTextCtx.clearRect(0, 0, W, H);
-                let fontSize = Math.min(200, H * 0.55);
-                nTextCtx.font = 'bold ' + fontSize + 'px Arial, sans-serif';
-                nTextCtx.textAlign = 'center';
-                nTextCtx.textBaseline = 'middle';
-                while (nTextCtx.measureText(text).width > W * 0.85 && fontSize > 8) {
-                    fontSize -= 2;
-                    nTextCtx.font = 'bold ' + fontSize + 'px Arial, sans-serif';
-                }
-                nTextCtx.fillStyle = 'white';
-                nTextCtx.fillText(text, W / 2, H / 2);
-                const imgData = nTextCtx.getImageData(0, 0, W, H).data;
-                const points = [];
-                const step = 3;
-                for (let y = 0; y < H; y += step) {
-                    for (let x = 0; x < W; x += step) {
-                        if (imgData[(y * W + x) * 4 + 3] > 128) {
-                            points.push({ x: x - W / 2, y: y - H / 2 });
-                        }
-                    }
-                }
-                return points;
-            }
-
-            function setNebulaTargets(m, text) {
-                if (m === 3 && text) {
-                    const pts = sampleTextPoints(text);
-                    if (pts.length === 0) { setNebulaTargets(0); return; }
-                    nParts.forEach((p, i) => {
-                        const pt = pts[i % pts.length];
-                        p.tx = pt.x + (Math.random() - 0.5) * 3;
-                        p.ty = pt.y + (Math.random() - 0.5) * 3;
-                        p.tz = (Math.random() - 0.5) * 30;
-                    });
-                } else {
-                    nParts.forEach((p, i) => {
-                        const a = Math.random() * Math.PI * 2;
-                        const phi = Math.acos(2 * Math.random() - 1);
-                        if (m === 0) {
-                            const r = 80 + Math.random() * 180;
-                            p.tx = r * Math.sin(phi) * Math.cos(a);
-                            p.ty = r * Math.sin(phi) * Math.sin(a);
-                            p.tz = r * Math.cos(phi);
-                        } else if (m === 1) {
-                            const ring = i % 2 === 0 ? 120 : 200;
-                            const angle = (i / NP) * Math.PI * 2 * 8;
-                            p.tx = Math.cos(angle) * ring;
-                            p.ty = (Math.random() - 0.5) * 40;
-                            p.tz = Math.sin(angle) * ring;
-                        } else {
-                            const t = (i / NP) * Math.PI * 12;
-                            const strand = i % 2 === 0 ? 1 : -1;
-                            p.tx = Math.cos(t) * 100 * strand;
-                            p.ty = (i / NP - 0.5) * 400;
-                            p.tz = Math.sin(t) * 100 * strand;
-                        }
-                    });
-                }
-            }
-            setNebulaTargets(0);
-
-            function nebulaBurst() {
-                nParts.forEach(p => {
-                    p.vx += (Math.random() - 0.5) * 5;
-                    p.vy += (Math.random() - 0.5) * 5;
-                    p.vz += (Math.random() - 0.5) * 5;
-                });
-            }
-
-            nebulaCanvas.setAttribute('tabindex', '0');
-            nebulaCanvas.style.outline = 'none';
-
-            nebulaCanvas.addEventListener('click', () => {
-                nFocused = true;
-                nTypedWord = '';
-                nebulaCanvas.focus();
-                nMode = (nMode + 1) % 3;
-                setNebulaTargets(nMode);
-                nebulaBurst();
-            });
-
-            nebulaCanvas.addEventListener('blur', () => { nFocused = false; });
-
-            nebulaCanvas.addEventListener('keydown', (e) => {
-                if (!nFocused) return;
-                if (e.key === 'Backspace') {
-                    nTypedWord = nTypedWord.slice(0, -1);
-                } else if (e.key === 'Escape') {
-                    nTypedWord = '';
-                    nMode = 0;
-                    setNebulaTargets(0);
-                    nebulaBurst();
-                    return;
-                } else if (e.key.length === 1) {
-                    nTypedWord += e.key;
-                } else {
-                    return;
-                }
-                e.preventDefault();
-                if (nTypedWord.length > 0) {
-                    nMode = 3;
-                    setNebulaTargets(3, nTypedWord.toUpperCase());
-                    nebulaBurst();
-                } else {
-                    nMode = 0;
-                    setNebulaTargets(0);
-                    nebulaBurst();
-                }
-            });
-
-            function animateNebula() {
-                const W = nebulaCanvas.width, H = nebulaCanvas.height;
-                const cx = W / 2, cy = H / 2;
-                ctx.fillStyle = 'rgba(3,8,16,0.12)';
-                ctx.fillRect(0, 0, W, H);
-                nTime += 0.005;
-
-                const flatMode = nMode === 3;
-                const rotSpeed = flatMode ? 0 : nTime * 0.3;
-                const cosA = Math.cos(rotSpeed), sinA = Math.sin(rotSpeed);
-
-                const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, 200);
-                glow.addColorStop(0, 'rgba(0,160,255,0.12)');
-                glow.addColorStop(0.4, 'rgba(0,100,255,0.04)');
-                glow.addColorStop(1, 'transparent');
-                ctx.fillStyle = glow;
-                ctx.fillRect(0, 0, W, H);
-
-                nParts.forEach(p => {
-                    p.vx += (p.tx - p.x) * 0.008;
-                    p.vy += (p.ty - p.y) * 0.008;
-                    p.vz += (p.tz - p.z) * 0.008;
-                    p.vx *= 0.96; p.vy *= 0.96; p.vz *= 0.96;
-                    p.x += p.vx; p.y += p.vy; p.z += p.vz;
-                    let px, py, sc;
-                    if (nMode >= 3) {
-                        // Bear/text mode: direct screen coords
-                        px = p.x + cx;
-                        py = p.y + cy;
-                        sc = 1;
-                    } else {
-                        const c = Math.cos(p.speed), s = Math.sin(p.speed);
-                        const nx = p.x * c - p.z * s; p.z = p.x * s + p.z * c; p.x = nx;
-                        const rx = p.x * cosA - p.z * sinA, rz = p.x * sinA + p.z * cosA;
-                        sc = 500 / (500 + rz + 250);
-                        px = rx * sc + cx;
-                        py = p.y * sc + cy;
-                    }
-                    if (sc > 0) {
-                        const pulse = 0.7 + Math.sin(nTime * 3 + p.phase) * 0.3;
-                        const a = Math.min(1, p.alpha * sc * pulse);
-                        const r = p.size * sc;
-                        ctx.fillStyle = `hsla(${p.hue},90%,65%,${a})`;
-                        ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI * 2); ctx.fill();
-                        if (r > 0.8) {
-                            ctx.fillStyle = `hsla(${p.hue},60%,90%,${a * 0.5})`;
-                            ctx.beginPath(); ctx.arc(px, py, r * 0.35, 0, Math.PI * 2); ctx.fill();
-                        }
-                    }
-                });
-
-                if (nFocused && nTypedWord.length > 0) {
-                    ctx.fillStyle = 'rgba(0,180,255,0.25)';
-                    ctx.font = '12px Arial, sans-serif';
-                    ctx.textAlign = 'center';
-                    ctx.fillText(nTypedWord, cx, H - 15);
-                }
-            }
-
-            registerAnim('nebula-canvas', function() { loopAnim('nebula-canvas', animateNebula); });
-        }
-
         // ==================== WAVE TERRAIN ====================
         const terrainCanvas = document.getElementById('terrain-canvas');
         if (terrainCanvas) {
@@ -2365,6 +2191,509 @@ const displayFS = `precision highp float;
                 splashActive = true;
                 initSplashFluid();
             });
+        }
+
+        // ==================== SPIRAL GALAXY ====================
+        {
+            const spiralCanvas = document.getElementById('spiral-canvas');
+            if (spiralCanvas) {
+                const ctx = spiralCanvas.getContext('2d');
+                let spiralTime = 0;
+                let spiralRunning = false;
+
+                // Constants
+                const CAMERA_Z = -400;
+                const CAMERA_TRAVEL = 3400;
+                const START_DOT_Y = 28;
+                const VIEW_ZOOM = 100;
+                const NUM_STARS = 5000;
+                const TRAIL_LEN = 80;
+                const CHANGE_T = 0.32;
+
+                function resizeSpiral() {
+                    const rect = spiralCanvas.parentElement.getBoundingClientRect();
+                    const dpr = window.devicePixelRatio || 1;
+                    const s = Math.max(rect.width, rect.height);
+                    spiralCanvas.width = s * dpr;
+                    spiralCanvas.height = s * dpr;
+                    spiralCanvas.style.width = rect.width + 'px';
+                    spiralCanvas.style.height = Math.max(rect.height, 400) + 'px';
+                }
+                resizeSpiral();
+                window.addEventListener('resize', resizeSpiral);
+
+                // Easing helpers
+                function ease(p, g) {
+                    if (p < 0.5) return 0.5 * Math.pow(2 * p, g);
+                    return 1 - 0.5 * Math.pow(2 * (1 - p), g);
+                }
+                function easeOutElastic(x) {
+                    var c4 = (2 * Math.PI) / 4.5;
+                    if (x <= 0) return 0;
+                    if (x >= 1) return 1;
+                    return Math.pow(2, -8 * x) * Math.sin((x * 8 - 0.75) * c4) + 1;
+                }
+                function mapVal(v, a1, b1, a2, b2) {
+                    return a2 + (b2 - a2) * ((v - a1) / (b1 - a1));
+                }
+                function clamp(v, mn, mx) {
+                    return Math.min(Math.max(v, mn), mx);
+                }
+                function lerp(a, b, t) {
+                    return a * (1 - t) + b * t;
+                }
+
+                // Spiral path — 6-turn Fermat spiral
+                function spiralPath(p) {
+                    p = clamp(1.2 * p, 0, 1);
+                    p = ease(p, 1.8);
+                    var turns = 6;
+                    var theta = 2 * Math.PI * turns * Math.sqrt(p);
+                    var r = 170 * Math.sqrt(p);
+                    return { x: r * Math.cos(theta), y: r * Math.sin(theta) + START_DOT_Y };
+                }
+
+                // 3D ? 2D projection
+                function projectDot(pos, sizeFactor) {
+                    var t2 = clamp(mapVal(spiralTime, CHANGE_T, 1, 0, 1), 0, 1);
+                    var camZ = CAMERA_Z + ease(Math.pow(t2, 1.2), 1.8) * CAMERA_TRAVEL;
+                    if (pos.z > camZ) {
+                        var depth = pos.z - camZ;
+                        var px = VIEW_ZOOM * pos.x / depth;
+                        var py = VIEW_ZOOM * pos.y / depth;
+                        var sw = 400 * sizeFactor / depth;
+                        ctx.beginPath();
+                        ctx.arc(px, py, Math.max(sw / 2, 0.3), 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+
+                // Rotate helper for trail
+                function rotatePt(v1, v2, p, ori) {
+                    var mx = (v1.x + v2.x) / 2, my = (v1.y + v2.y) / 2;
+                    var ddx = v1.x - mx, ddy = v1.y - my;
+                    var angle = Math.atan2(ddy, ddx);
+                    var o = ori ? -1 : 1;
+                    var rr = Math.sqrt(ddx * ddx + ddy * ddy);
+                    var bounce = Math.sin(p * Math.PI) * 0.05 * (1 - p);
+                    return {
+                        x: mx + rr * (1 + bounce) * Math.cos(angle + o * Math.PI * easeOutElastic(p)),
+                        y: my + rr * (1 + bounce) * Math.sin(angle + o * Math.PI * easeOutElastic(p))
+                    };
+                }
+
+                // Create stars with seeded random
+                var spiralStars = [];
+                (function () {
+                    var seed = 1234;
+                    var seeded = function () { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+                    for (var i = 0; i < NUM_STARS; i++) {
+                        var ang = seeded() * Math.PI * 2;
+                        var dist = 30 * seeded() + 15;
+                        var rdir = seeded() > 0.5 ? 1 : -1;
+                        var expand = 1.2 + seeded() * 0.8;
+                        var finalSc = 0.7 + seeded() * 0.6;
+                        var dx = dist * Math.cos(ang);
+                        var dy = dist * Math.sin(ang);
+                        var sLoc = (1 - Math.pow(1 - seeded(), 3.0)) / 1.3;
+                        var zr = 0.5 * CAMERA_Z + seeded() * (CAMERA_TRAVEL + CAMERA_Z - 0.5 * CAMERA_Z);
+                        zr = lerp(zr, CAMERA_TRAVEL / 2, 0.3 * sLoc);
+                        var sw = Math.pow(seeded(), 2.0);
+                        spiralStars.push({
+                            angle: ang, dist: dist, rotDir: rdir, expand: expand, finalSc: finalSc,
+                            dx: dx, dy: dy, spiralLoc: sLoc, z: zr, sw: sw
+                        });
+                    }
+                })();
+
+                // Render a single star
+                function renderStar(star, p) {
+                    var sp = spiralPath(star.spiralLoc);
+                    var q = p - star.spiralLoc;
+                    if (q <= 0) return;
+                    var dp = clamp(4 * q, 0, 1);
+
+                    var linE = dp;
+                    var elE = easeOutElastic(dp);
+                    var powE = dp * dp;
+                    var easing;
+                    if (dp < 0.3) {
+                        easing = lerp(linE, powE, dp / 0.3);
+                    } else if (dp < 0.7) {
+                        easing = lerp(powE, elE, (dp - 0.3) / 0.4);
+                    } else {
+                        easing = elE;
+                    }
+
+                    var sx, sy;
+                    if (dp < 0.3) {
+                        sx = lerp(sp.x, sp.x + star.dx * 0.3, easing / 0.3);
+                        sy = lerp(sp.y, sp.y + star.dy * 0.3, easing / 0.3);
+                    } else if (dp < 0.7) {
+                        var mp = (dp - 0.3) / 0.4;
+                        var cs = Math.sin(mp * Math.PI) * star.rotDir * 1.5;
+                        var bx = sp.x + star.dx * 0.3, by = sp.y + star.dy * 0.3;
+                        var tx = sp.x + star.dx * 0.7, ty = sp.y + star.dy * 0.7;
+                        var ppx = -star.dy * 0.4 * cs, ppy = star.dx * 0.4 * cs;
+                        sx = lerp(bx, tx, mp) + ppx * mp;
+                        sy = lerp(by, ty, mp) + ppy * mp;
+                    } else {
+                        var fp = (dp - 0.7) / 0.3;
+                        var bx2 = sp.x + star.dx * 0.7, by2 = sp.y + star.dy * 0.7;
+                        var td = star.dist * star.expand * 1.5;
+                        var sa = star.angle + 1.2 * star.rotDir * fp * Math.PI;
+                        var tx2 = sp.x + td * Math.cos(sa);
+                        var ty2 = sp.y + td * Math.sin(sa);
+                        sx = lerp(bx2, tx2, fp);
+                        sy = lerp(by2, ty2, fp);
+                    }
+
+                    var vx = (star.z - CAMERA_Z) * sx / VIEW_ZOOM;
+                    var vy = (star.z - CAMERA_Z) * sy / VIEW_ZOOM;
+
+                    var sizeMul = 1.0;
+                    if (dp < 0.6) {
+                        sizeMul = 1.0 + dp * 0.2;
+                    } else {
+                        var tt = (dp - 0.6) / 0.4;
+                        sizeMul = 1.2 * (1.0 - tt) + star.finalSc * tt;
+                    }
+
+                    projectDot({ x: vx, y: vy, z: star.z }, 8.5 * star.sw * sizeMul);
+                }
+
+                // Draw trail
+                function drawTrail(t1) {
+                    for (var i = 0; i < TRAIL_LEN; i++) {
+                        var f = mapVal(i, 0, TRAIL_LEN, 1.1, 0.1);
+                        var sw = (1.3 * (1 - t1) + 3.0 * Math.sin(Math.PI * t1)) * f;
+                        var pt = spiralPath(t1 - 0.00015 * i);
+                        var off = { x: pt.x + 5, y: pt.y + 5 };
+                        var rot = rotatePt(pt, off, Math.sin(spiralTime * Math.PI * 2) * 0.5 + 0.5, i % 2 === 0);
+                        ctx.beginPath();
+                        ctx.arc(rot.x, rot.y, Math.max(sw / 2, 0.3), 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+
+                // Draw start dot
+                function drawStartDot() {
+                    if (spiralTime > CHANGE_T) {
+                        var dy = CAMERA_Z * START_DOT_Y / VIEW_ZOOM;
+                        projectDot({ x: 0, y: dy, z: CAMERA_TRAVEL }, 2.5);
+                    }
+                }
+
+                // Main render
+                function renderSpiral() {
+                    var size = spiralCanvas.width;
+                    var dpr = window.devicePixelRatio || 1;
+                    ctx.fillStyle = 'black';
+                    ctx.fillRect(0, 0, size, size);
+                    ctx.save();
+                    ctx.scale(dpr, dpr);
+                    var dispSize = Math.max(
+                        parseInt(spiralCanvas.style.width) || size / dpr,
+                        parseInt(spiralCanvas.style.height) || size / dpr
+                    );
+                    ctx.translate(dispSize / 2, dispSize / 2);
+
+                    var t1 = clamp(mapVal(spiralTime, 0, CHANGE_T + 0.25, 0, 1), 0, 1);
+                    var t2 = clamp(mapVal(spiralTime, CHANGE_T, 1, 0, 1), 0, 1);
+                    ctx.rotate(-Math.PI * ease(t2, 2.7));
+
+                    ctx.fillStyle = 'white';
+                    drawTrail(t1);
+                    for (var i = 0; i < spiralStars.length; i++) {
+                        renderStar(spiralStars[i], t1);
+                    }
+                    drawStartDot();
+                    ctx.restore();
+                }
+
+                // Animation loop — vanilla JS, no GSAP
+                var spiralSpeed = 1 / 15; // full cycle in 15 seconds
+                var lastSpiralFrame = 0;
+
+                function spiralFrame(now) {
+                    var s = animState['spiral-canvas'];
+                    if (!s || !s.running) { spiralRunning = false; return; }
+                    if (!lastSpiralFrame) lastSpiralFrame = now;
+                    var dt = (now - lastSpiralFrame) / 1000;
+                    lastSpiralFrame = now;
+                    spiralTime += dt * spiralSpeed;
+                    if (spiralTime > 1) spiralTime -= 1; // loop
+                    renderSpiral();
+                    s.rafId = requestAnimationFrame(spiralFrame);
+                }
+
+                registerAnim('spiral-canvas', function () {
+                    spiralRunning = true;
+                    lastSpiralFrame = 0;
+                    spiralFrame(performance.now());
+                });
+
+                // Hook into pause
+                var origPause = pauseCanvas;
+                var patchedPause = function (id) {
+                    if (id === 'spiral-canvas') spiralRunning = false;
+                    origPause(id);
+                };
+                // Override only for spiral cleanup on visibility
+                var origState = animState['spiral-canvas'];
+                if (origState) {
+                    var origAnimFn = origState.animFn;
+                    origState.animFn = function () {
+                        spiralRunning = true;
+                        lastSpiralFrame = 0;
+                        spiralFrame(performance.now());
+                    };
+                }
+            }
+        }
+
+        // ==================== PARTICLE TEXT EFFECT ====================
+        {
+            var ptCanvas = document.getElementById('particle-text-canvas');
+            if (ptCanvas) {
+                var ptCtx = ptCanvas.getContext('2d');
+                var ptParticles = [];
+                var ptFrameCount = 0;
+                var ptWordIndex = 0;
+                var ptWords = ['HELLO', 'STYLE', 'LABS', 'CANVAS', 'MAGIC'];
+                var ptRunning = false;
+                var ptPixelSteps = 6;
+                var ptMouse = { x: 0, y: 0, pressed: false, right: false };
+
+                // Offscreen canvas for text sampling
+                var ptOffscreen = document.createElement('canvas');
+                var ptOffCtx = ptOffscreen.getContext('2d');
+
+                function resizePT() {
+                    var rect = ptCanvas.parentElement.getBoundingClientRect();
+                    ptCanvas.width = rect.width;
+                    ptCanvas.height = Math.max(rect.height, 400);
+                    ptOffscreen.width = ptCanvas.width;
+                    ptOffscreen.height = ptCanvas.height;
+                }
+                resizePT();
+                window.addEventListener('resize', resizePT);
+
+                function ptGenRandPos(cx, cy, mag) {
+                    var rx = Math.random() * ptCanvas.width;
+                    var ry = Math.random() * ptCanvas.height;
+                    var dx = rx - cx, dy = ry - cy;
+                    var m = Math.sqrt(dx * dx + dy * dy);
+                    if (m > 0) { dx = dx / m * mag; dy = dy / m * mag; }
+                    return { x: cx + dx, y: cy + dy };
+                }
+
+                function ptNextWord(word) {
+                    ptOffCtx.clearRect(0, 0, ptOffscreen.width, ptOffscreen.height);
+                    ptOffCtx.fillStyle = 'white';
+                    var fontSize = Math.min(100, ptCanvas.width * 0.12);
+                    ptOffCtx.font = 'bold ' + fontSize + 'px Arial';
+                    ptOffCtx.textAlign = 'center';
+                    ptOffCtx.textBaseline = 'middle';
+                    ptOffCtx.fillText(word, ptCanvas.width / 2, ptCanvas.height / 2);
+
+                    var imgData = ptOffCtx.getImageData(0, 0, ptCanvas.width, ptCanvas.height);
+                    var pixels = imgData.data;
+
+                    var newColor = {
+                        r: Math.random() * 255 | 0,
+                        g: Math.random() * 255 | 0,
+                        b: Math.random() * 255 | 0
+                    };
+
+                    // Collect visible pixel indices
+                    var coords = [];
+                    for (var i = 0; i < pixels.length; i += ptPixelSteps * 4) {
+                        coords.push(i);
+                    }
+                    // Shuffle for fluid motion
+                    for (var k = coords.length - 1; k > 0; k--) {
+                        var j = Math.floor(Math.random() * (k + 1));
+                        var tmp = coords[k]; coords[k] = coords[j]; coords[j] = tmp;
+                    }
+
+                    var pIdx = 0;
+                    for (var c = 0; c < coords.length; c++) {
+                        var ci = coords[c];
+                        var alpha = pixels[ci + 3];
+                        if (alpha > 0) {
+                            var px = (ci / 4) % ptCanvas.width;
+                            var py = Math.floor((ci / 4) / ptCanvas.width);
+                            var p;
+                            if (pIdx < ptParticles.length) {
+                                p = ptParticles[pIdx];
+                                p.isKilled = false;
+                                pIdx++;
+                            } else {
+                                p = {
+                                    pos: ptGenRandPos(ptCanvas.width / 2, ptCanvas.height / 2, (ptCanvas.width + ptCanvas.height) / 2),
+                                    vel: { x: 0, y: 0 },
+                                    acc: { x: 0, y: 0 },
+                                    target: { x: 0, y: 0 },
+                                    maxSpeed: Math.random() * 6 + 4,
+                                    maxForce: 0,
+                                    particleSize: Math.random() * 6 + 6,
+                                    isKilled: false,
+                                    startColor: { r: 0, g: 0, b: 0 },
+                                    targetColor: { r: 0, g: 0, b: 0 },
+                                    colorWeight: 0,
+                                    colorBlendRate: Math.random() * 0.0275 + 0.0025
+                                };
+                                p.maxForce = p.maxSpeed * 0.05;
+                                ptParticles.push(p);
+                            }
+                            // Color transition
+                            var w = p.colorWeight;
+                            p.startColor = {
+                                r: p.startColor.r + (p.targetColor.r - p.startColor.r) * w,
+                                g: p.startColor.g + (p.targetColor.g - p.startColor.g) * w,
+                                b: p.startColor.b + (p.targetColor.b - p.startColor.b) * w
+                            };
+                            p.targetColor = newColor;
+                            p.colorWeight = 0;
+                            p.target.x = px;
+                            p.target.y = py;
+                        }
+                    }
+                    // Kill remaining
+                    for (var r = pIdx; r < ptParticles.length; r++) {
+                        var pp = ptParticles[r];
+                        if (!pp.isKilled) {
+                            var rp = ptGenRandPos(ptCanvas.width / 2, ptCanvas.height / 2, (ptCanvas.width + ptCanvas.height) / 2);
+                            pp.target.x = rp.x;
+                            pp.target.y = rp.y;
+                            var ww = pp.colorWeight;
+                            pp.startColor = {
+                                r: pp.startColor.r + (pp.targetColor.r - pp.startColor.r) * ww,
+                                g: pp.startColor.g + (pp.targetColor.g - pp.startColor.g) * ww,
+                                b: pp.startColor.b + (pp.targetColor.b - pp.startColor.b) * ww
+                            };
+                            pp.targetColor = { r: 0, g: 0, b: 0 };
+                            pp.colorWeight = 0;
+                            pp.isKilled = true;
+                        }
+                    }
+                }
+
+                function ptMoveParticle(p) {
+                    var proxMult = 1;
+                    var ddx = p.pos.x - p.target.x, ddy = p.pos.y - p.target.y;
+                    var dist = Math.sqrt(ddx * ddx + ddy * ddy);
+                    if (dist < 100) proxMult = dist / 100;
+
+                    var twx = p.target.x - p.pos.x, twy = p.target.y - p.pos.y;
+                    var mag = Math.sqrt(twx * twx + twy * twy);
+                    if (mag > 0) { twx = twx / mag * p.maxSpeed * proxMult; twy = twy / mag * p.maxSpeed * proxMult; }
+
+                    var sx = twx - p.vel.x, sy = twy - p.vel.y;
+                    var sm = Math.sqrt(sx * sx + sy * sy);
+                    if (sm > 0) { sx = sx / sm * p.maxForce; sy = sy / sm * p.maxForce; }
+
+                    p.acc.x += sx; p.acc.y += sy;
+                    p.vel.x += p.acc.x; p.vel.y += p.acc.y;
+                    p.pos.x += p.vel.x; p.pos.y += p.vel.y;
+                    p.acc.x = 0; p.acc.y = 0;
+                }
+
+                function ptDrawParticle(p) {
+                    if (p.colorWeight < 1) p.colorWeight = Math.min(p.colorWeight + p.colorBlendRate, 1);
+                    var cw = p.colorWeight;
+                    var cr = p.startColor.r + (p.targetColor.r - p.startColor.r) * cw;
+                    var cg = p.startColor.g + (p.targetColor.g - p.startColor.g) * cw;
+                    var cb = p.startColor.b + (p.targetColor.b - p.startColor.b) * cw;
+                    ptCtx.fillStyle = 'rgb(' + (cr | 0) + ',' + (cg | 0) + ',' + (cb | 0) + ')';
+                    ptCtx.fillRect(p.pos.x, p.pos.y, 2, 2);
+                }
+
+                // Mouse events
+                ptCanvas.addEventListener('mousedown', function (e) {
+                    ptMouse.pressed = true;
+                    ptMouse.right = e.button === 2;
+                    var rect = ptCanvas.getBoundingClientRect();
+                    ptMouse.x = e.clientX - rect.left;
+                    ptMouse.y = e.clientY - rect.top;
+                }, { passive: true });
+                ptCanvas.addEventListener('mouseup', function () {
+                    ptMouse.pressed = false;
+                    ptMouse.right = false;
+                }, { passive: true });
+                ptCanvas.addEventListener('mousemove', function (e) {
+                    var rect = ptCanvas.getBoundingClientRect();
+                    ptMouse.x = (e.clientX - rect.left) * (ptCanvas.width / rect.width);
+                    ptMouse.y = (e.clientY - rect.top) * (ptCanvas.height / rect.height);
+                }, { passive: true });
+                ptCanvas.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+                function ptAnimFrame() {
+                    var s = animState['particle-text-canvas'];
+                    if (!s || !s.running) { ptRunning = false; return; }
+
+                    // Motion-blur background
+                    ptCtx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+                    ptCtx.fillRect(0, 0, ptCanvas.width, ptCanvas.height);
+
+                    // Move & draw
+                    for (var i = ptParticles.length - 1; i >= 0; i--) {
+                        var p = ptParticles[i];
+                        ptMoveParticle(p);
+                        ptDrawParticle(p);
+                        if (p.isKilled) {
+                            if (p.pos.x < 0 || p.pos.x > ptCanvas.width || p.pos.y < 0 || p.pos.y > ptCanvas.height) {
+                                ptParticles.splice(i, 1);
+                            }
+                        }
+                    }
+
+                    // Right-click destroy
+                    if (ptMouse.pressed && ptMouse.right) {
+                        for (var j = 0; j < ptParticles.length; j++) {
+                            var pp = ptParticles[j];
+                            var ddx = pp.pos.x - ptMouse.x, ddy = pp.pos.y - ptMouse.y;
+                            if (Math.sqrt(ddx * ddx + ddy * ddy) < 50) {
+                                if (!pp.isKilled) {
+                                    var rp = ptGenRandPos(ptCanvas.width / 2, ptCanvas.height / 2, (ptCanvas.width + ptCanvas.height) / 2);
+                                    pp.target.x = rp.x; pp.target.y = rp.y;
+                                    var ww = pp.colorWeight;
+                                    pp.startColor = {
+                                        r: pp.startColor.r + (pp.targetColor.r - pp.startColor.r) * ww,
+                                        g: pp.startColor.g + (pp.targetColor.g - pp.startColor.g) * ww,
+                                        b: pp.startColor.b + (pp.targetColor.b - pp.startColor.b) * ww
+                                    };
+                                    pp.targetColor = { r: 0, g: 0, b: 0 };
+                                    pp.colorWeight = 0;
+                                    pp.isKilled = true;
+                                }
+                            }
+                        }
+                    }
+
+                    // Auto-advance words every ~4s (240 frames at 60fps)
+                    ptFrameCount++;
+                    if (ptFrameCount % 240 === 0) {
+                        ptWordIndex = (ptWordIndex + 1) % ptWords.length;
+                        ptNextWord(ptWords[ptWordIndex]);
+                    }
+
+                    s.rafId = requestAnimationFrame(ptAnimFrame);
+                }
+
+                registerAnim('particle-text-canvas', function () {
+                    ptRunning = true;
+                    ptFrameCount = 0;
+                    ptWordIndex = 0;
+                    // Clear and start with first word
+                    ptCtx.fillStyle = 'black';
+                    ptCtx.fillRect(0, 0, ptCanvas.width, ptCanvas.height);
+                    ptParticles.length = 0;
+                    ptNextWord(ptWords[0]);
+                    ptAnimFrame();
+                });
+            }
         }
 
 

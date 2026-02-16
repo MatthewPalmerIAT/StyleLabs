@@ -1,0 +1,349 @@
+@page
+@model Personal.Pages.Showcase.SilkModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Silk — Style Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+
+        /* Canvas */
+        #silk-canvas {
+            position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0;
+        }
+
+        /* Gradient overlays for depth */
+        .silk-grad-top {
+            position: fixed; inset: 0; z-index: 1; pointer-events: none;
+            background: linear-gradient(180deg, rgba(0,0,0,0.35) 0%, transparent 40%, transparent 60%, rgba(0,0,0,0.5) 100%);
+        }
+        .silk-grad-vignette {
+            position: fixed; inset: 0; z-index: 2; pointer-events: none;
+            background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(0,0,0,0.3) 100%);
+        }
+
+        /* Back */
+        .silk-back {
+            position: fixed; top: 1.25rem; left: 1.25rem; z-index: 30;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.55rem 1.1rem; border-radius: 99px;
+            background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06);
+            color: rgba(255,255,255,0.4); font-size: 0.85rem; font-weight: 500;
+            text-decoration: none; font-family: 'Inter', sans-serif;
+            backdrop-filter: blur(14px); transition: all 0.25s;
+        }
+        .silk-back:hover { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); }
+        .silk-back svg { width: 16px; height: 16px; }
+
+        /* Overlay */
+        .silk-overlay {
+            position: fixed; inset: 0; z-index: 10;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            pointer-events: none; padding: 2rem;
+        }
+        .silk-hero { max-width: 860px; text-align: center; }
+
+        /* Title — huge serif */
+        .silk-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(4rem, 12vw, 12rem); font-weight: 300;
+            line-height: 0.92; letter-spacing: -0.04em;
+            color: #fff; mix-blend-mode: difference;
+            margin-bottom: 32px;
+            text-shadow: 0 0 60px rgba(255,255,255,0.08);
+        }
+
+        /* Subtitle */
+        .silk-tagline {
+            font-family: 'Inter', sans-serif;
+            display: flex; align-items: center; justify-content: center; gap: 20px;
+            font-size: clamp(0.75rem, 1.2vw, 1rem); font-weight: 300;
+            letter-spacing: 0.2em; text-transform: uppercase;
+            color: rgba(255,255,255,0.45); mix-blend-mode: overlay;
+            margin-bottom: 48px;
+        }
+        .silk-tagline-dot { width: 4px; height: 4px; border-radius: 50%; background: rgba(255,255,255,0.25); }
+
+        /* Description */
+        .silk-desc {
+            font-family: 'Inter', sans-serif;
+            font-size: clamp(0.9rem, 1.3vw, 1.05rem); font-weight: 300;
+            color: rgba(255,255,255,0.35); line-height: 1.8;
+            max-width: 480px; margin: 0 auto 42px;
+            text-shadow: 0 1px 10px rgba(0,0,0,0.5);
+        }
+
+        /* CTAs */
+        .silk-ctas {
+            display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;
+            pointer-events: auto; margin-bottom: 56px;
+        }
+        .silk-btn-primary {
+            font-family: 'Inter', sans-serif;
+            padding: 14px 36px; border-radius: 99px; border: none;
+            background: rgba(255,255,255,0.9); color: #111; font-weight: 500; font-size: 0.85rem;
+            cursor: pointer; transition: all 0.3s; letter-spacing: 0.02em;
+        }
+        .silk-btn-primary:hover { background: #fff; transform: scale(1.04); box-shadow: 0 4px 30px rgba(255,255,255,0.12); }
+        .silk-btn-ghost {
+            font-family: 'Inter', sans-serif;
+            padding: 14px 36px; border-radius: 99px;
+            background: transparent; border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.5); font-weight: 400; font-size: 0.85rem;
+            cursor: pointer; transition: all 0.3s; letter-spacing: 0.02em;
+        }
+        .silk-btn-ghost:hover { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.7); }
+
+        /* Metrics */
+        .silk-metrics {
+            display: flex; justify-content: center; gap: 48px; flex-wrap: wrap;
+            pointer-events: auto;
+        }
+        .silk-metric { text-align: center; }
+        .silk-metric-val {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem; font-weight: 400; letter-spacing: -0.02em;
+            color: rgba(255,255,255,0.7);
+        }
+        .silk-metric-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.62rem; color: rgba(255,255,255,0.2); margin-top: 4px;
+            letter-spacing: 0.12em; text-transform: uppercase; font-weight: 400;
+        }
+        .silk-metric-sep {
+            width: 1px; height: 32px; background: rgba(255,255,255,0.05);
+            align-self: center;
+        }
+
+        /* Corner accent */
+        .silk-corner {
+            position: fixed; top: 2rem; right: 2.5rem; z-index: 20;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.6rem; font-weight: 300; letter-spacing: 0.25em; text-transform: uppercase;
+            color: rgba(255,255,255,0.15); mix-blend-mode: overlay;
+        }
+
+        /* Bottom line */
+        .silk-bottom {
+            position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 20;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.58rem; font-weight: 300; letter-spacing: 0.15em; text-transform: uppercase;
+            color: rgba(255,255,255,0.12);
+        }
+
+        /* Animations */
+        @@keyframes silkFadeUp {
+            from { opacity: 0; transform: translateY(36px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @@keyframes silkFadeDown {
+            from { opacity: 0; transform: translateY(-14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @@keyframes silkBlurIn {
+            from { opacity: 0; filter: blur(20px); }
+            to { opacity: 1; filter: blur(0px); }
+        }
+        @@keyframes silkFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .silk-anim-up { animation: silkFadeUp 1s ease-out forwards; opacity: 0; }
+        .silk-anim-down { animation: silkFadeDown 0.8s ease-out forwards; opacity: 0; }
+        .silk-anim-blur { animation: silkBlurIn 1.2s ease-out forwards; opacity: 0; }
+        .silk-anim-fade { animation: silkFadeIn 1s ease-out forwards; opacity: 0; }
+        .silk-dl1 { animation-delay: 0.3s; }
+        .silk-dl2 { animation-delay: 0.6s; }
+        .silk-dl3 { animation-delay: 0.85s; }
+        .silk-dl4 { animation-delay: 1.05s; }
+        .silk-dl5 { animation-delay: 1.25s; }
+        .silk-dl6 { animation-delay: 1.5s; }
+        .silk-dl7 { animation-delay: 1.8s; }
+
+        @@media (max-width: 640px) {
+            .silk-ctas { flex-direction: column; align-items: center; }
+            .silk-metrics { gap: 24px; }
+            .silk-metric-sep { display: none; }
+            .silk-corner { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <a class="silk-back" href="/Showcase/LandingPages">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+        Back
+    </a>
+
+    <span class="silk-corner silk-anim-down silk-dl7">2025</span>
+
+    <canvas id="silk-canvas"></canvas>
+    <div class="silk-grad-top"></div>
+    <div class="silk-grad-vignette"></div>
+
+    <div class="silk-overlay">
+        <div class="silk-hero">
+            <h1 class="silk-title silk-anim-blur silk-dl1">silk</h1>
+
+            <div class="silk-tagline silk-anim-up silk-dl2">
+                <span>flowing</span>
+                <span class="silk-tagline-dot"></span>
+                <span>texture</span>
+                <span class="silk-tagline-dot"></span>
+                <span>art</span>
+            </div>
+
+            <p class="silk-desc silk-anim-up silk-dl3">
+                A design system crafted for those who believe software should feel as
+                refined as the ideas behind it. Quiet elegance, relentless precision.
+            </p>
+
+            <div class="silk-ctas silk-anim-up silk-dl4">
+                <button class="silk-btn-primary" onclick="void(0)">Explore Collection</button>
+                <button class="silk-btn-ghost" onclick="void(0)">View Process</button>
+            </div>
+
+            <div class="silk-metrics silk-anim-fade silk-dl5">
+                <div class="silk-metric">
+                    <div class="silk-metric-val">48px</div>
+                    <div class="silk-metric-label">Grid Base</div>
+                </div>
+                <div class="silk-metric-sep"></div>
+                <div class="silk-metric">
+                    <div class="silk-metric-val">1.618</div>
+                    <div class="silk-metric-label">Golden Ratio</div>
+                </div>
+                <div class="silk-metric-sep"></div>
+                <div class="silk-metric">
+                    <div class="silk-metric-val">∞</div>
+                    <div class="silk-metric-label">Compositions</div>
+                </div>
+                <div class="silk-metric-sep"></div>
+                <div class="silk-metric">
+                    <div class="silk-metric-val">0ms</div>
+                    <div class="silk-metric-label">Jank</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="silk-bottom silk-anim-fade silk-dl6">Crafted with intention</div>
+
+    <script>
+    (function () {
+        var canvas = document.getElementById('silk-canvas');
+        if (!canvas) return;
+        var ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        var time = 0;
+        var speed = 0.02;
+        var scale = 2;
+        var noiseIntensity = 0.8;
+        var raf;
+
+        var G = 2.71828;
+        function noise(x, y) {
+            var rx = G * Math.sin(G * x);
+            var ry = G * Math.sin(G * y);
+            return (rx * ry * (1 + x)) % 1;
+        }
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize, { passive: true });
+
+        function animate() {
+            var w = canvas.width, h = canvas.height;
+
+            // Background gradient
+            var bg = ctx.createLinearGradient(0, 0, w, h);
+            bg.addColorStop(0, '#1a1a1a');
+            bg.addColorStop(0.5, '#2a2a2a');
+            bg.addColorStop(1, '#1a1a1a');
+            ctx.fillStyle = bg;
+            ctx.fillRect(0, 0, w, h);
+
+            // Silk pattern via pixel manipulation
+            var img = ctx.createImageData(w, h);
+            var data = img.data;
+            var tOff = speed * time;
+
+            for (var x = 0; x < w; x += 2) {
+                for (var y = 0; y < h; y += 2) {
+                    var u = (x / w) * scale;
+                    var v = (y / h) * scale;
+
+                    var tex_y = v + 0.03 * Math.sin(8.0 * u - tOff);
+
+                    var pattern = 0.6 + 0.4 * Math.sin(
+                        5.0 * (u + tex_y +
+                            Math.cos(3.0 * u + 5.0 * tex_y) +
+                            0.02 * tOff) +
+                        Math.sin(20.0 * (u + tex_y - 0.1 * tOff))
+                    );
+
+                    var rnd = noise(x, y);
+                    var intensity = Math.max(0, pattern - rnd / 15.0 * noiseIntensity);
+
+                    var r = (123 * intensity) | 0;
+                    var g = (116 * intensity) | 0;
+                    var b = (129 * intensity) | 0;
+
+                    var idx = (y * w + x) * 4;
+                    data[idx]     = r;
+                    data[idx + 1] = g;
+                    data[idx + 2] = b;
+                    data[idx + 3] = 255;
+                    // Fill the 2x2 block
+                    if (x + 1 < w) {
+                        var idx2 = idx + 4;
+                        data[idx2]     = r;
+                        data[idx2 + 1] = g;
+                        data[idx2 + 2] = b;
+                        data[idx2 + 3] = 255;
+                    }
+                    if (y + 1 < h) {
+                        var idx3 = ((y + 1) * w + x) * 4;
+                        data[idx3]     = r;
+                        data[idx3 + 1] = g;
+                        data[idx3 + 2] = b;
+                        data[idx3 + 3] = 255;
+                        if (x + 1 < w) {
+                            var idx4 = idx3 + 4;
+                            data[idx4]     = r;
+                            data[idx4 + 1] = g;
+                            data[idx4 + 2] = b;
+                            data[idx4 + 3] = 255;
+                        }
+                    }
+                }
+            }
+            ctx.putImageData(img, 0, 0);
+
+            // Depth overlay
+            var ov = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, Math.max(w, h) / 2);
+            ov.addColorStop(0, 'rgba(0,0,0,0.1)');
+            ov.addColorStop(1, 'rgba(0,0,0,0.4)');
+            ctx.fillStyle = ov;
+            ctx.fillRect(0, 0, w, h);
+
+            time++;
+            raf = requestAnimationFrame(animate);
+        }
+        animate();
+    })();
+    </script>
+</body>
+</html>

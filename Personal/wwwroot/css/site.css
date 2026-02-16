@@ -1,4 +1,4 @@
-/* ==============================================
+﻿/* ==============================================
    CUSTOM PROPERTIES
    ============================================== */
 :root {
@@ -1019,48 +1019,146 @@ body::before {
     box-shadow: 0 10px 40px rgba(0,0,0,0.3);
 }
 
-/* --- Droplet Morph Button --- */
-.btn-droplet {
+/* Water Fill Button */
+.btn-liquid {
     position: relative;
     padding: 0.85rem 2.5rem;
-    font-family: var(--font-body);
     font-size: 0.95rem;
-    font-weight: 600;
-    color: rgba(200,240,255,0.9);
-    background: linear-gradient(180deg, rgba(0,229,255,0.1), rgba(0,100,150,0.15));
-    border: 1px solid rgba(0,229,255,0.18);
-    border-radius: 50px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.3);
+    background: transparent;
+    border: 2px solid rgba(0,180,255,0.3);
+    border-radius: 12px;
     cursor: pointer;
     overflow: hidden;
-    transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: color 0.5s ease, border-color 0.5s ease;
+    font-family: inherit;
 }
-
-.btn-droplet::before {
+.btn-liquid::before {
     content: '';
     position: absolute;
-    top: 3px;
-    left: 15%;
-    width: 70%;
-    height: 40%;
-    background: linear-gradient(180deg, rgba(255,255,255,0.12), transparent);
-    border-radius: 50px;
-    pointer-events: none;
-    transition: all 0.5s ease;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 0%;
+    background: linear-gradient(180deg, rgba(0,180,255,0.55), rgba(0,120,255,0.85));
+    transition: height 0.6s ease;
+    z-index: 0;
 }
-
-.btn-droplet:hover {
-    border-radius: 48% 52% 52% 48% / 40% 40% 60% 60%;
-    transform: scale(1.08) translateY(-2px);
-    background: linear-gradient(180deg, rgba(0,229,255,0.18), rgba(0,100,150,0.3));
-    border-color: rgba(0,229,255,0.35);
-    box-shadow: 0 10px 30px rgba(0,229,255,0.15), 0 5px 15px rgba(0,0,0,0.2);
+.btn-liquid::after {
+    content: '';
+    position: absolute;
+    left: -20%;
+    width: 140%;
+    height: 18px;
+    bottom: -18px;
+    background: radial-gradient(ellipse, rgba(0,200,255,0.7) 0%, transparent 70%);
+    border-radius: 50%;
+    transition: bottom 0.6s ease;
+    animation: waterWave 2s ease-in-out infinite;
+    z-index: 1;
+}
+.btn-liquid:hover {
     color: #fff;
+    border-color: rgba(0,180,255,0.7);
+}
+.btn-liquid:hover::before {
+    height: 100%;
+}
+.btn-liquid:hover::after {
+    bottom: calc(100% - 10px);
+}
+.btn-liquid-text {
+    position: relative;
+    z-index: 2;
+}
+@keyframes waterWave {
+    0%, 100% { transform: translateX(0) scaleY(1); }
+    50% { transform: translateX(8px) scaleY(1.4); }
 }
 
-.btn-droplet:hover::before {
-    width: 50%;
-    left: 25%;
-    height: 35%;
+/* Aurora Border Button */
+@property --aurora-angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+.btn-aurora {
+    position: relative;
+    padding: 3px;
+    border: none;
+    border-radius: 14px;
+    background: conic-gradient(
+        from var(--aurora-angle, 0deg),
+        #ff0080, #7928ca, #00e5ff,
+        #00ff88, #ff0080
+    );
+    cursor: pointer;
+    animation: auroraRotate 3s linear infinite;
+    font-family: inherit;
+}
+.btn-aurora span {
+    display: block;
+    padding: 0.85rem 2.5rem;
+    background: #0a0a0f;
+    border-radius: 11px;
+    color: #e4e4e7;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: background 0.3s;
+}
+.btn-aurora:hover span {
+    background: #111118;
+}
+.btn-aurora:hover {
+    box-shadow: 0 0 30px rgba(121,40,202,0.3), 0 0 60px rgba(0,229,255,0.15);
+}
+@keyframes auroraRotate {
+    to { --aurora-angle: 360deg; }
+}
+
+/* Confetti Burst Button — gradient border, black fill */
+.btn-particle-burst {
+    position: relative;
+    padding: 3px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #ff0080, #7928ca, #00e5ff, #00ff88);
+    cursor: pointer;
+    overflow: visible;
+    transition: transform 0.15s, box-shadow 0.3s;
+    font-family: inherit;
+}
+.btn-particle-burst span {
+    display: block;
+    padding: 0.85rem 2.5rem;
+    background: #000;
+    border-radius: 11px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: background 0.3s;
+}
+.btn-particle-burst:hover {
+    box-shadow: 0 0 25px rgba(121,40,202,0.25), 0 0 50px rgba(0,229,255,0.12);
+}
+.btn-particle-burst:hover span {
+    background: #0a0a0a;
+}
+.btn-particle-burst:active {
+    transform: scale(0.95);
+}
+.burst-dot {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: burstFly 0.7s ease-out forwards;
+}
+@keyframes burstFly {
+    0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+    100% { opacity: 0; transform: translate(var(--bx), var(--by)) scale(0); }
 }
 
 /* ==============================================
@@ -1766,7 +1864,7 @@ body::before {
     background: transparent;
 }
 
-/* Random character layer — sits behind the gradient */
+/* Random character layer â€” sits behind the gradient */
 .card-evervault-chars {
     position: absolute;
     inset: 0;
@@ -1790,7 +1888,7 @@ body::before {
     opacity: 0.5;
 }
 
-/* Green-to-blue gradient — revealed via radial mask at cursor */
+/* Green-to-blue gradient â€” revealed via radial mask at cursor */
 .card-evervault-gradient {
     position: absolute;
     inset: 0;
@@ -1807,7 +1905,7 @@ body::before {
     opacity: 1;
 }
 
-/* Overlay characters — visible through gradient mask for encrypted look */
+/* Overlay characters â€” visible through gradient mask for encrypted look */
 .card-evervault-chars-overlay {
     position: absolute;
     inset: 0;
@@ -1858,6 +1956,311 @@ body::before {
     color: #fff;
     font-size: 2rem;
     font-weight: 700;
+}
+
+/* ========== CYBERPUNK CARD ========== */
+.card-cyber {
+    position: relative;
+    width: 300px;
+    padding: 2rem;
+    background: rgba(0,0,0,0.85);
+    border: 1px solid rgba(0,255,200,0.15);
+    clip-path: polygon(0 12px, 12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%);
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    overflow: hidden;
+    transition: border-color 0.3s;
+}
+.card-cyber:hover {
+    border-color: rgba(0,255,200,0.35);
+}
+.card-cyber-scanline {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,255,200,0.02) 2px, rgba(0,255,200,0.02) 4px);
+    pointer-events: none;
+    animation: scanScroll 8s linear infinite;
+}
+@keyframes scanScroll {
+    to { background-position: 0 200px; }
+}
+.card-cyber-corner {
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(0,255,200,0.5);
+}
+.card-cyber-tl {
+    top: -1px;
+    left: -1px;
+    border-right: none;
+    border-bottom: none;
+}
+.card-cyber-br {
+    bottom: -1px;
+    right: -1px;
+    border-left: none;
+    border-top: none;
+}
+.card-cyber-tag {
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    color: rgba(0,255,200,0.5);
+    margin-bottom: 12px;
+}
+.card-cyber h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    color: #fff;
+    margin: 0 0 10px;
+    line-height: 1.3;
+}
+.card-cyber p {
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.35);
+    line-height: 1.6;
+    margin: 0 0 16px;
+}
+.card-cyber-bar {
+    height: 3px;
+    background: rgba(0,255,200,0.1);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+.card-cyber-bar-fill {
+    display: block;
+    height: 100%;
+    width: 72%;
+    background: linear-gradient(90deg, #00ffc8, #00e5ff);
+    border-radius: 2px;
+    animation: cyberBarPulse 2s ease-in-out infinite;
+}
+@keyframes cyberBarPulse {
+    0%, 100% { opacity: 0.7; }
+    50% { opacity: 1; }
+}
+.card-cyber-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    color: rgba(0,255,200,0.6);
+}
+.card-cyber-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #00ffc8;
+    box-shadow: 0 0 6px rgba(0,255,200,0.5);
+    animation: cyberDotBlink 1.5s ease-in-out infinite;
+}
+@keyframes cyberDotBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* ========== HOLOGRAPHIC CARD ========== */
+.card-holo {
+    position: relative;
+    width: 300px;
+    padding: 2rem;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    overflow: hidden;
+    transition: transform 0.4s, box-shadow 0.4s;
+}
+.card-holo:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 30px rgba(100,100,255,0.08);
+}
+.card-holo-shine {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 30%, rgba(255,0,128,0.08) 38%, rgba(100,100,255,0.08) 42%, rgba(0,255,200,0.08) 46%, rgba(255,200,0,0.06) 50%, transparent 58%);
+    animation: holoSweep 4s ease-in-out infinite;
+    pointer-events: none;
+}
+@keyframes holoSweep {
+    0%   { transform: translateX(-100%); }
+    100% { transform: translateX(200%); }
+}
+.card-holo-content {
+    position: relative;
+    z-index: 1;
+}
+.card-holo-number {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.25);
+    letter-spacing: 0.1em;
+    margin-bottom: 14px;
+}
+.card-holo h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 10px;
+    letter-spacing: 0.08em;
+}
+.card-holo p {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.35);
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* ========== TERMINAL CARD ========== */
+.card-terminal {
+    width: 340px;
+    background: #1a1a1a;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    overflow: hidden;
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+.card-terminal:hover {
+    border-color: rgba(255,255,255,0.1);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.card-terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 16px;
+    background: rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.card-terminal-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+.card-terminal-title {
+    margin-left: auto;
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.05em;
+}
+.card-terminal-body {
+    padding: 16px;
+    font-size: 0.78rem;
+    line-height: 1.7;
+}
+.card-terminal-line {
+    white-space: nowrap;
+}
+.card-terminal-prompt {
+    color: #00e5ff;
+    font-weight: 700;
+}
+.card-terminal-cmd {
+    color: #fff;
+}
+.card-terminal-dim {
+    color: #555;
+}
+.card-terminal-success {
+    color: #28c840;
+}
+.card-terminal-cursor {
+    color: #fff;
+    animation: termBlink 1s step-end infinite;
+}
+@keyframes termBlink {
+    50% { opacity: 0; }
+}
+
+/* ========== RADAR PULSE CARD ========== */
+.card-radar {
+    position: relative;
+    width: 280px;
+    height: 280px;
+    background: radial-gradient(circle, rgba(0,255,100,0.03) 0%, rgba(0,0,0,0.95) 70%);
+    border: 1px solid rgba(0,255,100,0.1);
+    border-radius: 50%;
+    overflow: hidden;
+    transition: border-color 0.3s;
+}
+.card-radar:hover {
+    border-color: rgba(0,255,100,0.25);
+}
+.card-radar-sweep {
+    position: absolute;
+    inset: 0;
+    background: conic-gradient(from 0deg, transparent 0deg, rgba(0,255,100,0.15) 30deg, transparent 60deg);
+    animation: radarSpin 3s linear infinite;
+}
+@keyframes radarSpin {
+    to { transform: rotate(360deg); }
+}
+.card-radar-ring {
+    position: absolute;
+    border: 1px solid rgba(0,255,100,0.08);
+    border-radius: 50%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+.card-radar-r1 { width: 40%; height: 40%; }
+.card-radar-r2 { width: 65%; height: 65%; }
+.card-radar-r3 { width: 90%; height: 90%; }
+/* Cross-hairs */
+.card-radar::before,
+.card-radar::after {
+    content: '';
+    position: absolute;
+    background: rgba(0,255,100,0.05);
+}
+.card-radar::before {
+    width: 1px;
+    height: 100%;
+    left: 50%;
+    top: 0;
+}
+.card-radar::after {
+    width: 100%;
+    height: 1px;
+    top: 50%;
+    left: 0;
+}
+.card-radar-blip {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #00ff64;
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(0,255,100,0.6);
+    animation: blipPulse 2s ease-in-out infinite;
+}
+.card-radar-b1 { top: 30%; left: 60%; animation-delay: 0s; }
+.card-radar-b2 { top: 55%; left: 35%; animation-delay: 0.7s; }
+.card-radar-b3 { top: 40%; left: 72%; animation-delay: 1.4s; }
+@keyframes blipPulse {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.3); }
+}
+.card-radar-info {
+    position: absolute;
+    bottom: 14%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 1;
+}
+.card-radar-label {
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    color: rgba(0,255,100,0.4);
+    font-family: 'JetBrains Mono', monospace;
+    margin-bottom: 2px;
+}
+.card-radar-val {
+    font-size: 0.65rem;
+    color: rgba(0,255,100,0.7);
+    font-family: 'JetBrains Mono', monospace;
 }
 
 /* ==============================================
@@ -3077,654 +3480,7 @@ SCROLL REVEAL ANIMATIONS
     color: var(--accent-cyan);
 }
 
-/* ==============================================
-   PARALLAX PAGE
-   ============================================== */
-.plx-page {
-    width: 100%;
-    overflow-x: hidden;
-}
-
-.plx-code-ref {
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 1.5rem 2rem 3rem;
-}
-
-.plx-code-ref .showcase-item {
-    margin: 0;
-}
-
-.plx-section {
-    position: relative;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 6rem 2rem;
-    overflow: hidden;
-}
-
-/* --- Shared Elements --- */
-.plx-layer {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    will-change: transform;
-}
-
-[data-plx-y], [data-plx-x], [data-plx-rotate], [data-plx-scale], [data-plx-opacity], [data-plx-skew] {
-    will-change: transform, filter, opacity;
-}
-
-.plx-section-label {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.plx-num {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    color: var(--accent-cyan);
-    letter-spacing: 0.15em;
-    margin-bottom: 0.5rem;
-}
-
-.plx-section-title {
-    font-size: clamp(1.6rem, 4vw, 2.4rem);
-    font-weight: 800;
-    color: var(--text-primary);
-}
-
-.plx-content {
-    text-align: center;
-    position: relative;
-    z-index: 2;
-}
-
-.plx-title {
-    font-size: clamp(2.2rem, 6vw, 4rem);
-    font-weight: 900;
-    color: var(--text-primary);
-    line-height: 1.1;
-    margin-bottom: 1rem;
-}
-
-.plx-subtitle {
-    font-size: clamp(0.9rem, 2vw, 1.1rem);
-    color: var(--text-muted);
-    max-width: 500px;
-    margin: 0 auto;
-    line-height: 1.7;
-}
-
-/* --- 2. Drift Split --- */
-.plx-drift-section {
-    gap: 2rem;
-}
-
-.plx-drift-row {
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 2rem;
-}
-
-.plx-drift-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-lg);
-    padding: 2rem;
-    max-width: 300px;
-    backdrop-filter: blur(8px);
-    transition: border-color 0.4s ease;
-}
-
-.plx-drift-card:hover {
-    border-color: rgba(0,229,255,0.2);
-}
-
-.plx-drift-card--wide {
-    max-width: 500px;
-    text-align: center;
-}
-
-.plx-drift-card h3 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-}
-
-.plx-drift-card p {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    line-height: 1.6;
-}
-
-.plx-drift-icon {
-    font-size: 1.5rem;
-    color: var(--accent-cyan);
-    margin-bottom: 1rem;
-}
-
-/* --- 3. Zoom Reveal --- */
-.plx-zoom-section {
-    perspective: 600px;
-}
-
-.plx-zoom-target {
-    position: relative;
-    z-index: 2;
-}
-
-.plx-zoom-inner {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-xl);
-    padding: 3rem 4rem;
-    text-align: center;
-    max-width: 420px;
-    backdrop-filter: blur(12px);
-}
-
-.plx-zoom-inner h3 {
-    font-size: 1.4rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    margin-bottom: 0.75rem;
-}
-
-.plx-zoom-inner p {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    line-height: 1.6;
-}
-
-.plx-zoom-icon {
-    font-size: 2rem;
-    color: var(--accent-cyan);
-    margin-bottom: 1.5rem;
-    display: block;
-}
-
-.plx-zoom-bg-ring {
-    position: absolute;
-    width: 300px;
-    height: 300px;
-    border: 1px solid rgba(139,92,246,0.08);
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    margin-left: -150px;
-    margin-top: -150px;
-    z-index: 0;
-}
-
-.plx-zoom-bg-ring--sm {
-    width: 180px;
-    height: 180px;
-    margin-left: -90px;
-    margin-top: -90px;
-    border-color: rgba(0,229,255,0.06);
-}
-
-/* --- 4. Rotation Orbit --- */
-.plx-orbit-wrap {
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.plx-orbit-card {
-    width: 120px;
-    height: 120px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-lg);
-    backdrop-filter: blur(8px);
-    transition: border-color 0.4s ease;
-}
-
-.plx-orbit-card:hover {
-    border-color: rgba(139,92,246,0.25);
-}
-
-.plx-orbit-card i {
-    font-size: 1.6rem;
-    color: var(--accent-purple);
-}
-
-.plx-orbit-card span {
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-}
-
-/* --- 5. Text Shear --- */
-.plx-shear-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.3rem;
-}
-
-.plx-shear-line {
-    font-size: clamp(1.8rem, 5vw, 3.5rem);
-    font-weight: 900;
-    color: var(--text-primary);
-    white-space: nowrap;
-    line-height: 1.3;
-    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.plx-shear-line:nth-child(2n) {
-    background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink), var(--accent-cyan));
-    -webkit-background-clip: text;
-    background-clip: text;
-}
-
-/* --- 6. Perspective Depth --- */
-.plx-perspective-section {
-    perspective: 800px;
-}
-
-.plx-persp-wrap {
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 2rem;
-}
-
-.plx-persp-card {
-    width: 150px;
-    height: 180px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-lg);
-    backdrop-filter: blur(8px);
-    transition: border-color 0.4s ease, box-shadow 0.4s ease;
-}
-
-.plx-persp-card:hover {
-    border-color: rgba(0,229,255,0.2);
-    box-shadow: 0 8px 40px rgba(0,229,255,0.06);
-}
-
-.plx-persp-card i {
-    font-size: 2rem;
-    color: var(--accent-cyan);
-}
-
-.plx-persp-card span {
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-}
-
-.plx-persp-card:nth-child(2) i { color: var(--accent-purple); }
-.plx-persp-card:nth-child(3) i { color: var(--accent-pink); }
-
-.plx-persp-hint {
-    font-size: 0.9rem;
-    color: var(--text-muted);
-    text-align: center;
-    max-width: 450px;
-}
-
-/* --- End Section --- */
-.plx-end-section {
-    min-height: 60vh;
-}
-
-.plx-end-icon {
-    font-size: 3rem;
-    color: var(--accent-cyan);
-    display: block;
-    margin-bottom: 1.5rem;
-    filter: drop-shadow(0 0 20px rgba(0,229,255,0.3));
-}
-
-/* --- 7. Horizontal Marquee --- */
-.plx-marquee-section {
-    gap: 1.5rem;
-}
-
-.plx-marquee-wrap {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    overflow: hidden;
-}
-
-.plx-marquee-band {
-    white-space: nowrap;
-    font-size: clamp(2rem, 5vw, 4rem);
-    font-weight: 900;
-    letter-spacing: 0.04em;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(255,255,255,0.1);
-    will-change: transform;
-}
-
-.plx-marquee-band span {
-    display: inline-block;
-}
-
-.plx-marquee-band--reverse {
-    -webkit-text-stroke-color: rgba(0,229,255,0.15);
-}
-
-.plx-marquee-band--sm {
-    font-size: clamp(0.9rem, 2vw, 1.3rem);
-    font-family: var(--font-mono);
-    font-weight: 500;
-    letter-spacing: 0.15em;
-    -webkit-text-stroke: none;
-    color: var(--text-muted);
-    opacity: 0.4;
-}
-
-/* --- 8. Stagger Cascade --- */
-.plx-stagger-section {
-    gap: 2rem;
-}
-
-.plx-stagger-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 120px);
-    gap: 1.5rem;
-    justify-content: center;
-}
-
-.plx-stagger-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    width: 120px;
-    height: 120px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-lg);
-    backdrop-filter: blur(8px);
-    transition: border-color 0.4s ease, box-shadow 0.4s ease;
-    will-change: transform, opacity;
-}
-
-.plx-stagger-item:hover {
-    border-color: rgba(0,229,255,0.25);
-    box-shadow: 0 0 30px rgba(0,229,255,0.08);
-}
-
-.plx-stagger-item i {
-    font-size: 1.5rem;
-    color: var(--accent-cyan);
-}
-
-.plx-stagger-item:nth-child(2) i { color: var(--accent-purple); }
-.plx-stagger-item:nth-child(3) i { color: var(--accent-pink); }
-.plx-stagger-item:nth-child(4) i { color: var(--accent-orange); }
-.plx-stagger-item:nth-child(5) i { color: var(--accent-green); }
-.plx-stagger-item:nth-child(6) i { color: var(--accent-purple); }
-.plx-stagger-item:nth-child(7) i { color: var(--accent-pink); }
-.plx-stagger-item:nth-child(8) i { color: var(--accent-orange); }
-.plx-stagger-item:nth-child(9) i { color: var(--accent-cyan); }
-
-.plx-stagger-item span {
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text-muted);
-}
-
-/* --- 9. Color Morph --- */
-.plx-colormorph-section {
-    position: relative;
-    overflow: hidden;
-}
-
-.plx-colormorph-bg {
-    position: absolute;
-    inset: -20%;
-    background:
-        radial-gradient(ellipse 50% 60% at 30% 40%, rgba(0,229,255,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 50% 50% at 70% 60%, rgba(139,92,246,0.12) 0%, transparent 60%),
-        radial-gradient(ellipse 40% 40% at 50% 80%, rgba(236,72,153,0.1) 0%, transparent 60%);
-    will-change: filter;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.plx-colormorph-orbs {
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    z-index: 1;
-}
-
-.plx-colormorph-orb {
-    position: absolute;
-    width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(0,229,255,0.08), transparent 70%);
-    top: 20%;
-    left: 15%;
-    will-change: transform;
-}
-
-.plx-colormorph-orb--2 {
-    width: 160px;
-    height: 160px;
-    background: radial-gradient(circle, rgba(139,92,246,0.08), transparent 70%);
-    top: 50%;
-    left: auto;
-    right: 15%;
-}
-
-.plx-colormorph-orb--3 {
-    width: 120px;
-    height: 120px;
-    background: radial-gradient(circle, rgba(236,72,153,0.08), transparent 70%);
-    top: 70%;
-    left: 50%;
-}
-
-/* --- 10. Split Typography --- */
-.plx-split-section {
-    gap: 2rem;
-}
-
-.plx-split-word {
-    display: flex;
-    justify-content: center;
-    gap: 0.2rem;
-}
-
-.plx-split-char {
-    font-size: clamp(3rem, 10vw, 8rem);
-    font-weight: 900;
-    line-height: 1;
-    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    will-change: transform;
-    display: inline-block;
-}
-
-/* --- 11. Skew Wave --- */
-.plx-skewwave-section {
-    gap: 2rem;
-}
-
-.plx-skewwave-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 100%;
-    max-width: 600px;
-}
-
-.plx-skewwave-bar {
-    height: 12px;
-    border-radius: 6px;
-    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple), var(--accent-pink));
-    opacity: 0.4;
-    will-change: transform;
-    transition: opacity 0.4s ease;
-}
-
-.plx-skewwave-bar:nth-child(2) {
-    background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink), var(--accent-orange));
-    opacity: 0.35;
-}
-
-.plx-skewwave-bar:nth-child(3) {
-    background: linear-gradient(90deg, var(--accent-pink), var(--accent-orange), var(--accent-green));
-    opacity: 0.3;
-}
-
-.plx-skewwave-bar:nth-child(4) {
-    background: linear-gradient(90deg, var(--accent-orange), var(--accent-green), var(--accent-cyan));
-    opacity: 0.35;
-}
-
-.plx-skewwave-bar:nth-child(5) {
-    background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan), var(--accent-purple));
-    opacity: 0.3;
-}
-
-.plx-skewwave-bar:nth-child(6) {
-    background: linear-gradient(90deg, var(--accent-cyan), var(--accent-pink), var(--accent-purple));
-    opacity: 0.25;
-}
-
-/* --- 12. Particle Constellation --- */
-.plx-constellation-section {
-    position: relative;
-}
-
-.plx-constellation-canvas {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-}
-
-/* --- 13. Accordion Reveal --- */
-.plx-accordion-section {
-    gap: 2rem;
-}
-
-.plx-accordion-stack {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    width: 100%;
-    max-width: 550px;
-}
-
-.plx-accordion-panel {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid var(--glass-border);
-    border-radius: var(--radius-lg);
-    padding: 1.5rem 2rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 1.25rem;
-    will-change: transform;
-    transition: border-color 0.4s ease, box-shadow 0.4s ease;
-}
-
-.plx-accordion-panel:hover {
-    border-color: rgba(0,229,255,0.2);
-    box-shadow: 0 4px 30px rgba(0,229,255,0.05);
-}
-
-.plx-accordion-num {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 700;
-    color: var(--accent-cyan);
-    background: rgba(0,229,255,0.08);
-    border-radius: 6px;
-    padding: 0.3rem 0.6rem;
-    flex-shrink: 0;
-    margin-top: 0.1rem;
-}
-
-.plx-accordion-panel:nth-child(2) .plx-accordion-num {
-    color: var(--accent-purple);
-    background: rgba(139,92,246,0.08);
-}
-
-.plx-accordion-panel:nth-child(3) .plx-accordion-num {
-    color: var(--accent-pink);
-    background: rgba(236,72,153,0.08);
-}
-
-.plx-accordion-panel:nth-child(4) .plx-accordion-num {
-    color: var(--accent-orange);
-    background: rgba(245,158,11,0.08);
-}
-
-.plx-accordion-panel h3 {
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: var(--text-primary);
-    margin: 0 0 0.25rem;
-}
-
-.plx-accordion-panel p {
-    font-size: 0.85rem;
-    color: var(--text-muted);
-    line-height: 1.6;
-    margin: 0;
-}
-
-/* --- Parallax responsive --- */
-@media (max-width: 768px) {
-    .plx-section { padding: 4rem 1.25rem; min-height: 80vh; }
-    .plx-drift-row { flex-direction: column; align-items: center; }
-    .plx-orbit-wrap { gap: 1rem; }
-    .plx-orbit-card { width: 100px; height: 100px; }
-    .plx-persp-wrap { gap: 1rem; }
-    .plx-persp-card { width: 120px; height: 140px; }
-    .plx-zoom-inner { padding: 2rem; }
-    .plx-stagger-grid { grid-template-columns: repeat(3, 100px); gap: 1rem; }
-    .plx-stagger-item { width: 100px; height: 100px; }
-    .plx-accordion-panel { padding: 1.25rem 1.25rem; }
-    .plx-skewwave-wrap { max-width: 100%; }
-}
+/* PARALLAX PAGE REMOVED */
 
 /* ==============================================
    RESPONSIVE

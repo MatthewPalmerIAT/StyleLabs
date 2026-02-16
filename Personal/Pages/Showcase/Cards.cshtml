@@ -728,5 +728,265 @@ card.addEventListener('mousemove', (e) => {
                 </div>
             </div>
 
+        <!-- Cyberpunk Card -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Cyberpunk <span class="badge">CSS</span></h3>
+            <div class="preview-panel">
+                <div class="card-cyber">
+                    <div class="card-cyber-scanline"></div>
+                    <div class="card-cyber-corner card-cyber-tl"></div>
+                    <div class="card-cyber-corner card-cyber-br"></div>
+                    <div class="card-cyber-tag">SYS://ONLINE</div>
+                    <h3>NEURAL<br>INTERFACE</h3>
+                    <p>Biometric authentication enabled. Synaptic bridge active. Latency: 0.02ms.</p>
+                    <div class="card-cyber-bar">
+                        <span class="card-cyber-bar-fill"></span>
+                    </div>
+                    <div class="card-cyber-status">
+                        <span class="card-cyber-dot"></span> CONNECTED
+                    </div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.card-cyber {
+  position: relative;
+  width: 300px; padding: 2rem;
+  background: rgba(0,0,0,0.85);
+  border: 1px solid rgba(0,255,200,0.15);
+  clip-path: polygon(
+    0 12px, 12px 0, 100% 0,
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%, 0 100%);
+  font-family: 'JetBrains Mono', monospace;
+  overflow: hidden;
+}
+/* Scanline overlay */
+.card-cyber-scanline {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    0deg, transparent,
+    transparent 2px,
+    rgba(0,255,200,0.02) 2px,
+    rgba(0,255,200,0.02) 4px);
+  pointer-events: none;
+  animation: scanScroll 8s linear infinite;
+}
+/* Clipped corners */
+.card-cyber-corner {
+  position: absolute;
+  width: 18px; height: 18px;
+  border: 2px solid rgba(0,255,200,0.5);
+}
+.card-cyber-tl {
+  top: -1px; left: -1px;
+  border-right: none; border-bottom: none;
+}
+.card-cyber-br {
+  bottom: -1px; right: -1px;
+  border-left: none; border-top: none;
+}
+
+@@keyframes scanScroll {
+  to { background-position: 0 100%; }
+}</code></pre>
+            </div>
         </div>
+
+        <!-- Holographic Card -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Holographic <span class="badge">CSS</span></h3>
+            <div class="preview-panel">
+                <div class="card-holo">
+                    <div class="card-holo-shine"></div>
+                    <div class="card-holo-content">
+                        <div class="card-holo-number">&#9830; 42</div>
+                        <h3>HOLOGRAPHIC</h3>
+                        <p>Prismatic refraction surface with animated light sweep and rainbow edge diffraction.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.card-holo {
+  position: relative;
+  width: 300px;
+  padding: 2rem;
+  background: linear-gradient(135deg,
+    #1a1a2e 0%, #16213e 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  overflow: hidden;
+}
+/* Rainbow shimmer sweep */
+.card-holo-shine {
+  position: absolute; inset: 0;
+  background: linear-gradient(
+    105deg,
+    transparent 30%,
+    rgba(255,0,128,0.08) 38%,
+    rgba(100,100,255,0.08) 42%,
+    rgba(0,255,200,0.08) 46%,
+    rgba(255,200,0,0.06) 50%,
+    transparent 58%);
+  animation: holoSweep 4s ease-in-out infinite;
+}
+@@keyframes holoSweep {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Terminal Card -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Terminal <span class="badge">CSS</span></h3>
+            <div class="preview-panel">
+                <div class="card-terminal">
+                    <div class="card-terminal-header">
+                        <span class="card-terminal-dot" style="background:#ff5f57"></span>
+                        <span class="card-terminal-dot" style="background:#febc2e"></span>
+                        <span class="card-terminal-dot" style="background:#28c840"></span>
+                        <span class="card-terminal-title">zsh — 80&#215;24</span>
+                    </div>
+                    <div class="card-terminal-body">
+                        <div class="card-terminal-line"><span class="card-terminal-prompt">~</span> <span class="card-terminal-cmd">npm run deploy</span></div>
+                        <div class="card-terminal-line card-terminal-dim">&#9656; Compiling 847 modules...</div>
+                        <div class="card-terminal-line card-terminal-dim">&#9656; Optimizing assets...</div>
+                        <div class="card-terminal-line card-terminal-success">&#10004; Build completed in 1.2s</div>
+                        <div class="card-terminal-line card-terminal-success">&#10004; Deployed to production</div>
+                        <div class="card-terminal-line"><span class="card-terminal-prompt">~</span> <span class="card-terminal-cursor">|</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.card-terminal {
+  width: 340px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  overflow: hidden;
+  font-family: 'JetBrains Mono', monospace;
+}
+.card-terminal-header {
+  display: flex; align-items: center;
+  gap: 6px; padding: 12px 16px;
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.card-terminal-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+}
+.card-terminal-body {
+  padding: 16px;
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+.card-terminal-prompt {
+  color: #00e5ff;
+}
+.card-terminal-cmd { color: #fff; }
+.card-terminal-dim { color: #555; }
+.card-terminal-success { color: #28c840; }
+.card-terminal-cursor {
+  animation: blink 1s step-end infinite;
+}
+@@keyframes blink {
+  50% { opacity: 0; }
+}</code></pre>
+            </div>
+        </div>
+
+        <!-- Radar Pulse Card -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Radar Pulse <span class="badge">CSS</span></h3>
+            <div class="preview-panel">
+                <div class="card-radar">
+                    <div class="card-radar-sweep"></div>
+                    <div class="card-radar-ring card-radar-r1"></div>
+                    <div class="card-radar-ring card-radar-r2"></div>
+                    <div class="card-radar-ring card-radar-r3"></div>
+                    <div class="card-radar-blip card-radar-b1"></div>
+                    <div class="card-radar-blip card-radar-b2"></div>
+                    <div class="card-radar-blip card-radar-b3"></div>
+                    <div class="card-radar-info">
+                        <div class="card-radar-label">SCANNING</div>
+                        <div class="card-radar-val">3 targets detected</div>
+                    </div>
+                </div>
+            </div>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">CSS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-css">.card-radar {
+  position: relative;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle,
+    rgba(0,255,100,0.03) 0%,
+    rgba(0,0,0,0.95) 70%);
+  border: 1px solid rgba(0,255,100,0.1);
+  border-radius: 50%;
+  overflow: hidden;
+}
+/* Rotating sweep beam */
+.card-radar-sweep {
+  position: absolute;
+  inset: 0;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(0,255,100,0.15) 30deg,
+    transparent 60deg);
+  animation: radarSpin 3s linear infinite;
+}
+/* Concentric rings */
+.card-radar-ring {
+  position: absolute;
+  border: 1px solid rgba(0,255,100,0.08);
+  border-radius: 50%;
+}
+/* Blinking target blips */
+.card-radar-blip {
+  position: absolute;
+  width: 6px; height: 6px;
+  background: #00ff64;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(0,255,100,0.6);
+  animation: blipPulse 2s ease-in-out infinite;
+}
+
+@@keyframes radarSpin { to { transform: rotate(360deg); } }
+@@keyframes blipPulse {
+  0%,100% { opacity:0.3; transform:scale(0.8); }
+  50% { opacity:1; transform:scale(1.3); }
+}</code></pre>
+            </div>
+        </div>
+
     </div>
+</div>

@@ -130,6 +130,21 @@ function prettifyJS(src) {
             html: '<button class="btn">Hover Me</button>',
             css: B + '\n.btn{padding:1rem 3rem;font-size:1.1rem;font-weight:600;color:#e4e4e7;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:12px;cursor:pointer;transition:transform .3s cubic-bezier(.23,1,.32,1),background .3s,box-shadow .3s;will-change:transform;font-family:inherit}\n.btn:hover{background:rgba(255,255,255,.1);box-shadow:0 10px 40px rgba(0,0,0,.3)}',
             js: 'var b=document.querySelector(".btn");b.addEventListener("mousemove",function(e){var r=b.getBoundingClientRect();var x=e.clientX-r.left-r.width/2;var y=e.clientY-r.top-r.height/2;b.style.transform="translate("+x*.15+"px,"+y*.15+"px)"});b.addEventListener("mouseleave",function(){b.style.transform="translate(0,0)"});'
+        },
+        'Liquid Fill': {
+            html: '<button class="btn"><span class="txt">Dive In</span></button>',
+            css: B + '\n.btn{position:relative;padding:1rem 3rem;font-size:1.1rem;font-weight:700;color:rgba(255,255,255,.3);background:transparent;border:2px solid rgba(0,180,255,.3);border-radius:12px;cursor:pointer;overflow:hidden;transition:color .5s,border-color .5s;font-family:inherit}\n.btn::before{content:"";position:absolute;left:0;right:0;bottom:0;height:0%;background:linear-gradient(180deg,rgba(0,180,255,.55),rgba(0,120,255,.85));transition:height .6s;z-index:0}\n.btn::after{content:"";position:absolute;left:-20%;width:140%;height:18px;bottom:-18px;background:radial-gradient(ellipse,rgba(0,200,255,.7) 0%,transparent 70%);border-radius:50%;transition:bottom .6s;animation:ww 2s ease-in-out infinite;z-index:1}\n.btn:hover{color:#fff;border-color:rgba(0,180,255,.7)}\n.btn:hover::before{height:100%}\n.btn:hover::after{bottom:calc(100% - 10px)}\n.txt{position:relative;z-index:2}\n@keyframes ww{0%,100%{transform:translateX(0) scaleY(1)}50%{transform:translateX(8px) scaleY(1.4)}}',
+            js: ''
+        },
+        'Aurora Border': {
+            html: '<button class="btn"><span>Hover Me</span></button>',
+            css: B + '\n@property --aa{syntax:"<angle>";initial-value:0deg;inherits:false}\n.btn{position:relative;padding:3px;border:none;border-radius:14px;background:conic-gradient(from var(--aa,0deg),#ff0080,#7928ca,#00e5ff,#00ff88,#ff0080);cursor:pointer;animation:ar 3s linear infinite;font-family:inherit}\n.btn span{display:block;padding:1rem 3rem;background:#0a0a0f;border-radius:11px;color:#e4e4e7;font-weight:600;font-size:1.1rem;transition:background .3s}\n.btn:hover span{background:#111118}\n.btn:hover{box-shadow:0 0 30px rgba(121,40,202,.3),0 0 60px rgba(0,229,255,.15)}\n@keyframes ar{to{--aa:360deg}}',
+            js: ''
+        },
+        'Particle Burst': {
+            html: '<button class="btn"><span>Click Me</span></button>',
+            css: B + '\n.btn{position:relative;padding:3px;border:none;border-radius:14px;background:linear-gradient(135deg,#ff0080,#7928ca,#00e5ff,#00ff88);cursor:pointer;overflow:visible;transition:transform .15s,box-shadow .3s;font-family:inherit}\n.btn span{display:block;padding:1rem 3rem;background:#000;border-radius:11px;color:#fff;font-weight:700;font-size:1.1rem;transition:background .3s}\n.btn:hover{box-shadow:0 0 25px rgba(121,40,202,.25),0 0 50px rgba(0,229,255,.12)}\n.btn:hover span{background:#0a0a0a}\n.btn:active{transform:scale(.95)}\n.bd{position:absolute;width:6px;height:6px;border-radius:50%;pointer-events:none;animation:bf .7s ease-out forwards}\n@keyframes bf{0%{opacity:1;transform:translate(0,0) scale(1)}100%{opacity:0;transform:translate(var(--bx),var(--by)) scale(0)}}',
+            js: 'document.querySelector(".btn").addEventListener("click",function(){for(var i=0;i<20;i++){var d=document.createElement("span");d.className="bd";var a=(i/20)*Math.PI*2;var dist=40+Math.random()*70;var bx=Math.cos(a)*dist;var by=Math.sin(a)*dist;d.style.cssText="--bx:"+bx+"px;--by:"+by+"px;left:50%;top:50%;background:hsl("+i*18+",85%,60%)";this.appendChild(d);setTimeout(function(el){el.remove()},700,d)}});'
         }
     },
 
@@ -154,6 +169,31 @@ function prettifyJS(src) {
             html: '<div class="card"><h3>Animated Border</h3><p>A conic-gradient border that continuously rotates around the card.</p></div>',
             css: B + '\n@property --ba{syntax:"<angle>";initial-value:0deg;inherits:false}\n.card{position:relative;width:300px;padding:2rem;border-radius:20px;background:#0e0e16;z-index:1}\n.card::before{content:"";position:absolute;inset:-2px;border-radius:22px;background:conic-gradient(from var(--ba),#00e5ff,#8b5cf6,#ec4899,#00e5ff);z-index:-2;animation:rb 4s linear infinite}\n.card::after{content:"";position:absolute;inset:0;border-radius:20px;background:#0e0e16;z-index:-1}\n@keyframes rb{to{--ba:360deg}}h3{margin:0 0 .5rem;font-weight:700}p{font-size:.875rem;color:#71717a;margin:0;line-height:1.6}',
             js: ''
+        },
+        'Deep Sea Caustics': {
+            html: '<div class="card"><div class="caustics"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><h3>Deep Sea</h3><p>Animated underwater caustic light patterns with rising bubbles.</p></div>',
+            css: B + '\n.card{position:relative;width:300px;padding:2rem;background:linear-gradient(180deg,#002233,#001018);border:1px solid rgba(0,229,255,0.1);border-radius:20px;overflow:hidden}\n.caustics{position:absolute;inset:0;pointer-events:none}\n.caustics::before,.caustics::after{content:"";position:absolute;width:150%;height:150%;top:-25%;left:-25%}\n.caustics::before{background:radial-gradient(circle 60px at 30% 40%,rgba(0,229,255,0.2),transparent),radial-gradient(circle 80px at 75% 25%,rgba(0,180,220,0.15),transparent);animation:sc1 8s ease-in-out infinite}\n.caustics::after{background:radial-gradient(circle 50px at 60% 70%,rgba(0,229,255,0.15),transparent),radial-gradient(circle 70px at 20% 80%,rgba(0,180,220,0.1),transparent);animation:sc1 10s ease-in-out infinite reverse}\n@keyframes sc1{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(-8px,12px) rotate(-1deg)}}\n.bubble{position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,0.15),transparent);border:1px solid rgba(255,255,255,0.06);animation:bub linear infinite}\n.bubble:nth-child(2){width:8px;height:8px;left:20%;animation-duration:4s}\n.bubble:nth-child(3){width:5px;height:5px;left:55%;animation-duration:5s;animation-delay:1s}\n.bubble:nth-child(4){width:6px;height:6px;left:75%;animation-duration:6s;animation-delay:2s}\n@keyframes bub{0%{bottom:-5%;opacity:0}10%{opacity:.7}100%{bottom:105%;opacity:0}}\nh3{position:relative;margin:0 0 .5rem;font-weight:700;color:#fff}p{position:relative;font-size:.875rem;color:#71717a;margin:0;line-height:1.6}',
+            js: ''
+        },
+        'Liquid Glass': {
+            html: '<div class="card"><h3>Liquid Glass</h3><p>Dual animated waves flow across the top edge, like a card submerged in water.</p></div>',
+            css: B + '\n.card{position:relative;width:300px;padding:2.5rem 2rem 2rem;background:linear-gradient(180deg,rgba(0,60,90,0.4) 0%,rgba(8,8,13,0.95) 50%);border:1px solid rgba(0,180,220,0.1);border-radius:20px;overflow:hidden}\n.card::before{content:"";position:absolute;top:-20px;left:-20%;width:140%;height:60px;background:rgba(0,229,255,0.08);border-radius:0 0 50% 50%;animation:w1 5s ease-in-out infinite}\n.card::after{content:"";position:absolute;top:-25px;left:-30%;width:160%;height:55px;background:rgba(0,180,220,0.05);border-radius:0 0 45% 55%;animation:w2 4s ease-in-out infinite}\n@keyframes w1{0%,100%{transform:translateX(0)}50%{transform:translateX(8%)}}\n@keyframes w2{0%,100%{transform:translateX(0)}50%{transform:translateX(-6%)}}\nh3{position:relative;margin:0 0 .5rem;font-weight:700;color:#fff}p{position:relative;font-size:.875rem;color:#71717a;margin:0;line-height:1.6}',
+            js: ''
+        },
+        'Arctic Frost': {
+            html: '<div class="card"><div class="aurora"></div><div class="frost"></div><div class="shard" style="--r:25deg;width:2px;height:30px;top:15%;left:20%"></div><div class="shard" style="--r:-15deg;width:3px;height:25px;top:30%;right:18%"></div><div class="shard" style="--r:40deg;width:2px;height:20px;bottom:25%;left:35%"></div><h3>Arctic Frost</h3><p>Frozen landscape with ice shards and aurora borealis.</p></div>',
+            css: B + '\n.card{position:relative;width:300px;padding:2rem;background:linear-gradient(165deg,#070e1a,#0b1a30,#0a1225);border:1px solid rgba(140,207,255,0.08);border-radius:20px;overflow:hidden}\n.aurora{position:absolute;inset:0;pointer-events:none}\n.aurora::before{content:"";position:absolute;top:-60%;left:-20%;width:140%;height:120%;background:linear-gradient(180deg,transparent 30%,rgba(100,220,255,0.04) 40%,rgba(80,200,180,0.06) 45%,rgba(120,180,255,0.04) 50%,transparent 60%);animation:aw 8s ease-in-out infinite;filter:blur(20px)}\n@keyframes aw{0%,100%{transform:translateY(0) skewY(-2deg)}50%{transform:translateY(15px) skewY(2deg)}}\n.frost{position:absolute;inset:0;pointer-events:none}\n.frost::before,.frost::after{content:"";position:absolute;background:radial-gradient(ellipse,rgba(180,220,255,0.06),transparent 70%);border-radius:50%;animation:fp 6s ease-in-out infinite}\n.frost::before{width:80px;height:60px;bottom:-10px;left:-10px}\n.frost::after{width:60px;height:50px;top:-10px;right:-10px;animation-delay:3s}\n@keyframes fp{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:.7;transform:scale(1.2)}}\n.shard{position:absolute;background:linear-gradient(180deg,rgba(180,220,255,0.15),rgba(200,240,255,0.03));border-radius:2px;pointer-events:none;animation:sf ease-in-out infinite 4s}\n@keyframes sf{0%,100%{opacity:.3;transform:rotate(var(--r)) translateY(0)}50%{opacity:.7;transform:rotate(var(--r)) translateY(-8px)}}\nh3{position:relative;margin:0 0 .5rem;font-weight:700;color:#fff}p{position:relative;font-size:.875rem;color:#71717a;margin:0;line-height:1.6}',
+            js: ''
+        },
+        'Nebula Storm': {
+            html: '<div class="card"><div class="clouds"></div><div class="flare"></div><div class="star"></div><div class="star"></div><div class="star"></div><div class="star"></div><h3>Nebula Storm</h3><p>Cosmic gas clouds rotate while a core flare pulses outward.</p></div>',
+            css: B + '\n.card{position:relative;width:300px;padding:2rem;background:radial-gradient(ellipse at 30% 50%,#1a0836,#0d0520 60%,#08021a);border:1px solid rgba(160,80,255,0.08);border-radius:20px;overflow:hidden}\n.clouds{position:absolute;inset:0;pointer-events:none}\n.clouds::before{content:"";position:absolute;width:200%;height:200%;top:-50%;left:-50%;background:radial-gradient(circle 90px at 40% 45%,rgba(139,92,246,0.12),transparent),radial-gradient(circle 60px at 65% 60%,rgba(236,72,153,0.1),transparent);animation:ns 14s linear infinite}\n@keyframes ns{to{transform:rotate(360deg)}}\n.flare{position:absolute;inset:0;pointer-events:none}\n.flare::before{content:"";position:absolute;width:120px;height:120px;top:50%;left:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(160,80,255,0.15),transparent 70%);animation:np 4s ease-in-out infinite}\n@keyframes np{0%,100%{transform:translate(-50%,-50%) scale(.8);opacity:.5}50%{transform:translate(-50%,-50%) scale(1.3);opacity:1}}\n.star{position:absolute;width:2px;height:2px;border-radius:50%;background:#fff;box-shadow:0 0 3px rgba(255,255,255,0.4);animation:sd 6s ease-in-out infinite}\n.star:nth-child(4){top:15%;left:70%;animation-duration:5s}\n.star:nth-child(5){top:60%;left:25%;animation-duration:7s;animation-delay:1s}\n.star:nth-child(6){top:80%;left:60%;animation-duration:4s;animation-delay:2s}\n.star:nth-child(7){top:35%;left:85%;animation-duration:8s;animation-delay:.5s}\n@keyframes sd{0%,100%{opacity:0}30%{opacity:1}70%{opacity:1}}\nh3{position:relative;margin:0 0 .5rem;font-weight:700;color:#fff}p{position:relative;font-size:.875rem;color:#71717a;margin:0;line-height:1.6}',
+            js: ''
+        },
+        'Evervault': {
+            html: '<div class="card" data-ev><div class="chars"></div><div class="grad"></div><div class="chars-overlay"></div><div class="center"><div class="blur-orb"></div><span class="label">hover</span></div></div>',
+            css: B + '\n.card{position:relative;width:300px;aspect-ratio:1;border-radius:24px;overflow:hidden;cursor:crosshair;background:#0e0e16}\n.chars{position:absolute;inset:0;font:bold .7rem monospace;color:#fff;word-break:break-all;white-space:pre-wrap;opacity:0;transition:opacity .5s}\n.card:hover .chars{opacity:.5}\n.grad{position:absolute;inset:0;background:linear-gradient(135deg,#22c55e,#2563eb);opacity:0;mask-image:radial-gradient(250px circle at var(--mx,50%) var(--my,50%),white,transparent);-webkit-mask-image:radial-gradient(250px circle at var(--mx,50%) var(--my,50%),white,transparent);backdrop-filter:blur(12px);transition:opacity .5s}\n.card:hover .grad{opacity:1}\n.chars-overlay{position:absolute;inset:0;font:bold .7rem monospace;color:rgba(255,255,255,0.9);word-break:break-all;white-space:pre-wrap;opacity:0;mix-blend-mode:overlay;mask-image:radial-gradient(250px circle at var(--mx,50%) var(--my,50%),white,transparent);transition:opacity .5s}\n.card:hover .chars-overlay{opacity:1}\n.center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:176px;height:176px;border-radius:50%;display:flex;align-items:center;justify-content:center;z-index:10}\n.blur-orb{position:absolute;inset:0;background:rgba(0,0,0,0.8);border-radius:50%;filter:blur(4px)}\n.label{position:relative;z-index:1;color:#fff;font:bold 2rem sans-serif}',
+            js: 'var ch="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";function rs(n){var s="";for(var i=0;i<n;i++)s+=ch[Math.floor(Math.random()*ch.length)];return s}var card=document.querySelector(".card");var ce=card.querySelector(".chars");var oe=card.querySelector(".chars-overlay");if(ce)ce.textContent=rs(1500);if(oe)oe.textContent=rs(1500);card.addEventListener("mousemove",function(e){var r=card.getBoundingClientRect();var x=e.clientX-r.left,y=e.clientY-r.top;card.style.setProperty("--mx",x+"px");card.style.setProperty("--my",y+"px");var s=rs(1500);if(ce)ce.textContent=s;if(oe)oe.textContent=s});'
         }
     },
 
@@ -177,6 +217,16 @@ function prettifyJS(src) {
         'Neon Sign': {
             html: '<span class="n">NEON</span>',
             css: B + '\nbackground:#000}\n.n{font-size:3.5rem;font-weight:900;color:#fff;text-shadow:0 0 7px rgba(0,229,255,.7),0 0 10px rgba(0,229,255,.5),0 0 21px rgba(0,229,255,.4),0 0 42px rgba(0,229,255,.3),0 0 82px rgba(0,229,255,.2);animation:nf 3s infinite}\n@keyframes nf{0%,19%,21%,23%,25%,54%,56%,100%{text-shadow:0 0 7px rgba(0,229,255,.7),0 0 10px rgba(0,229,255,.5),0 0 21px rgba(0,229,255,.4),0 0 42px rgba(0,229,255,.3),0 0 82px rgba(0,229,255,.2)}20%,24%,55%{text-shadow:none}}',
+            js: ''
+        },
+        'Liquid Fill': {
+            html: '<span class="txt">AQUA</span>',
+            css: B + '\n.txt{font-size:3.5rem;font-weight:900;text-transform:uppercase;background:linear-gradient(0deg,#00e5ff 0%,#00b4d8 35%,rgba(0,229,255,0.25) 48%,rgba(255,255,255,0.08) 56%,rgba(255,255,255,0.08) 100%);background-size:100% 300%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:lf 3s ease-in-out infinite alternate}\n@keyframes lf{0%{background-position:0% 100%}100%{background-position:0% 0%}}',
+            js: ''
+        },
+        'Water Reflection': {
+            html: '<div class="wrap"><span class="main">OCEAN</span><span class="reflect" aria-hidden="true">OCEAN</span></div>',
+            css: B + '\n.wrap{display:flex;flex-direction:column;align-items:center;gap:0}\n.main{font-size:3.5rem;font-weight:900;letter-spacing:.08em;color:#fff;text-transform:uppercase;text-shadow:0 0 20px rgba(0,229,255,0.3)}\n.reflect{font-size:3.5rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;background:linear-gradient(180deg,rgba(0,229,255,0.4),transparent 80%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;transform:scaleY(-1);filter:blur(1.5px);mask-image:linear-gradient(180deg,rgba(0,0,0,0.6),transparent 90%);animation:rw 4s ease-in-out infinite}\n@keyframes rw{0%,100%{transform:scaleY(-1) scaleX(1);filter:blur(1.5px)}50%{transform:scaleY(-1) scaleX(.99);filter:blur(2.5px)}}',
             js: ''
         }
     },
@@ -206,6 +256,56 @@ function prettifyJS(src) {
         'Skeleton': {
             html: '<div class="sk"><div class="sc"></div><div class="sl"></div><div class="sl med"></div><div class="sl sh"></div></div>',
             css: B + '\n.sk{width:280px;padding:1.5rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px}\n.sl{height:12px;background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);background-size:200% 100%;border-radius:6px;animation:sh 1.5s ease-in-out infinite;margin-bottom:.75rem}\n.sl:last-child{margin-bottom:0}\n.sl.sh{width:60%}\n.sl.med{width:80%}\n.sc{width:48px;height:48px;border-radius:50%;background:linear-gradient(90deg,rgba(255,255,255,.04) 25%,rgba(255,255,255,.08) 50%,rgba(255,255,255,.04) 75%);background-size:200% 100%;animation:sh 1.5s ease-in-out infinite;margin-bottom:1rem}\n@keyframes sh{0%{background-position:-200% 0}100%{background-position:200% 0}}',
+            js: ''
+        },
+        'Helix Spinner': {
+            html: '<div class="lh"></div>',
+            css: B + '\n.lh{width:50px;height:50px;position:relative}\n.lh::before,.lh::after{content:"";position:absolute;inset:0;border:3px solid transparent;border-radius:50%}\n.lh::before{border-top-color:#00e5ff;border-bottom-color:#00e5ff;animation:hs 1.5s linear infinite}\n.lh::after{border-left-color:#8b5cf6;border-right-color:#8b5cf6;animation:hs 1.5s linear infinite reverse}\n@keyframes hs{to{transform:rotate(360deg)}}',
+            js: ''
+        },
+        'Neon Line': {
+            html: '<div class="nl"></div>',
+            css: B + '\n.nl{width:200px;height:3px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;position:relative}\n.nl::before{content:"";position:absolute;top:0;left:-40%;width:40%;height:100%;background:linear-gradient(90deg,transparent,#00e5ff,transparent);border-radius:3px;animation:ns 1.4s ease-in-out infinite;box-shadow:0 0 12px #00e5ff,0 0 30px rgba(0,229,255,0.25)}\n@keyframes ns{0%{left:-40%}100%{left:100%}}',
+            js: ''
+        },
+        'Wave Bars': {
+            html: '<div class="lw"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>',
+            css: B + '\n.lw{display:flex;gap:4px;align-items:flex-end;height:40px}\n.bar{width:5px;border-radius:3px;animation:wb 1.2s ease-in-out infinite}\n.bar:nth-child(1){background:#00e5ff}\n.bar:nth-child(2){background:#06b6d4;animation-delay:.1s}\n.bar:nth-child(3){background:#8b5cf6;animation-delay:.2s}\n.bar:nth-child(4){background:#a855f7;animation-delay:.3s}\n.bar:nth-child(5){background:#ec4899;animation-delay:.4s}\n@keyframes wb{0%,100%{height:10px;opacity:.4}50%{height:40px;opacity:1}}',
+            js: ''
+        },
+        'Grid Pulse': {
+            html: '<div class="lg"><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div><div class="c"></div></div>',
+            css: B + '\n.lg{display:grid;grid-template-columns:repeat(3,14px);gap:6px}\n.c{width:14px;height:14px;border-radius:3px;background:#00e5ff;animation:gp 1.4s ease-in-out infinite}\n.c:nth-child(1){animation-delay:0s}\n.c:nth-child(2){animation-delay:.1s}\n.c:nth-child(3){animation-delay:.2s}\n.c:nth-child(4){animation-delay:.3s}\n.c:nth-child(5){animation-delay:.4s}\n.c:nth-child(6){animation-delay:.5s}\n.c:nth-child(7){animation-delay:.6s}\n.c:nth-child(8){animation-delay:.7s}\n.c:nth-child(9){animation-delay:.8s}\n@keyframes gp{0%,100%{opacity:.15;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}',
+            js: ''
+        },
+        '3D Cube': {
+            html: '<div class="scene"><div class="cube"><div class="face"></div><div class="face"></div><div class="face"></div><div class="face"></div><div class="face"></div><div class="face"></div></div></div>',
+            css: B + '\n.scene{width:40px;height:40px;perspective:200px}\n.cube{width:100%;height:100%;position:relative;transform-style:preserve-3d;animation:cf 2.4s ease-in-out infinite}\n.face{position:absolute;inset:0;border:2px solid #00e5ff;background:rgba(0,229,255,0.04);border-radius:2px}\n.face:nth-child(1){transform:translateZ(20px)}\n.face:nth-child(2){transform:rotateY(180deg) translateZ(20px)}\n.face:nth-child(3){transform:rotateY(90deg) translateZ(20px)}\n.face:nth-child(4){transform:rotateY(-90deg) translateZ(20px)}\n.face:nth-child(5){transform:rotateX(90deg) translateZ(20px)}\n.face:nth-child(6){transform:rotateX(-90deg) translateZ(20px)}\n@keyframes cf{0%{transform:rotateX(0) rotateY(0)}25%{transform:rotateX(90deg) rotateY(0)}50%{transform:rotateX(90deg) rotateY(90deg)}75%{transform:rotateX(180deg) rotateY(90deg)}100%{transform:rotateX(180deg) rotateY(180deg)}}',
+            js: ''
+        },
+        'Radar Sweep': {
+            html: '<div class="lr"><div class="ring"></div><div class="ring"></div></div>',
+            css: B + '\n.lr{width:60px;height:60px;border-radius:50%;position:relative;border:1.5px solid rgba(0,229,255,0.15)}\n.lr::before{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent 0%,transparent 75%,rgba(0,229,255,0.35) 100%);animation:rs 1.8s linear infinite}\n.lr::after{content:"";position:absolute;top:50%;left:50%;width:6px;height:6px;background:#00e5ff;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 8px rgba(0,229,255,0.5)}\n.ring{position:absolute;inset:0;border:1px solid rgba(0,229,255,0.08);border-radius:50%}\n.ring:nth-child(1){inset:8px}\n.ring:nth-child(2){inset:16px}\n@keyframes rs{to{transform:rotate(360deg)}}',
+            js: ''
+        },
+        'Plasma Ring': {
+            html: '<div class="lp"></div>',
+            css: B + '\n.lp{width:60px;height:60px;border-radius:50%;position:relative}\n.lp::before,.lp::after{content:"";position:absolute;border-radius:50%;background:conic-gradient(#00e5ff,#8b5cf6,#ec4899,#f59e0b,#10b981,#00e5ff);animation:pr 1.5s linear infinite}\n.lp::before{inset:0;padding:3px;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude}\n.lp::after{inset:-6px;padding:5px;filter:blur(10px);opacity:.5;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude}\n@keyframes pr{to{transform:rotate(360deg)}}',
+            js: ''
+        },
+        'Glitch Bar': {
+            html: '<div class="gb"><div class="track"></div><div class="ghost"></div></div>',
+            css: B + '\n.gb{width:180px;height:4px;background:rgba(255,255,255,.06);border-radius:4px;position:relative;overflow:hidden}\n.track{position:absolute;top:0;width:40%;height:100%;background:#00e5ff;border-radius:4px;animation:gs 1.8s ease-in-out infinite;box-shadow:0 0 12px rgba(0,229,255,0.5)}\n.ghost{position:absolute;top:-2px;width:40%;height:calc(100% + 4px);background:#ec4899;border-radius:4px;animation:gs 1.8s ease-in-out infinite,gj 1.8s step-end infinite;opacity:.35;filter:blur(2px)}\n@keyframes gs{0%{left:-40%}100%{left:100%}}\n@keyframes gj{0%{transform:translateY(0)}15%{transform:translateY(-3px)}17%{transform:translateY(2px)}19%{transform:translateY(0)}50%{transform:translateY(0)}65%{transform:translateY(3px)}67%{transform:translateY(-2px)}69%{transform:translateY(0)}}',
+            js: ''
+        },
+        'Heartbeat': {
+            html: '<svg class="hb" viewBox="0 0 200 60" width="200" height="60"><polyline class="line" points="0,30 50,30 60,30 68,8 76,52 84,22 90,38 96,30 200,30"/></svg>',
+            css: B + '\n.line{fill:none;stroke:#00e5ff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:20 280;stroke-dashoffset:0;animation:hd 1.8s linear infinite;filter:drop-shadow(0 0 3px rgba(0,229,255,0.6))}\n@keyframes hd{to{stroke-dashoffset:-300}}',
+            js: ''
+        },
+        'AI Loader': {
+            html: '<div class="ai"><div class="ai-circle"></div><div class="ai-letters"><span class="al" style="animation-delay:0s">G</span><span class="al" style="animation-delay:0.1s">e</span><span class="al" style="animation-delay:0.2s">n</span><span class="al" style="animation-delay:0.3s">e</span><span class="al" style="animation-delay:0.4s">r</span><span class="al" style="animation-delay:0.5s">a</span><span class="al" style="animation-delay:0.6s">t</span><span class="al" style="animation-delay:0.7s">i</span><span class="al" style="animation-delay:0.8s">n</span><span class="al" style="animation-delay:0.9s">g</span></div></div>',
+            css: B + '\n.ai{position:relative;width:180px;height:180px;display:flex;align-items:center;justify-content:center}\n.ai-circle{position:absolute;inset:0;border-radius:50%;animation:ac 5s linear infinite}\n@keyframes ac{0%{transform:rotate(90deg);box-shadow:0 6px 12px 0 #38bdf8 inset,0 12px 18px 0 #005dff inset,0 36px 36px 0 #1e40af inset,0 0 3px 1.2px rgba(56,189,248,0.3),0 0 6px 1.8px rgba(0,93,255,0.2)}50%{transform:rotate(270deg);box-shadow:0 6px 12px 0 #60a5fa inset,0 12px 6px 0 #0284c7 inset,0 24px 36px 0 #005dff inset,0 0 3px 1.2px rgba(56,189,248,0.3),0 0 6px 1.8px rgba(0,93,255,0.2)}100%{transform:rotate(450deg);box-shadow:0 6px 12px 0 #4dc8fd inset,0 12px 18px 0 #005dff inset,0 36px 36px 0 #1e40af inset,0 0 3px 1.2px rgba(56,189,248,0.3),0 0 6px 1.8px rgba(0,93,255,0.2)}}\n.ai-letters{position:relative;z-index:1}\n.al{display:inline-block;color:#fff;opacity:.4;font-size:1.1rem;font-weight:600;animation:al 3s infinite}\n@keyframes al{0%,100%{opacity:.4;transform:translateY(0)}20%{opacity:1;transform:scale(1.15)}40%{opacity:.7;transform:translateY(0)}}',
             js: ''
         }
     },
@@ -378,6 +478,85 @@ function prettifyJS(src) {
                 'pts.forEach(function(p){x.fillStyle="hsla("+h+",80%,70%,"+(.5+p.s*.4)+")";x.beginPath();x.arc(p.x,p.y,3*p.s,0,Math.PI*2);x.fill()})});',
                 'requestAnimationFrame(go)}go();'
             ].join('\n')
+        }
+    },
+
+    // ???????????????????? SCROLL EFFECTS ????????????????????
+    'Scroll Effects': {
+        'Fade Rise': {
+            html: '<div class="container"><div class="item">01</div><div class="item">02</div><div class="item">03</div></div>',
+            css: B + '\n.container{display:flex;gap:1rem}\n.item{width:80px;height:80px;display:flex;align-items:center;justify-content:center;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.15);border-radius:12px;font-weight:700;font-size:1.1rem;color:#00e5ff;opacity:0;transform:translateY(40px);animation:fr .6s ease forwards}\n.item:nth-child(2){animation-delay:.12s}\n.item:nth-child(3){animation-delay:.24s}\n@keyframes fr{to{opacity:1;transform:translateY(0)}}',
+            js: ''
+        },
+        'Slide In': {
+            html: '<div class="container"><div class="item left">&#x2190;</div><div class="item right">&#x2192;</div></div>',
+            css: B + '\n.container{display:flex;gap:1rem}\n.item{width:100px;height:80px;display:flex;align-items:center;justify-content:center;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.15);border-radius:12px;font-weight:700;font-size:1.5rem;color:#00e5ff}\n.left{opacity:0;transform:translateX(-80px);animation:si .7s cubic-bezier(.25,1,.5,1) forwards}\n.right{opacity:0;transform:translateX(80px);animation:si .7s cubic-bezier(.25,1,.5,1) .15s forwards}\n@keyframes si{to{opacity:1;transform:translateX(0)}}',
+            js: ''
+        },
+        'Scale Pop': {
+            html: '<div class="container"><div class="item">A</div><div class="item">B</div><div class="item">C</div><div class="item">D</div></div>',
+            css: B + '\n.container{display:flex;gap:1rem}\n.item{width:70px;height:70px;display:flex;align-items:center;justify-content:center;background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.15);border-radius:12px;font-weight:700;font-size:1.1rem;color:#8b5cf6;opacity:0;transform:scale(.3);animation:sp .6s cubic-bezier(.34,1.56,.64,1) forwards}\n.item:nth-child(2){animation-delay:.08s}\n.item:nth-child(3){animation-delay:.16s}\n.item:nth-child(4){animation-delay:.24s}\n@keyframes sp{to{opacity:1;transform:scale(1)}}',
+            js: ''
+        },
+        'Blur Unveil': {
+            html: '<div class="block"><div class="heading">Crystal Clear</div><div class="desc">Content sharpens from a frosted blur as it enters view.</div></div>',
+            css: B + '\n.block{padding:2rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;max-width:320px;text-align:center;opacity:0;filter:blur(20px);transform:scale(.92);animation:bu .8s ease forwards}\n@keyframes bu{to{opacity:1;filter:blur(0);transform:scale(1)}}\n.heading{font-size:1.3rem;font-weight:700;margin-bottom:.5rem}\n.desc{font-size:.85rem;color:#71717a;line-height:1.6}',
+            js: ''
+        },
+        'Stagger Cascade': {
+            html: '<div class="container"><div class="item">1</div><div class="item">2</div><div class="item">3</div><div class="item">4</div><div class="item">5</div></div>',
+            css: B + '\n.container{display:flex;gap:.75rem}\n.item{width:60px;height:60px;display:flex;align-items:center;justify-content:center;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.15);border-radius:10px;font-weight:700;color:#00e5ff;opacity:0;transform:translateY(30px) scale(.8);animation:sc .5s cubic-bezier(.25,1,.5,1) forwards}\n.item:nth-child(2){animation-delay:.1s}\n.item:nth-child(3){animation-delay:.2s}\n.item:nth-child(4){animation-delay:.3s}\n.item:nth-child(5){animation-delay:.4s}\n@keyframes sc{to{opacity:1;transform:translateY(0) scale(1)}}',
+            js: ''
+        },
+        'Clip Circle Reveal': {
+            html: '<div class="block"><div class="heading">&#x2B50; Revealed</div><div class="desc">An expanding circular clip-path unmasks content from the center.</div></div>',
+            css: B + '\n.block{padding:2rem;background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(0,229,255,0.05));border:1px solid rgba(139,92,246,0.12);border-radius:16px;max-width:320px;text-align:center;clip-path:circle(0% at 50% 50%);animation:cr 1s cubic-bezier(.4,0,.2,1) forwards}\n@keyframes cr{to{clip-path:circle(100% at 50% 50%)}}\n.heading{font-size:1.3rem;font-weight:700;margin-bottom:.5rem}\n.desc{font-size:.85rem;color:#71717a;line-height:1.6}',
+            js: ''
+        },
+        '3D Flip In': {
+            html: '<div class="container"><div class="card"><div class="icon">&#x1F680;</div><div class="title">Launch</div></div><div class="card"><div class="icon">&#x26A1;</div><div class="title">Speed</div></div><div class="card"><div class="icon">&#x2B50;</div><div class="title">Impact</div></div></div>',
+            css: B + '\n.container{display:flex;gap:1rem;perspective:800px}\n.card{width:100px;padding:1.5rem 1rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;text-align:center;opacity:0;transform:rotateX(-80deg) translateY(20px);transform-origin:top center;animation:fi .7s cubic-bezier(.25,1,.5,1) forwards}\n.card:nth-child(2){animation-delay:.12s}\n.card:nth-child(3){animation-delay:.24s}\n@keyframes fi{to{opacity:1;transform:rotateX(0) translateY(0)}}\n.icon{font-size:1.5rem;margin-bottom:.5rem}\n.title{font-weight:600;font-size:.85rem}',
+            js: ''
+        },
+        'Elastic Bounce': {
+            html: '<div class="block"><div class="heading">&#x1F3D0; Boing!</div><div class="desc">Extreme spring physics with overshoot. Bounces past resting position before settling.</div></div>',
+            css: B + '\n.block{padding:2rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;max-width:320px;text-align:center;opacity:0;transform:translateY(120px) scaleY(.6);animation:eb 1.2s cubic-bezier(.175,.885,.32,1.275) forwards}\n@keyframes eb{to{opacity:1;transform:translateY(0) scaleY(1)}}\n.heading{font-size:1.3rem;font-weight:700;margin-bottom:.5rem}\n.desc{font-size:.85rem;color:#71717a;line-height:1.6}',
+            js: ''
+        },
+        'Split Curtain': {
+            html: '<div class="stage"><div class="curtain left"></div><div class="curtain right"></div><div class="content"><p class="heading">&#x1F3AD; Unveiled</p></div></div>',
+            css: B + '\n.stage{position:relative;width:320px;height:120px;overflow:hidden;border-radius:16px}\n.curtain{position:absolute;top:0;width:50%;height:100%;background:#0e0e16;z-index:2}\n.left{left:0;animation:cl .8s cubic-bezier(.77,0,.175,1) .3s forwards}\n.right{right:0;animation:crr .8s cubic-bezier(.77,0,.175,1) .3s forwards}\n@keyframes cl{to{transform:translateX(-101%)}}\n@keyframes crr{to{transform:translateX(101%)}}\n.content{display:flex;align-items:center;justify-content:center;height:100%;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08)}\n.heading{font-size:1.3rem;font-weight:700}',
+            js: ''
+        },
+        'Glitch Materialize': {
+            html: '<div class="block"><div class="heading">&#x1F47B; Materialized</div><div class="desc">Glitch distortion with skew, clip-path slicing, and horizontal jitter.</div></div>',
+            css: B + '\n.block{padding:2rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;max-width:320px;text-align:center;animation:gi .8s ease forwards}\n@keyframes gi{0%{opacity:0;transform:translateX(-8px) skewX(-10deg);clip-path:inset(40% 0 40% 0)}15%{opacity:1;transform:translateX(5px) skewX(5deg);clip-path:inset(10% 0 70% 0)}35%{transform:translateX(3px) skewX(2deg);clip-path:inset(5% 0 40% 0)}70%{transform:none;clip-path:inset(0)}100%{opacity:1;transform:none;clip-path:none}}\n.heading{font-size:1.3rem;font-weight:700;margin-bottom:.5rem}\n.desc{font-size:.85rem;color:#71717a;line-height:1.6}',
+            js: ''
+        },
+        'Rotate Zoom': {
+            html: '<div class="block"><div class="heading">&#x1F504; Whoooosh</div><div class="desc">Spins 720 degrees while zooming from nothing to full size.</div></div>',
+            css: B + '\n.block{padding:2rem;background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(0,229,255,0.05));border:1px solid rgba(139,92,246,0.12);border-radius:16px;max-width:320px;text-align:center;opacity:0;transform:scale(0) rotate(720deg);animation:rz 1.2s cubic-bezier(.25,1,.5,1) forwards}\n@keyframes rz{to{opacity:1;transform:scale(1) rotate(0)}}\n.heading{font-size:1.3rem;font-weight:700;margin-bottom:.5rem}\n.desc{font-size:.85rem;color:#71717a;line-height:1.6}',
+            js: ''
+        },
+        'Rubber Band': {
+            html: '<div class="block"><div class="heading">&#x1F4A5; Snap!</div><div class="desc">Stretches wide, squashes tall, oscillates then snaps into its final shape.</div></div>',
+            css: B + '\n.block{padding:2rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;max-width:320px;text-align:center;opacity:0;transform:scaleX(0);animation:rb .9s forwards}\n@keyframes rb{0%{opacity:0;transform:scaleX(0)}30%{opacity:1;transform:scaleX(1.4) scaleY(.7)}50%{transform:scaleX(.85) scaleY(1.1)}70%{transform:scaleX(1.1) scaleY(.95)}85%{transform:scaleX(.97) scaleY(1.02)}100%{opacity:1;transform:scale(1)}}\n.heading{font-size:1.3rem;font-weight:700;margin-bottom:.5rem}\n.desc{font-size:.85rem;color:#71717a;line-height:1.6}',
+            js: ''
+        },
+        'Drop & Smash': {
+            html: '<div class="block"><div class="heading">&#x2604; Impact!</div><div class="desc">Falls from above, smashes flat on landing, then bounces and settles.</div></div>',
+            css: B + '\n.block{padding:2rem;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:16px;max-width:320px;text-align:center;opacity:0;transform:translateY(-200px);animation:ds .7s forwards}\n@keyframes ds{0%{opacity:0;transform:translateY(-200px)}50%{opacity:1;transform:translateY(0)}55%{transform:translateY(5px) scaleX(1.15) scaleY(.85)}65%{transform:translateY(-10px) scaleX(.95) scaleY(1.05)}80%{transform:translateY(3px) scaleX(1.03) scaleY(.97)}100%{opacity:1;transform:none}}\n.heading{font-size:1.3rem;font-weight:700;margin-bottom:.5rem}\n.desc{font-size:.85rem;color:#71717a;line-height:1.6}',
+            js: ''
+        },
+        'Diagonal Wipe': {
+            html: '<div class="block"><div class="heading">&#x2702; Sliced In</div><div class="desc">A diagonal clip-path sweeps across, carving the element into view.</div></div>',
+            css: B + '\n.block{padding:2rem;background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(0,229,255,0.05));border:1px solid rgba(139,92,246,0.12);border-radius:16px;max-width:320px;text-align:center;clip-path:polygon(0 0,0 0,0 100%,0 100%);animation:dw .8s cubic-bezier(.4,0,.2,1) forwards}\n@keyframes dw{to{clip-path:polygon(0 0,120% 0,100% 100%,0 100%)}}\n.heading{font-size:1.3rem;font-weight:700;margin-bottom:.5rem}\n.desc{font-size:.85rem;color:#71717a;line-height:1.6}',
+            js: ''
+        },
+        'Spiral Vortex': {
+            html: '<div class="container"><div class="item">&#x1F32A;</div><div class="item">&#x1F300;</div><div class="item">&#x1F32B;</div><div class="item">&#x262F;</div></div>',
+            css: B + '\n.container{display:flex;gap:1rem}\n.item{width:70px;height:70px;display:flex;align-items:center;justify-content:center;background:rgba(0,229,255,0.08);border:1px solid rgba(0,229,255,0.15);border-radius:12px;font-size:1.5rem;opacity:0;transform:scale(0) rotate(360deg);animation:sv .8s cubic-bezier(.25,1,.5,1) forwards}\n.item:nth-child(2){animation-delay:.08s}\n.item:nth-child(3){animation-delay:.16s}\n.item:nth-child(4){animation-delay:.24s}\n@keyframes sv{to{opacity:1;transform:scale(1) rotate(0)}}',
+            js: ''
         }
     }
     };

@@ -270,6 +270,28 @@ document.querySelectorAll('.btn-magnetic').forEach(btn => {
 });
 
 // ==============================================
+// CONFETTI BURST BUTTON EFFECT
+// ==============================================
+document.querySelectorAll('.btn-particle-burst').forEach(btn => {
+    btn.addEventListener('click', function () {
+        for (let i = 0; i < 20; i++) {
+            const dot = document.createElement('span');
+            dot.className = 'burst-dot';
+            const angle = (i / 20) * Math.PI * 2;
+            const dist = 40 + Math.random() * 70;
+            const bx = Math.cos(angle) * dist;
+            const by = Math.sin(angle) * dist;
+            dot.style.cssText =
+                `--bx:${bx}px;--by:${by}px;` +
+                `left:50%;top:50%;` +
+                `background:hsl(${i * 18},85%,60%)`;
+            this.appendChild(dot);
+            dot.addEventListener('animationend', () => dot.remove());
+        }
+    });
+});
+
+// ==============================================
 // RE-INIT ON PAGE NAVIGATION (for Prism.js)
 // ==============================================
 if (typeof Prism !== 'undefined') {

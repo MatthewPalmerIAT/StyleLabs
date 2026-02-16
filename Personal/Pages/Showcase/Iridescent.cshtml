@@ -1,0 +1,283 @@
+@page
+@model Personal.Pages.Showcase.IridescentModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iridescent — Style Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; }
+        body { background: linear-gradient(145deg, #000 0%, #1A2428 100%); color: #fff; }
+
+        /* Three.js canvas */
+        #iri-canvas {
+            position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0;
+        }
+
+        /* Back */
+        .iri-back {
+            position: fixed; top: 1.25rem; left: 1.25rem; z-index: 30;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.55rem 1.1rem; border-radius: 99px;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.5); font-size: 0.85rem; font-weight: 600;
+            text-decoration: none; backdrop-filter: blur(14px); transition: all 0.25s;
+        }
+        .iri-back:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .iri-back svg { width: 16px; height: 16px; }
+
+        /* Overlay */
+        .iri-overlay {
+            position: fixed; inset: 0; z-index: 10;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            pointer-events: none; padding: 2rem;
+        }
+        .iri-hero { max-width: 720px; text-align: center; }
+
+        /* Title */
+        .iri-title {
+            font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 600;
+            line-height: 1.15; letter-spacing: -0.03em; margin-bottom: 20px;
+            text-shadow: 0 2px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Subtitle */
+        .iri-sub {
+            font-size: clamp(0.95rem, 1.4vw, 1.1rem); color: rgba(255,255,255,0.45);
+            line-height: 1.7; font-weight: 300; max-width: 520px; margin: 0 auto 36px;
+            text-shadow: 0 1px 12px rgba(0,0,0,0.6);
+        }
+
+        /* CTA */
+        .iri-ctas {
+            display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;
+            pointer-events: auto; margin-bottom: 56px;
+        }
+        .iri-btn-primary {
+            padding: 13px 32px; border-radius: 14px; border: none;
+            background: #fff; color: #000; font-weight: 600; font-size: 0.88rem;
+            font-family: inherit; cursor: pointer; transition: all 0.25s;
+        }
+        .iri-btn-primary:hover { background: rgba(255,255,255,0.88); transform: scale(1.04); }
+        .iri-btn-ghost {
+            padding: 13px 32px; border-radius: 14px;
+            background: transparent; border: 1px solid rgba(255,255,255,0.15);
+            color: #fff; font-weight: 500; font-size: 0.88rem;
+            font-family: inherit; cursor: pointer; backdrop-filter: blur(8px); transition: all 0.25s;
+        }
+        .iri-btn-ghost:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.25); }
+
+        /* Feature grid */
+        .iri-features {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+            max-width: 780px; margin: 0 auto; pointer-events: auto;
+        }
+        .iri-feat {
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 16px; padding: 22px 20px; text-align: left;
+            backdrop-filter: blur(12px); transition: all 0.3s;
+        }
+        .iri-feat:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.14); transform: translateY(-2px); }
+        .iri-feat-icon {
+            width: 32px; height: 32px; margin-bottom: 14px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 8px; background: rgba(255,255,255,0.06);
+        }
+        .iri-feat-icon svg { width: 16px; height: 16px; color: rgba(255,255,255,0.65); }
+        .iri-feat h3 { font-size: 0.82rem; font-weight: 600; margin-bottom: 6px; color: rgba(255,255,255,0.85); }
+        .iri-feat p { font-size: 0.72rem; color: rgba(255,255,255,0.35); line-height: 1.55; font-weight: 300; }
+
+        /* Animations */
+        @@keyframes iriFadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+        @@keyframes iriBlurIn { from { opacity: 0; filter: blur(12px); } to { opacity: 1; filter: blur(0px); } }
+        .iri-anim-up { animation: iriFadeUp 0.7s ease-out forwards; opacity: 0; }
+        .iri-anim-blur { animation: iriBlurIn 0.8s ease-out forwards; opacity: 0; }
+        .iri-d1 { animation-delay: 0.1s; } .iri-d2 { animation-delay: 0.25s; }
+        .iri-d3 { animation-delay: 0.45s; } .iri-d4 { animation-delay: 0.65s; }
+        .iri-d5 { animation-delay: 0.85s; }
+
+        @@media (max-width: 768px) {
+            .iri-features { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .iri-feat { padding: 16px 14px; }
+        }
+        @@media (max-width: 480px) {
+            .iri-ctas { flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <a class="iri-back" href="/Showcase/LandingPages">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+        Back
+    </a>
+
+    <!-- Three.js background -->
+    <canvas id="iri-canvas"></canvas>
+
+    <!-- Hero content -->
+    <div class="iri-overlay">
+        <div class="iri-hero">
+            <h1 class="iri-title iri-anim-blur iri-d2">
+                Discover minimalism and power in one place
+            </h1>
+
+            <p class="iri-sub iri-anim-up iri-d3">
+                Designed with aesthetics and performance in mind. Experience ultra-fast processing,
+                advanced security, and intuitive design.
+            </p>
+
+            <div class="iri-ctas iri-anim-up iri-d4">
+                <button class="iri-btn-primary" onclick="void(0)">Get Started</button>
+                <button class="iri-btn-ghost" onclick="void(0)">Learn More</button>
+            </div>
+
+            <div class="iri-features iri-anim-up iri-d5">
+                <div class="iri-feat">
+                    <div class="iri-feat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25h-9A2.25 2.25 0 004.5 8.25v9a2.25 2.25 0 002.25 2.25z"/></svg>
+                    </div>
+                    <h3>Performance</h3>
+                    <p>Ultra-fast data processing in every situation.</p>
+                </div>
+                <div class="iri-feat">
+                    <div class="iri-feat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+                    </div>
+                    <h3>Security</h3>
+                    <p>Advanced protection for complete peace of mind.</p>
+                </div>
+                <div class="iri-feat">
+                    <div class="iri-feat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.429 9.75L2.25 12l4.179 2.25m0-4.5l5.571 3 5.571-3m-11.142 0L2.25 7.5 12 2.25l9.75 5.25-4.179 2.25m0 0L12 12.75 6.429 9.75m11.142 0l4.179 2.25L12 17.25 2.25 12l4.179-2.25m11.142 0l4.179 2.25L12 22.5l-9.75-5.25 4.179-2.25"/></svg>
+                    </div>
+                    <h3>Modularity</h3>
+                    <p>Easy integration with existing architecture.</p>
+                </div>
+                <div class="iri-feat">
+                    <div class="iri-feat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+                    </div>
+                    <h3>Responsiveness</h3>
+                    <p>Instant response to every command.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+    import * as THREE from 'https://esm.sh/three@0.163.0';
+
+    (function () {
+        const canvas = document.getElementById('iri-canvas');
+        if (!canvas) return;
+
+        // Renderer
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.0;
+
+        // Scene & Camera
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.set(5, 5, 20);
+        camera.lookAt(0, 0, 0);
+
+        // Lights
+        const ambient = new THREE.AmbientLight(0xffffff, 4);
+        scene.add(ambient);
+
+        const dir1 = new THREE.DirectionalLight(0xffffff, 6);
+        dir1.position.set(10, 10, 5);
+        scene.add(dir1);
+
+        const dir2 = new THREE.DirectionalLight(0xddeeff, 3);
+        dir2.position.set(-8, 5, -5);
+        scene.add(dir2);
+
+        const point1 = new THREE.PointLight(0x6688ff, 2, 60);
+        point1.position.set(0, 8, 10);
+        scene.add(point1);
+
+        // Rounded-rect shape
+        const shape = new THREE.Shape();
+        const cornerRadius = 1;
+        shape.absarc( 2,  2, cornerRadius, Math.PI * 0.0, Math.PI * 0.5);
+        shape.absarc(-2,  2, cornerRadius, Math.PI * 0.5, Math.PI * 1.0);
+        shape.absarc(-2, -2, cornerRadius, Math.PI * 1.0, Math.PI * 1.5);
+        shape.absarc( 2, -2, cornerRadius, Math.PI * 1.5, Math.PI * 2.0);
+
+        const extrudeSettings = {
+            depth: 0.3,
+            bevelEnabled: true,
+            bevelThickness: 0.05,
+            bevelSize: 0.05,
+            bevelSegments: 20,
+            curveSegments: 20
+        };
+
+        const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+        geometry.center();
+
+        // Iridescent physical material
+        const material = new THREE.MeshPhysicalMaterial({
+            color: 0x232323,
+            metalness: 1.0,
+            roughness: 0.3,
+            reflectivity: 0.5,
+            ior: 1.5,
+            iridescence: 1.0,
+            iridescenceIOR: 1.3,
+            iridescenceThicknessRange: [100, 400],
+            clearcoat: 0.0,
+            clearcoatRoughness: 0.0,
+            specularIntensity: 1.0,
+            specularColor: new THREE.Color(0xffffff),
+            sheen: 0,
+            sheenRoughness: 1.0,
+            sheenColor: new THREE.Color(0xffffff),
+            flatShading: false,
+            side: THREE.FrontSide
+        });
+
+        // Group of 50 boxes
+        const group = new THREE.Group();
+        const count = 50;
+        for (let i = 0; i < count; i++) {
+            const mesh = new THREE.Mesh(geometry, material);
+            mesh.position.set((i - 25) * 0.75, 0, 0);
+            mesh.rotation.set((i - 10) * 0.1, Math.PI / 2, 0);
+            group.add(mesh);
+        }
+        scene.add(group);
+
+        // Animate
+        let lastTime = performance.now();
+        function animate(now) {
+            requestAnimationFrame(animate);
+            const dt = (now - lastTime) / 1000;
+            lastTime = now;
+            group.rotation.x += dt * 0.05;
+            renderer.render(scene, camera);
+        }
+        requestAnimationFrame(animate);
+
+        // Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }, { passive: true });
+    })();
+    </script>
+</body>
+</html>

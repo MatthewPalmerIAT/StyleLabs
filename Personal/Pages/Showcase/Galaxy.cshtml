@@ -1,0 +1,452 @@
+@page
+@model Personal.Pages.Showcase.GalaxyModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galaxy — Style Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Inter', sans-serif; }
+
+        #galaxy-canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
+
+        .gx-back {
+            position: fixed; top: 1.25rem; left: 1.25rem; z-index: 10;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.55rem 1.1rem; border-radius: 99px;
+            background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);
+            color: rgba(255,255,255,0.7); font-size: 0.85rem; font-weight: 600;
+            text-decoration: none; backdrop-filter: blur(12px); transition: all 0.25s ease;
+        }
+        .gx-back:hover { background: rgba(100,160,255,0.1); border-color: rgba(100,160,255,0.35); color: #7db4ff; }
+        .gx-back svg { width: 16px; height: 16px; }
+
+        .gx-overlay {
+            position: fixed; inset: 0; z-index: 10;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            pointer-events: none; padding: 2rem;
+        }
+        .gx-content { max-width: 820px; text-align: center; }
+
+        .gx-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 14px; border-radius: 8px;
+            background: rgba(100,160,255,0.06); border: 1px solid rgba(100,160,255,0.12);
+            font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+            color: rgba(100,160,255,0.8); margin-bottom: 28px;
+        }
+        .gx-tag-dot { width: 6px; height: 6px; border-radius: 50%; background: #34d399; animation: gx-blink 2s ease-in-out infinite; }
+        @@keyframes gx-blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        .gx-title {
+            font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 800;
+            line-height: 1.08; letter-spacing: -0.04em; color: #fff; margin-bottom: 20px;
+        }
+        .gx-title-mono {
+            font-family: 'JetBrains Mono', monospace; font-weight: 500;
+            background: linear-gradient(90deg, #7db4ff, #a78bfa);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+
+        .gx-desc {
+            font-size: clamp(1rem, 1.5vw, 1.12rem); color: rgba(255,255,255,0.42);
+            line-height: 1.7; font-weight: 300; max-width: 580px; margin: 0 auto 36px;
+        }
+
+        /* Code snippet */
+        .gx-code-block {
+            display: inline-block; text-align: left; padding: 20px 28px;
+            border-radius: 14px; background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06); backdrop-filter: blur(20px);
+            font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+            line-height: 1.7; margin-bottom: 36px;
+            pointer-events: auto;
+        }
+        .gx-code-dots { display: flex; gap: 6px; margin-bottom: 14px; }
+        .gx-code-dots span { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.1); }
+        .gx-code-line { white-space: nowrap; }
+        .gx-c-keyword { color: #c084fc; }
+        .gx-c-func { color: #7db4ff; }
+        .gx-c-string { color: #34d399; }
+        .gx-c-comment { color: rgba(255,255,255,0.2); }
+        .gx-c-plain { color: rgba(255,255,255,0.55); }
+
+        .gx-cta-row {
+            display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;
+            margin-bottom: 40px; pointer-events: auto;
+        }
+        .gx-btn-main {
+            padding: 14px 32px; border-radius: 12px; border: none;
+            background: linear-gradient(135deg, #7db4ff, #a78bfa);
+            color: #000; font-weight: 600; font-size: 0.95rem; font-family: inherit;
+            cursor: pointer; transition: all 0.3s;
+            box-shadow: 0 4px 24px rgba(125,180,255,0.2);
+        }
+        .gx-btn-main:hover { transform: scale(1.05); box-shadow: 0 8px 36px rgba(125,180,255,0.35); }
+        .gx-btn-docs {
+            padding: 14px 32px; border-radius: 12px;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+            color: #d4d4d8; font-weight: 500; font-size: 0.95rem; font-family: inherit;
+            cursor: pointer; transition: all 0.3s;
+        }
+        .gx-btn-docs:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+
+        /* Trust logos row */
+        .gx-trust {
+            display: flex; align-items: center; justify-content: center; gap: 28px;
+            flex-wrap: wrap; opacity: 0.35;
+        }
+        .gx-trust-item {
+            font-size: 0.82rem; font-weight: 600; letter-spacing: 0.06em;
+            color: rgba(255,255,255,0.6); text-transform: uppercase;
+        }
+        .gx-trust-sep { width: 3px; height: 3px; border-radius: 50%; background: rgba(255,255,255,0.15); }
+
+        /* Animations */
+        @@keyframes gxFadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        @@keyframes gxBlurIn { from { opacity: 0; filter: blur(12px); transform: scale(1.04); } to { opacity: 1; filter: blur(0); transform: scale(1); } }
+        .gx-anim { animation: gxFadeUp 0.65s ease-out forwards; opacity: 0; }
+        .gx-anim-blur { animation: gxBlurIn 0.7s ease-out forwards; opacity: 0; }
+        .gx-dl1 { animation-delay: 0.1s; } .gx-dl2 { animation-delay: 0.2s; } .gx-dl3 { animation-delay: 0.35s; }
+        .gx-dl4 { animation-delay: 0.5s; } .gx-dl5 { animation-delay: 0.65s; } .gx-dl6 { animation-delay: 0.8s; }
+        .gx-dl7 { animation-delay: 0.95s; }
+
+        @@media (max-width: 640px) {
+            .gx-code-block { font-size: 0.7rem; padding: 14px 18px; }
+            .gx-cta-row { flex-direction: column; align-items: center; }
+            .gx-trust { gap: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <a class="gx-back" href="/Showcase/LandingPages">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+        Back
+    </a>
+
+    <canvas id="galaxy-canvas"></canvas>
+
+    <div class="gx-overlay">
+        <div class="gx-content">
+            <div class="gx-tag gx-anim gx-dl1">
+                <span class="gx-tag-dot"></span>
+                <span>v3.0 — API is live</span>
+            </div>
+
+            <h1 class="gx-title gx-anim-blur gx-dl2">
+                Build at the speed<br>of <span class="gx-title-mono">thought()</span>
+            </h1>
+
+            <p class="gx-desc gx-anim gx-dl3">
+                A unified developer platform with first-class SDKs, real-time
+                data pipelines, and infrastructure that vanishes — so your code shines.
+            </p>
+
+            <div class="gx-code-block gx-anim gx-dl4">
+                <div class="gx-code-dots"><span></span><span></span><span></span></div>
+                <div class="gx-code-line"><span class="gx-c-keyword">import</span> <span class="gx-c-plain">{ connect, stream }</span> <span class="gx-c-keyword">from</span> <span class="gx-c-string">'@@galaxy/sdk'</span></div>
+                <div class="gx-code-line gx-c-comment">// Real-time event pipeline</div>
+                <div class="gx-code-line"><span class="gx-c-keyword">const</span> <span class="gx-c-plain">db =</span> <span class="gx-c-keyword">await</span> <span class="gx-c-func">connect</span><span class="gx-c-plain">({ region:</span> <span class="gx-c-string">'global'</span> <span class="gx-c-plain">})</span></div>
+                <div class="gx-code-line"><span class="gx-c-keyword">const</span> <span class="gx-c-plain">feed =</span> <span class="gx-c-func">stream</span><span class="gx-c-plain">(db.</span><span class="gx-c-func">events</span><span class="gx-c-plain">())</span></div>
+            </div>
+
+            <div class="gx-cta-row gx-anim gx-dl5">
+                <button class="gx-btn-main" onclick="void(0)">Get API Key</button>
+                <button class="gx-btn-docs" onclick="void(0)">Read the Docs</button>
+            </div>
+
+            <div class="gx-trust gx-anim gx-dl6">
+                <span class="gx-trust-item">Vercel</span>
+                <span class="gx-trust-sep"></span>
+                <span class="gx-trust-item">Stripe</span>
+                <span class="gx-trust-sep"></span>
+                <span class="gx-trust-item">Linear</span>
+                <span class="gx-trust-sep"></span>
+                <span class="gx-trust-item">Notion</span>
+                <span class="gx-trust-sep"></span>
+                <span class="gx-trust-item">Raycast</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        const canvas = document.getElementById('galaxy-canvas');
+        const gl = canvas.getContext('webgl', { alpha: false, premultipliedAlpha: false });
+        if (!gl) { console.error('WebGL not supported'); return; }
+
+        gl.clearColor(0, 0, 0, 1);
+
+        // --- Shaders ---
+        const vertSrc = `
+            attribute vec2 position;
+            varying vec2 vUv;
+            void main() {
+                vUv = position * 0.5 + 0.5;
+                gl_Position = vec4(position, 0, 1);
+            }`;
+
+        const fragSrc = `
+            precision highp float;
+
+            uniform float uTime;
+            uniform vec3 uResolution;
+            uniform vec2 uFocal;
+            uniform vec2 uRotation;
+            uniform float uStarSpeed;
+            uniform float uDensity;
+            uniform float uHueShift;
+            uniform float uSpeed;
+            uniform vec2 uMouse;
+            uniform float uGlowIntensity;
+            uniform float uSaturation;
+            uniform bool uMouseRepulsion;
+            uniform float uTwinkleIntensity;
+            uniform float uRotationSpeed;
+            uniform float uRepulsionStrength;
+            uniform float uMouseActiveFactor;
+            uniform float uAutoCenterRepulsion;
+
+            varying vec2 vUv;
+
+            #define NUM_LAYER 4.0
+            #define STAR_COLOR_CUTOFF 0.2
+            #define MAT45 mat2(0.7071, -0.7071, 0.7071, 0.7071)
+            #define PERIOD 3.0
+
+            float Hash21(vec2 p) {
+                p = fract(p * vec2(123.34, 456.21));
+                p += dot(p, p + 45.32);
+                return fract(p.x * p.y);
+            }
+
+            float tri(float x) { return abs(fract(x) * 2.0 - 1.0); }
+
+            float tris(float x) {
+                float t = fract(x);
+                return 1.0 - smoothstep(0.0, 1.0, abs(2.0 * t - 1.0));
+            }
+
+            float trisn(float x) {
+                float t = fract(x);
+                return 2.0 * (1.0 - smoothstep(0.0, 1.0, abs(2.0 * t - 1.0))) - 1.0;
+            }
+
+            vec3 hsv2rgb(vec3 c) {
+                vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
+                vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
+                return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+            }
+
+            float Star(vec2 uv, float flare) {
+                float d = length(uv);
+                float m = (0.05 * uGlowIntensity) / d;
+                float rays = smoothstep(0.0, 1.0, 1.0 - abs(uv.x * uv.y * 1000.0));
+                m += rays * flare * uGlowIntensity;
+                uv *= MAT45;
+                rays = smoothstep(0.0, 1.0, 1.0 - abs(uv.x * uv.y * 1000.0));
+                m += rays * 0.3 * flare * uGlowIntensity;
+                m *= smoothstep(1.0, 0.2, d);
+                return m;
+            }
+
+            vec3 StarLayer(vec2 uv) {
+                vec3 col = vec3(0.0);
+                vec2 gv = fract(uv) - 0.5;
+                vec2 id = floor(uv);
+
+                for (int y = -1; y <= 1; y++) {
+                    for (int x = -1; x <= 1; x++) {
+                        vec2 offset = vec2(float(x), float(y));
+                        vec2 si = id + offset;
+                        float seed = Hash21(si);
+                        float size = fract(seed * 345.32);
+                        float glossLocal = tri(uStarSpeed / (PERIOD * seed + 1.0));
+                        float flareSize = smoothstep(0.9, 1.0, size) * glossLocal;
+
+                        float red = smoothstep(STAR_COLOR_CUTOFF, 1.0, Hash21(si + 1.0)) + STAR_COLOR_CUTOFF;
+                        float blu = smoothstep(STAR_COLOR_CUTOFF, 1.0, Hash21(si + 3.0)) + STAR_COLOR_CUTOFF;
+                        float grn = min(red, blu) * seed;
+                        vec3 base = vec3(red, grn, blu);
+
+                        float hue = atan(base.g - base.r, base.b - base.r) / (2.0 * 3.14159) + 0.5;
+                        hue = fract(hue + uHueShift / 360.0);
+                        float sat = length(base - vec3(dot(base, vec3(0.299, 0.587, 0.114)))) * uSaturation;
+                        float val = max(max(base.r, base.g), base.b);
+                        base = hsv2rgb(vec3(hue, sat, val));
+
+                        vec2 pad = vec2(
+                            tris(seed * 34.0 + uTime * uSpeed / 10.0),
+                            tris(seed * 38.0 + uTime * uSpeed / 30.0)
+                        ) - 0.5;
+
+                        float star = Star(gv - offset - pad, flareSize);
+                        float twinkle = trisn(uTime * uSpeed + seed * 6.2831) * 0.5 + 1.0;
+                        twinkle = mix(1.0, twinkle, uTwinkleIntensity);
+                        star *= twinkle;
+
+                        col += star * size * base;
+                    }
+                }
+                return col;
+            }
+
+            void main() {
+                vec2 focalPx = uFocal * uResolution.xy;
+                vec2 uv = (vUv * uResolution.xy - focalPx) / uResolution.y;
+
+                if (uAutoCenterRepulsion > 0.0) {
+                    vec2 centerUV = vec2(0.0);
+                    float centerDist = length(uv - centerUV);
+                    vec2 repulsion = normalize(uv - centerUV) * (uAutoCenterRepulsion / (centerDist + 0.1));
+                    uv += repulsion * 0.05;
+                } else if (uMouseRepulsion) {
+                    vec2 mousePosUV = (uMouse * uResolution.xy - focalPx) / uResolution.y;
+                    float mouseDist = length(uv - mousePosUV);
+                    vec2 repulsion = normalize(uv - mousePosUV) * (uRepulsionStrength / (mouseDist + 0.1));
+                    uv += repulsion * 0.05 * uMouseActiveFactor;
+                } else {
+                    vec2 mouseNorm = uMouse - vec2(0.5);
+                    vec2 mouseOffset = mouseNorm * 0.1 * uMouseActiveFactor;
+                    uv += mouseOffset;
+                }
+
+                float autoRotAngle = uTime * uRotationSpeed;
+                mat2 autoRot = mat2(cos(autoRotAngle), -sin(autoRotAngle), sin(autoRotAngle), cos(autoRotAngle));
+                uv = autoRot * uv;
+                uv = mat2(uRotation.x, -uRotation.y, uRotation.y, uRotation.x) * uv;
+
+                vec3 col = vec3(0.0);
+                for (float i = 0.0; i < 1.0; i += 1.0 / NUM_LAYER) {
+                    float depth = fract(i + uStarSpeed * uSpeed);
+                    float scale = mix(20.0 * uDensity, 0.5 * uDensity, depth);
+                    float fade = depth * smoothstep(1.0, 0.9, depth);
+                    col += StarLayer(uv * scale + i * 453.32) * fade;
+                }
+
+                gl_FragColor = vec4(col, 1.0);
+            }`;
+
+        function compileShader(type, src) {
+            const s = gl.createShader(type);
+            gl.shaderSource(s, src);
+            gl.compileShader(s);
+            if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+                console.error(gl.getShaderInfoLog(s));
+                gl.deleteShader(s);
+                return null;
+            }
+            return s;
+        }
+
+        const vs = compileShader(gl.VERTEX_SHADER, vertSrc);
+        const fs = compileShader(gl.FRAGMENT_SHADER, fragSrc);
+        const program = gl.createProgram();
+        gl.attachShader(program, vs);
+        gl.attachShader(program, fs);
+        gl.linkProgram(program);
+        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+            console.error(gl.getProgramInfoLog(program));
+            return;
+        }
+        gl.useProgram(program);
+
+        // Full-screen triangle
+        const verts = new Float32Array([-1, -1, 3, -1, -1, 3]);
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, verts, gl.STATIC_DRAW);
+        const posLoc = gl.getAttribLocation(program, 'position');
+        gl.enableVertexAttribArray(posLoc);
+        gl.vertexAttribPointer(posLoc, 2, gl.FLOAT, false, 0, 0);
+
+        // Uniforms
+        const u = {};
+        ['uTime', 'uResolution', 'uFocal', 'uRotation', 'uStarSpeed', 'uDensity',
+         'uHueShift', 'uSpeed', 'uMouse', 'uGlowIntensity', 'uSaturation',
+         'uMouseRepulsion', 'uTwinkleIntensity', 'uRotationSpeed',
+         'uRepulsionStrength', 'uMouseActiveFactor', 'uAutoCenterRepulsion'
+        ].forEach(function (name) { u[name] = gl.getUniformLocation(program, name); });
+
+        // Config — matches the React component defaults
+        const focal = [0.5, 0.5];
+        const rotation = [1.0, 0.0];
+        const starSpeed = 0.5;
+        const density = 1;
+        const hueShift = 140;
+        const speed = 1.0;
+        const glowIntensity = 0.3;
+        const saturation = 0.0;
+        const mouseRepulsion = true;
+        const repulsionStrength = 2;
+        const twinkleIntensity = 0.3;
+        const rotationSpeed = 0.1;
+        const autoCenterRepulsion = 0;
+
+        // Static uniforms
+        gl.uniform2f(u.uFocal, focal[0], focal[1]);
+        gl.uniform2f(u.uRotation, rotation[0], rotation[1]);
+        gl.uniform1f(u.uDensity, density);
+        gl.uniform1f(u.uHueShift, hueShift);
+        gl.uniform1f(u.uSpeed, speed);
+        gl.uniform1f(u.uGlowIntensity, glowIntensity);
+        gl.uniform1f(u.uSaturation, saturation);
+        gl.uniform1i(u.uMouseRepulsion, mouseRepulsion ? 1 : 0);
+        gl.uniform1f(u.uTwinkleIntensity, twinkleIntensity);
+        gl.uniform1f(u.uRotationSpeed, rotationSpeed);
+        gl.uniform1f(u.uRepulsionStrength, repulsionStrength);
+        gl.uniform1f(u.uAutoCenterRepulsion, autoCenterRepulsion);
+
+        // Mouse state
+        var targetMX = 0.5, targetMY = 0.5;
+        var smoothMX = 0.5, smoothMY = 0.5;
+        var targetActive = 0.0, smoothActive = 0.0;
+
+        canvas.addEventListener('mousemove', function (e) {
+            targetMX = e.clientX / window.innerWidth;
+            targetMY = 1.0 - e.clientY / window.innerHeight;
+            targetActive = 1.0;
+        });
+        canvas.addEventListener('mouseleave', function () {
+            targetActive = 0.0;
+        });
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            gl.uniform3f(u.uResolution, canvas.width, canvas.height, canvas.width / canvas.height);
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        function loop(t) {
+            requestAnimationFrame(loop);
+            var ts = t * 0.001;
+
+            gl.uniform1f(u.uTime, ts);
+            gl.uniform1f(u.uStarSpeed, (ts * starSpeed) / 10.0);
+
+            var lf = 0.05;
+            smoothMX += (targetMX - smoothMX) * lf;
+            smoothMY += (targetMY - smoothMY) * lf;
+            smoothActive += (targetActive - smoothActive) * lf;
+
+            gl.uniform2f(u.uMouse, smoothMX, smoothMY);
+            gl.uniform1f(u.uMouseActiveFactor, smoothActive);
+
+            gl.drawArrays(gl.TRIANGLES, 0, 3);
+        }
+        requestAnimationFrame(loop);
+    })();
+    </script>
+</body>
+</html>

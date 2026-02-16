@@ -11,21 +11,12 @@
     <title>Lightning — Style Lab</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
     <style>
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { width: 100%; height: 100%; overflow: hidden; background: #000; font-family: 'Inter', sans-serif; }
         .lightning-canvas { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: block; }
-        .lt-overlay {
-            position: fixed; inset: 0; z-index: 2;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            pointer-events: none;
-        }
-        .lt-title {
-            font-size: clamp(3rem, 8vw, 7rem); font-weight: 900; letter-spacing: 0.15em;
-            color: #fff; text-shadow: 0 0 60px rgba(100,140,255,0.5), 0 0 120px rgba(80,100,220,0.25);
-        }
-        .lt-sub { font-size: 1rem; color: rgba(255,255,255,0.4); margin-top: 0.75rem; letter-spacing: 0.1em; }
+
         .lt-back {
             position: fixed; top: 1.25rem; left: 1.25rem; z-index: 10;
             display: inline-flex; align-items: center; gap: 0.5rem;
@@ -36,6 +27,84 @@
         }
         .lt-back:hover { background: rgba(100,140,255,0.1); border-color: rgba(100,140,255,0.35); color: #8cabff; }
         .lt-back svg { width: 16px; height: 16px; }
+
+        .lt-overlay {
+            position: fixed; inset: 0; z-index: 2;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            pointer-events: none; padding: 2rem;
+        }
+        .lt-content { max-width: 880px; text-align: center; }
+
+        .lt-title {
+            font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 900;
+            line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 18px;
+            color: #fff;
+        }
+        .lt-title-accent {
+            background: linear-gradient(90deg, #6488ff, #a78bfa, #c084fc);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+
+        .lt-subtitle {
+            font-size: clamp(1rem, 1.6vw, 1.15rem); color: rgba(255,255,255,0.45);
+            line-height: 1.7; font-weight: 300; max-width: 640px; margin: 0 auto 40px;
+        }
+
+        .lt-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+            max-width: 720px; margin: 0 auto; pointer-events: auto;
+        }
+        .lt-card {
+            padding: 22px 20px; border-radius: 16px;
+            background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06);
+            backdrop-filter: blur(16px); text-align: left;
+            transition: all 0.3s;
+        }
+        .lt-card:hover { background: rgba(100,140,255,0.05); border-color: rgba(100,140,255,0.2); transform: translateY(-3px); }
+        .lt-card-icon {
+            width: 36px; height: 36px; border-radius: 10px; margin-bottom: 14px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(100,140,255,0.08); border: 1px solid rgba(100,140,255,0.12);
+        }
+        .lt-card-icon svg { width: 18px; height: 18px; stroke: #8cabff; }
+        .lt-card-title { font-size: 0.88rem; font-weight: 600; color: #e4e4e7; margin-bottom: 6px; }
+        .lt-card-desc { font-size: 0.75rem; color: rgba(255,255,255,0.35); line-height: 1.55; }
+
+        .lt-cta-row {
+            display: flex; justify-content: center; gap: 14px; margin-top: 36px;
+            pointer-events: auto; flex-wrap: wrap;
+        }
+        .lt-btn-main {
+            padding: 13px 30px; border-radius: 12px; border: none;
+            background: #6488ff; color: #000; font-weight: 600;
+            font-size: 0.92rem; font-family: inherit; cursor: pointer;
+            transition: all 0.3s; box-shadow: 0 4px 20px rgba(100,136,255,0.25);
+        }
+        .lt-btn-main:hover { background: #8cabff; box-shadow: 0 6px 28px rgba(100,136,255,0.4); transform: scale(1.04); }
+        .lt-btn-code {
+            padding: 13px 30px; border-radius: 12px;
+            background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+            color: #d4d4d8; font-weight: 500; font-size: 0.92rem;
+            font-family: 'JetBrains Mono', monospace; cursor: pointer; transition: all 0.3s;
+        }
+        .lt-btn-code:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.2); }
+        .lt-btn-code span { color: #8cabff; }
+
+        /* Animations */
+        @@keyframes ltDrop { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: translateY(0); } }
+        @@keyframes ltRise { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+        @@keyframes ltScale { from { opacity: 0; transform: scale(0.92); } to { opacity: 1; transform: scale(1); } }
+        .lt-anim-drop { animation: ltDrop 0.6s ease-out forwards; opacity: 0; }
+        .lt-anim-rise { animation: ltRise 0.6s ease-out forwards; opacity: 0; }
+        .lt-anim-scale { animation: ltScale 0.5s ease-out forwards; opacity: 0; }
+        .lt-dl1 { animation-delay: 0.1s; } .lt-dl2 { animation-delay: 0.2s; } .lt-dl3 { animation-delay: 0.35s; }
+        .lt-dl4 { animation-delay: 0.5s; } .lt-dl5 { animation-delay: 0.6s; } .lt-dl6 { animation-delay: 0.7s; }
+        .lt-dl7 { animation-delay: 0.8s; } .lt-dl8 { animation-delay: 0.9s; }
+
+        @@media (max-width: 640px) {
+            .lt-grid { grid-template-columns: 1fr; max-width: 320px; }
+            .lt-cta-row { flex-direction: column; align-items: center; }
+        }
     </style>
 </head>
 <body>
@@ -44,9 +113,48 @@
         Back
     </a>
     <canvas id="lightning-canvas" class="lightning-canvas"></canvas>
+
     <div class="lt-overlay">
-        <h1 class="lt-title">LIGHTNING</h1>
-        <p class="lt-sub">Pure WebGL shader — no libraries</p>
+        <div class="lt-content">
+            <h1 class="lt-title lt-anim-rise lt-dl2">
+                Protect Everything.<br>
+                <span class="lt-title-accent">Trust Nothing.</span>
+            </h1>
+
+            <p class="lt-subtitle lt-anim-rise lt-dl3">
+                End-to-end encrypted infrastructure that detects threats before
+                they strike. Built for enterprises that demand absolute security.
+            </p>
+
+            <div class="lt-grid">
+                <div class="lt-card lt-anim-scale lt-dl4">
+                    <div class="lt-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/></svg>
+                    </div>
+                    <div class="lt-card-title">Threat Detection</div>
+                    <div class="lt-card-desc">ML-powered anomaly detection across all network layers in real time.</div>
+                </div>
+                <div class="lt-card lt-anim-scale lt-dl5">
+                    <div class="lt-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/></svg>
+                    </div>
+                    <div class="lt-card-title">E2E Encryption</div>
+                    <div class="lt-card-desc">256-bit AES encryption at rest and in transit. Zero knowledge architecture.</div>
+                </div>
+                <div class="lt-card lt-anim-scale lt-dl6">
+                    <div class="lt-card-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+                    </div>
+                    <div class="lt-card-title">Instant Response</div>
+                    <div class="lt-card-desc">Automated incident response triggers in under 50ms worldwide.</div>
+                </div>
+            </div>
+
+            <div class="lt-cta-row lt-anim-rise lt-dl7">
+                <button class="lt-btn-main" onclick="void(0)">Request a Demo</button>
+                <button class="lt-btn-code" onclick="void(0)"><span>$</span> npm i @@sentinel/cli</button>
+            </div>
+        </div>
     </div>
 
     <script>
