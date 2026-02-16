@@ -206,6 +206,37 @@ document.querySelectorAll('.card-spotlight').forEach(card => {
 });
 
 // ==============================================
+// EVERVAULT CARD
+// ==============================================
+const evervaultChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+function generateRandomString(len) {
+    let result = '';
+    for (let i = 0; i < len; i++) {
+        result += evervaultChars.charAt(Math.floor(Math.random() * evervaultChars.length));
+    }
+    return result;
+}
+document.querySelectorAll('[data-evervault]').forEach(card => {
+    const charsEl = card.querySelector('.card-evervault-chars');
+    const overlayEl = card.querySelector('.card-evervault-chars-overlay');
+    // Initial fill
+    if (charsEl) charsEl.textContent = generateRandomString(1500);
+    if (overlayEl) overlayEl.textContent = generateRandomString(1500);
+
+    card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mx', x + 'px');
+        card.style.setProperty('--my', y + 'px');
+        // Regenerate characters on each move for the "encryption" effect
+        const str = generateRandomString(1500);
+        if (charsEl) charsEl.textContent = str;
+        if (overlayEl) overlayEl.textContent = str;
+    });
+});
+
+// ==============================================
 // RIPPLE BUTTON EFFECT
 // ==============================================
 document.querySelectorAll('.btn-ripple').forEach(btn => {

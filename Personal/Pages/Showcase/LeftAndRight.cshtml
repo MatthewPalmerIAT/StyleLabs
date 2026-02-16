@@ -1,0 +1,468 @@
+@page
+@model Personal.Pages.Showcase.LeftAndRightModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Left &amp; Right — Style Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; background: #000; color: #e4e4e7; }
+
+        /* Back button */
+        .lr-back {
+            position: fixed; top: 1.25rem; left: 1.25rem; z-index: 60;
+            display: inline-flex; align-items: center; gap: 0.5rem;
+            padding: 0.55rem 1.1rem; border-radius: 99px;
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.6); font-size: 0.85rem; font-weight: 600;
+            text-decoration: none; backdrop-filter: blur(12px); transition: all 0.25s ease;
+        }
+        .lr-back:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .lr-back svg { width: 16px; height: 16px; }
+
+        /* Background gradient */
+        .bg-glow {
+            position: fixed; inset: 0; pointer-events: none; z-index: 0;
+            transition: background 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        [data-side="left"] .bg-glow {
+            background: radial-gradient(circle at 0% 50%, rgba(59,130,246,0.15), transparent 50%);
+        }
+        [data-side="right"] .bg-glow {
+            background: radial-gradient(circle at 100% 50%, rgba(16,185,129,0.15), transparent 50%);
+        }
+
+        /* Main layout */
+        .showcase {
+            position: relative; z-index: 10;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; width: 100%; padding: 2rem;
+        }
+        .showcase-inner {
+            display: flex; align-items: center; justify-content: center;
+            gap: 5rem; max-width: 1280px; width: 100%;
+            transition: flex-direction 0.6s ease;
+        }
+        [data-side="right"] .showcase-inner { flex-direction: row-reverse; }
+
+        /* Product visual */
+        .product-visual {
+            position: relative; flex-shrink: 0;
+        }
+        .visual-ring {
+            position: absolute; inset: -20%; border-radius: 50%;
+            border: 1px dashed rgba(255,255,255,0.08);
+            animation: spin-ring 20s linear infinite;
+            transition: border-color 0.6s;
+        }
+        [data-side="left"] .visual-ring { border-left: 1px dashed rgba(59,130,246,0.35); }
+        [data-side="right"] .visual-ring { border-right: 1px dashed rgba(16,185,129,0.35); }
+        @@keyframes spin-ring { to { transform: rotate(360deg); } }
+
+        .visual-glow {
+            position: absolute; inset: 0; border-radius: 50%;
+            filter: blur(40px); opacity: 0.35;
+            transition: background 0.8s ease;
+            animation: glow-pulse 4s ease-in-out infinite;
+        }
+        [data-side="left"] .visual-glow {
+            background: linear-gradient(135deg, #2563eb, #312e81);
+        }
+        [data-side="right"] .visual-glow {
+            background: linear-gradient(135deg, #059669, #134e4a);
+        }
+        @@keyframes glow-pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .visual-circle {
+            position: relative;
+            width: 320px; height: 320px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.04);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(4px);
+        }
+        .visual-circle img {
+            width: 100%; height: 100%; object-fit: contain;
+            padding: 16px;
+            filter: drop-shadow(0 20px 50px rgba(0,0,0,0.5));
+            animation: float-img 6s ease-in-out infinite;
+            transition: opacity 0.35s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s;
+        }
+        .img-entering {
+            opacity: 0 !important; transform: scale(1.5) rotate(-30deg) translateX(-80px) !important; filter: blur(15px) !important;
+        }
+        [data-side="right"] .img-entering {
+            transform: scale(1.5) rotate(30deg) translateX(80px) !important;
+        }
+        @@keyframes float-img {
+            0%, 100% { transform: translateY(-10px); }
+            50% { transform: translateY(10px); }
+        }
+
+        .status-pill {
+            position: absolute; bottom: -32px; left: 50%; transform: translateX(-50%);
+            display: flex; align-items: center; gap: 8px;
+            font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em;
+            color: #71717a; background: rgba(9,9,11,0.8); padding: 8px 16px;
+            border-radius: 50px; border: 1px solid rgba(255,255,255,0.04);
+            backdrop-filter: blur(8px); white-space: nowrap;
+        }
+        .status-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            animation: pulse-dot 2s ease-in-out infinite;
+            transition: background 0.5s;
+        }
+        [data-side="left"] .status-dot { background: #3b82f6; }
+        [data-side="right"] .status-dot { background: #10b981; }
+        @@keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        /* Details panel */
+        .details {
+            width: 100%; max-width: 420px;
+            transition: text-align 0.4s, align-items 0.4s;
+        }
+        [data-side="left"] .details { text-align: left; }
+        [data-side="right"] .details { text-align: right; }
+
+        .details-label {
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 0.2em; color: #71717a; margin-bottom: 8px;
+        }
+        .details-title {
+            font-size: clamp(2rem, 4vw, 3rem); font-weight: 700;
+            letter-spacing: -0.02em; margin-bottom: 8px; line-height: 1.1;
+            background: linear-gradient(180deg, #fff, #71717a);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+        }
+        .details-desc {
+            color: #a1a1aa; margin-bottom: 28px; max-width: 380px; line-height: 1.65;
+            font-size: 0.92rem;
+        }
+        [data-side="left"] .details-desc { margin-right: auto; }
+        [data-side="right"] .details-desc { margin-left: auto; }
+
+        /* Feature card */
+        .feature-card {
+            width: 100%; background: rgba(24,24,27,0.5); padding: 24px;
+            border-radius: 16px; border: 1px solid rgba(255,255,255,0.04);
+            backdrop-filter: blur(4px);
+        }
+        .feature-row { margin-bottom: 20px; }
+        .feature-row:last-of-type { margin-bottom: 0; }
+        .feature-header {
+            display: flex; align-items: center; justify-content: space-between;
+            margin-bottom: 10px; font-size: 0.85rem;
+        }
+        [data-side="right"] .feature-header { flex-direction: row-reverse; }
+        .feature-label { display: flex; align-items: center; gap: 8px; color: #d4d4d8; }
+        .feature-label svg { width: 16px; height: 16px; }
+        .feature-value { font-family: 'Courier New', monospace; font-size: 0.72rem; color: #71717a; }
+        .feature-track {
+            width: 100%; height: 8px; background: #27272a; border-radius: 99px;
+            overflow: hidden; position: relative;
+        }
+        .feature-fill {
+            position: absolute; top: 0; height: 100%; border-radius: 99px; opacity: 0.8;
+            width: 0; transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        [data-side="left"] .feature-fill { left: 0; background: #3b82f6; }
+        [data-side="right"] .feature-fill { right: 0; background: #10b981; }
+
+        .specs-link {
+            display: inline-flex; align-items: center; gap: 8px;
+            font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.08em; color: #d4d4d8; background: none; border: none;
+            cursor: pointer; padding: 14px 0 0; transition: color 0.2s; font-family: inherit;
+        }
+        .specs-link:hover { color: #fff; }
+        .specs-link:hover .specs-chevron { transform: translateX(4px); }
+        .specs-link svg { width: 14px; height: 14px; }
+        .specs-chevron { transition: transform 0.2s; }
+        .specs-row {
+            display: flex; padding-top: 14px;
+        }
+        [data-side="left"] .specs-row { justify-content: flex-start; }
+        [data-side="right"] .specs-row { justify-content: flex-end; }
+
+        /* Battery */
+        .battery-row {
+            display: flex; align-items: center; gap: 12px;
+            margin-top: 20px; color: #71717a; font-size: 0.85rem; font-weight: 500;
+        }
+        [data-side="left"] .battery-row { flex-direction: row; }
+        [data-side="right"] .battery-row { flex-direction: row-reverse; }
+        .battery-row svg { width: 16px; height: 16px; }
+
+        /* Bottom switcher */
+        .switcher {
+            position: fixed; bottom: 48px; left: 50%; transform: translateX(-50%);
+            z-index: 50; display: flex; align-items: center; gap: 4px;
+            padding: 6px; border-radius: 50px;
+            background: rgba(24,24,27,0.8); backdrop-filter: blur(24px);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+        }
+        .sw-btn {
+            position: relative; width: 96px; height: 48px; border-radius: 50px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: 500; border: none; background: none;
+            color: #71717a; cursor: pointer; font-family: inherit; transition: color 0.3s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .sw-btn:hover { color: #a1a1aa; }
+        .sw-btn.active { color: #fff; }
+        .sw-btn.active::before {
+            content: '';
+            position: absolute; inset: 0; border-radius: 50px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.03));
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
+        }
+        .sw-btn.active::after {
+            content: '';
+            position: absolute; bottom: -4px; left: 50%; transform: translateX(-50%);
+            height: 3px; width: 24px; border-radius: 99px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.5), transparent);
+        }
+
+        /* Animations for content transitions */
+        .fade-blur-in {
+            animation: fadeBIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        @@keyframes fadeBIn {
+            from { opacity: 0; transform: translateY(16px); filter: blur(8px); }
+            to { opacity: 1; transform: translateY(0); filter: blur(0); }
+        }
+
+        @@media (max-width: 768px) {
+            .showcase-inner, [data-side="right"] .showcase-inner {
+                flex-direction: column !important; gap: 3rem;
+            }
+            .visual-circle { width: 240px; height: 240px; }
+            .details { text-align: center !important; }
+            .details-desc { margin-left: auto !important; margin-right: auto !important; }
+            [data-side="left"] .feature-header,
+            [data-side="right"] .feature-header { flex-direction: row !important; }
+            [data-side="left"] .specs-row,
+            [data-side="right"] .specs-row { justify-content: center !important; }
+            .battery-row { justify-content: center !important; flex-direction: row !important; }
+            [data-side="left"] .feature-fill,
+            [data-side="right"] .feature-fill { left: 0 !important; right: auto !important; }
+        }
+    </style>
+</head>
+<body data-side="left">
+    <a class="lr-back" href="/Showcase/LandingPages">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+        Back
+    </a>
+
+    <div class="bg-glow"></div>
+
+    <main class="showcase">
+        <div class="showcase-inner">
+            <!-- Product Visual -->
+            <div class="product-visual">
+                <div class="visual-ring"></div>
+                <div class="visual-glow"></div>
+                <div class="visual-circle">
+                    <img id="product-img"
+                         src="https://ik.imagekit.io/kqmrslzuq/SOUND/left-earbud.png"
+                         alt="Left Earbud" />
+                </div>
+                <div class="status-pill">
+                    <span class="status-dot"></span>
+                    <span id="status-text">Connected</span>
+                </div>
+            </div>
+
+            <!-- Details Panel -->
+            <div class="details" id="details-panel">
+                <div class="details-label" id="detail-label">Left Earbud</div>
+                <div class="details-title" id="detail-title">Spatial Anchor</div>
+                <p class="details-desc" id="detail-desc">The primary node for binaural synchronization. Handles low-latency transmission and anchors the spatial audio soundstage.</p>
+
+                <div class="feature-card" id="feature-card">
+                    <!-- Feature 1 -->
+                    <div class="feature-row">
+                        <div class="feature-header">
+                            <span class="feature-label" id="f1-label">
+                                <!-- Zap icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>
+                                <span id="f1-name">Latency</span>
+                            </span>
+                            <span class="feature-value" id="f1-value">12%</span>
+                        </div>
+                        <div class="feature-track">
+                            <div class="feature-fill" id="f1-fill" style="width:0"></div>
+                        </div>
+                    </div>
+                    <!-- Feature 2 -->
+                    <div class="feature-row">
+                        <div class="feature-header">
+                            <span class="feature-label" id="f2-label">
+                                <!-- Wifi icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z"/></svg>
+                                <span id="f2-name">Sync Rate</span>
+                            </span>
+                            <span class="feature-value" id="f2-value">98%</span>
+                        </div>
+                        <div class="feature-track">
+                            <div class="feature-fill" id="f2-fill" style="width:0"></div>
+                        </div>
+                    </div>
+
+                    <div class="specs-row">
+                        <button class="specs-link" type="button">
+                            <!-- Sliders icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/></svg>
+                            View Specs
+                            <svg class="specs-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="battery-row">
+                    <!-- Battery icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 10.5h.375c.621 0 1.125.504 1.125 1.125v2.25c0 .621-.504 1.125-1.125 1.125H21M3.75 18h15A2.25 2.25 0 0021 15.75v-6a2.25 2.25 0 00-2.25-2.25h-15A2.25 2.25 0 001.5 9.75v6A2.25 2.25 0 003.75 18z"/></svg>
+                    <span id="battery-text">82% Charge</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Switcher -->
+    <div class="switcher">
+        <button class="sw-btn active" data-target="left" type="button">Left</button>
+        <button class="sw-btn" data-target="right" type="button">Right</button>
+    </div>
+
+    <script>
+    (function () {
+        const DATA = {
+            left: {
+                label: 'Left Earbud',
+                title: 'Spatial Anchor',
+                desc: 'The primary node for binaural synchronization. Handles low-latency transmission and anchors the spatial audio soundstage.',
+                image: 'https://ik.imagekit.io/kqmrslzuq/SOUND/left-earbud.png',
+                status: 'Connected',
+                battery: 82,
+                f1: { name: 'Latency', value: 12, icon: 'zap' },
+                f2: { name: 'Sync Rate', value: 98, icon: 'wifi' }
+            },
+            right: {
+                label: 'Right Earbud',
+                title: 'Vocal Clarity',
+                desc: 'Optimized for high-frequency detail and voice pickup. Contains the beamforming microphone array for crystal clear calls.',
+                image: 'https://ik.imagekit.io/kqmrslzuq/SOUND/right-earbud.png',
+                status: 'Connected',
+                battery: 74,
+                f1: { name: 'Bitrate', value: 94, icon: 'bluetooth' },
+                f2: { name: 'Clarifier', value: 88, icon: 'music' }
+            }
+        };
+
+        const ICONS = {
+            zap: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"/></svg>',
+            wifi: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856c3.807-3.808 9.98-3.808 13.788 0M1.924 8.674c5.565-5.565 14.587-5.565 20.152 0M12.53 18.22l-.53.53-.53-.53a.75.75 0 011.06 0z"/></svg>',
+            bluetooth: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7l10 10-5 5V2l5 5L7 17"/></svg>',
+            music: '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>'
+        };
+
+        let current = 'left';
+        const body = document.body;
+        const img = document.getElementById('product-img');
+        const buttons = document.querySelectorAll('.sw-btn');
+
+        function switchSide(side) {
+            if (side === current) return;
+            current = side;
+            const d = DATA[side];
+
+            // Flip body data attribute (drives all CSS transitions)
+            body.setAttribute('data-side', side);
+
+            // Update switcher buttons
+            buttons.forEach(b => b.classList.toggle('active', b.dataset.target === side));
+
+            // Animate image out then in
+            img.classList.add('img-entering');
+            setTimeout(() => {
+                img.src = d.image;
+                img.alt = d.label;
+                setTimeout(() => img.classList.remove('img-entering'), 30);
+            }, 300);
+
+            // Update text with staggered fade
+            const els = [
+                { el: document.getElementById('detail-label'), val: d.label },
+                { el: document.getElementById('detail-title'), val: d.title },
+                { el: document.getElementById('detail-desc'), val: d.desc },
+            ];
+            els.forEach((item, i) => {
+                item.el.style.opacity = '0';
+                item.el.style.transform = 'translateY(12px)';
+                item.el.style.filter = 'blur(6px)';
+                setTimeout(() => {
+                    item.el.textContent = item.val;
+                    item.el.style.transition = 'opacity 0.5s, transform 0.5s, filter 0.5s';
+                    item.el.style.opacity = '1';
+                    item.el.style.transform = 'translateY(0)';
+                    item.el.style.filter = 'blur(0)';
+                }, 200 + i * 80);
+            });
+
+            // Update feature icons + labels
+            setTimeout(() => {
+                document.getElementById('f1-label').innerHTML = ICONS[d.f1.icon] + '<span id="f1-name">' + d.f1.name + '</span>';
+                document.getElementById('f1-value').textContent = d.f1.value + '%';
+                document.getElementById('f2-label').innerHTML = ICONS[d.f2.icon] + '<span id="f2-name">' + d.f2.name + '</span>';
+                document.getElementById('f2-value').textContent = d.f2.value + '%';
+            }, 250);
+
+            // Animate bars
+            document.getElementById('f1-fill').style.width = '0';
+            document.getElementById('f2-fill').style.width = '0';
+            setTimeout(() => {
+                document.getElementById('f1-fill').style.width = d.f1.value + '%';
+            }, 500);
+            setTimeout(() => {
+                document.getElementById('f2-fill').style.width = d.f2.value + '%';
+            }, 650);
+
+            // Battery + status
+            document.getElementById('battery-text').textContent = d.battery + '% Charge';
+            document.getElementById('status-text').textContent = d.status;
+        }
+
+        // Bind switcher clicks
+        buttons.forEach(b => b.addEventListener('click', () => switchSide(b.dataset.target)));
+
+        // Initial bar animation
+        setTimeout(() => {
+            const d = DATA.left;
+            document.getElementById('f1-fill').style.width = d.f1.value + '%';
+            setTimeout(() => {
+                document.getElementById('f2-fill').style.width = d.f2.value + '%';
+            }, 150);
+        }, 400);
+    })();
+    </script>
+</body>
+</html>

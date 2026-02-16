@@ -1,0 +1,1377 @@
+@page
+@model Personal.Pages.Showcase.LandingPagesModel
+@{
+    ViewData["Title"] = "Landing Pages";
+}
+
+<div class="showcase-page">
+    <div class="showcase-header">
+        <h1>Landing Page Presets</h1>
+        <p>Full-screen immersive hero backgrounds for landing pages — click to view the live demo, copy the full source.</p>
+    </div>
+
+    <div class="showcase-grid">
+
+        <!-- Hyperspeed -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Hyperspeed <span class="badge">Three.js + GLSL</span></h3>
+            <a href="/Showcase/Hyperspeed" class="lp-card-link" target="_blank">
+                <div class="lp-card-preview lp-hyperspeed-preview">
+                    <div class="lp-card-road">
+                        <div class="lp-card-lane"></div>
+                        <div class="lp-card-lane"></div>
+                        <div class="lp-card-lane"></div>
+                    </div>
+                    <div class="lp-card-lights lp-lights-left"></div>
+                    <div class="lp-card-lights lp-lights-right"></div>
+                    <div class="lp-card-content">
+                        <span class="lp-card-title">HYPERSPEED</span>
+                        <span class="lp-card-sub">Click &amp; hold to accelerate</span>
+                    </div>
+                    <div class="lp-card-action">
+                        <span class="lp-card-action-text">Open Live Demo</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6L10.5 13.5"/></svg>
+                    </div>
+                </div>
+            </a>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8" /&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+  &lt;title&gt;Hyperspeed&lt;/title&gt;
+  &lt;style&gt;
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:100%; height:100%; overflow:hidden; background:#000;
+      font-family:'Inter',system-ui,sans-serif; }
+    #lights { position:fixed; inset:0; z-index:0; }
+    #lights canvas { width:100%!important; height:100%!important; display:block; }
+    .overlay { position:fixed; inset:0; z-index:2; display:flex;
+      flex-direction:column; align-items:center; justify-content:center;
+      pointer-events:none; }
+    .overlay h1 { font-size:clamp(3rem,8vw,7rem); font-weight:900;
+      letter-spacing:0.18em; color:#fff;
+      text-shadow:0 0 60px rgba(0,229,255,0.35),0 0 120px rgba(139,92,246,0.15); }
+    .overlay p { font-size:1rem; color:rgba(255,255,255,0.45);
+      margin-top:0.75rem; letter-spacing:0.1em; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div id="lights"&gt;&lt;/div&gt;
+  &lt;div class="overlay"&gt;
+    &lt;h1&gt;HYPERSPEED&lt;/h1&gt;
+    &lt;p&gt;Click &amp;amp; hold to accelerate&lt;/p&gt;
+  &lt;/div&gt;
+
+  &lt;script type="importmap"&gt;
+  { "imports": {
+      "three":"https://unpkg.com/three&#64;0.163.0/build/three.module.js",
+      "postprocessing":"https://unpkg.com/postprocessing&#64;6.36.4/build/index.js"
+  }}
+  &lt;/script&gt;
+  &lt;script type="module"&gt;
+  import * as THREE from 'three';
+  import { BloomEffect, EffectComposer, EffectPass,
+           RenderPass, SMAAEffect, SMAAPreset } from 'postprocessing';
+
+  const O = {
+    length:400, roadWidth:10, islandWidth:2, lanesPerRoad:4,
+    fov:90, fovSpeedUp:150, speedUp:2, carLightsFade:0.4,
+    totalSideLightSticks:20, lightPairsPerRoadWay:40,
+    shoulderLinesWidthPercentage:0.05,
+    brokenLinesWidthPercentage:0.1,
+    brokenLinesLengthPercentage:0.5,
+    lightStickWidth:[0.12,0.5], lightStickHeight:[1.3,1.7],
+    movingAwaySpeed:[60,80], movingCloserSpeed:[-120,-160],
+    carLightsLength:[12,80], carLightsRadius:[0.05,0.14],
+    carWidthPercentage:[0.3,0.5], carShiftX:[-0.8,0.8],
+    carFloorSeparation:[0,5],
+    colors:{ roadColor:0x080808, islandColor:0x0a0a0a,
+      background:0x000000, shoulderLines:0xffffff,
+      brokenLines:0xffffff,
+      leftCars:[0xd856bf,0x6750a2,0xc247ac],
+      rightCars:[0x03b3c3,0x0e5ea5,0x324555],
+      sticks:0x03b3c3 }
+  };
+
+  // --- helpers ---
+  const rand = b =&gt; Array.isArray(b)
+    ? Math.random()*(b[1]-b[0])+b[0] : Math.random()*b;
+  const pick = a =&gt; Array.isArray(a)
+    ? a[Math.floor(Math.random()*a.length)] : a;
+  function lerp(c,t,s=.1,l=.001){
+    let d=(t-c)*s; if(Math.abs(d)&lt;l) d=t-c; return d; }
+  let nsin = v =&gt; Math.sin(v)*.5+.5;
+
+  // --- turbulent distortion ---
+  const tU = {
+    uFreq:{value:new THREE.Vector4(4,8,8,1)},
+    uAmp:{value:new THREE.Vector4(25,5,10,10)} };
+  O.distortion = {
+    uniforms: tU,
+    getDistortion: `
+      uniform vec4 uFreq; uniform vec4 uAmp;
+      float nsin(float v){return sin(v)*.5+.5;}
+      #define PI 3.14159265358979
+      float gdX(float p){return cos(PI*p*uFreq.r+uTime)*uAmp.r
+        +pow(cos(PI*p*uFreq.g+uTime*(uFreq.g/uFreq.r)),2.)*uAmp.g;}
+      float gdY(float p){return -nsin(PI*p*uFreq.b+uTime)*uAmp.b
+        -pow(nsin(PI*p*uFreq.a+uTime/(uFreq.b/uFreq.a)),5.)*uAmp.a;}
+      vec3 getDistortion(float p){return vec3(
+        gdX(p)-gdX(.0125),gdY(p)-gdY(.0125),0.);}`,
+    getJS:(p,t)=&gt;{const f=tU.uFreq.value,a=tU.uAmp.value;
+      const gx=q=&gt;Math.cos(Math.PI*q*f.x+t)*a.x
+        +Math.pow(Math.cos(Math.PI*q*f.y+t*(f.y/f.x)),2)*a.y;
+      const gy=q=&gt;-nsin(Math.PI*q*f.z+t)*a.z
+        -Math.pow(nsin(Math.PI*q*f.w+t/(f.z/f.w)),5)*a.w;
+      let d=new THREE.Vector3(gx(p)-gx(p+.007),gy(p)-gy(p+.007),0);
+      return d.multiply(new THREE.Vector3(-2,-5,0))
+        .add(new THREE.Vector3(0,0,-10));}
+  };
+
+  // Full Three.js Hyperspeed implementation
+  // (Road, CarLights, LightsSticks, App classes)
+  // See the live demo for the complete running source.
+  // The full code is ~300 lines of vanilla JS + GLSL.
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+        </div>
+
+        <!-- Lightning -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Lightning <span class="badge">WebGL + GLSL</span></h3>
+            <a href="/Showcase/Lightning" class="lp-card-link" target="_blank">
+                <div class="lp-card-preview lp-lightning-preview">
+                    <div class="lp-lightning-bolt lp-bolt-1"></div>
+                    <div class="lp-lightning-bolt lp-bolt-2"></div>
+                    <div class="lp-lightning-bolt lp-bolt-3"></div>
+                    <div class="lp-lightning-glow"></div>
+                    <div class="lp-card-content">
+                        <span class="lp-card-title" style="text-shadow: 0 0 40px rgba(100,140,255,0.4), 0 0 80px rgba(80,100,220,0.2);">LIGHTNING</span>
+                        <span class="lp-card-sub">Pure WebGL shader — no libraries</span>
+                    </div>
+                    <div class="lp-card-action">
+                        <span class="lp-card-action-text">Open Live Demo</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6L10.5 13.5"/></svg>
+                    </div>
+                </div>
+            </a>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8" /&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+  &lt;title&gt;Lightning&lt;/title&gt;
+  &lt;style&gt;
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html, body { width:100%; height:100%; overflow:hidden; background:#000;
+      font-family:'Inter',system-ui,sans-serif; }
+    canvas { width:100%; height:100%; position:absolute; display:block; }
+    .overlay { position:fixed; inset:0; z-index:2; display:flex;
+      flex-direction:column; align-items:center; justify-content:center;
+      pointer-events:none; }
+    .overlay h1 { font-size:clamp(3rem,8vw,7rem); font-weight:900;
+      letter-spacing:0.15em; color:#fff;
+      text-shadow:0 0 60px rgba(100,140,255,0.5),
+                  0 0 120px rgba(80,100,220,0.25); }
+    .overlay p { font-size:1rem; color:rgba(255,255,255,0.4);
+      margin-top:0.75rem; letter-spacing:0.1em; }
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;canvas id="lightning"&gt;&lt;/canvas&gt;
+  &lt;div class="overlay"&gt;
+    &lt;h1&gt;LIGHTNING&lt;/h1&gt;
+    &lt;p&gt;Pure WebGL shader &amp;mdash; no libraries&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;script&gt;
+  (function () {
+    const canvas = document.getElementById('lightning');
+    const resize = () =&gt; {
+      canvas.width = canvas.clientWidth;
+      canvas.height = canvas.clientHeight;
+    };
+    resize();
+    window.addEventListener('resize', resize);
+
+    const gl = canvas.getContext('webgl');
+    const vs = `attribute vec2 aP;
+      void main(){ gl_Position = vec4(aP, 0.0, 1.0); }`;
+    const fs = `precision mediump float;
+      uniform vec2 iR; uniform float iT;
+      uniform float uHue, uXOff, uSpd, uInt, uSz;
+      #define OC 10
+      vec3 hsv2rgb(vec3 c){
+        vec3 r=clamp(abs(mod(c.x*6.0+vec3(0,4,2),6.0)-3.0)-1.0,0.0,1.0);
+        return c.z*mix(vec3(1.0),r,c.y);}
+      float h11(float p){p=fract(p*.1031);p*=p+33.33;p*=p+p;return fract(p);}
+      float h12(vec2 p){vec3 p3=fract(vec3(p.xyx)*.1031);
+        p3+=dot(p3,p3.yzx+33.33);return fract((p3.x+p3.y)*p3.z);}
+      mat2 rot(float t){float c=cos(t),s=sin(t);return mat2(c,-s,s,c);}
+      float noise(vec2 p){vec2 i=floor(p),f=fract(p);
+        float a=h12(i),b=h12(i+vec2(1,0)),c=h12(i+vec2(0,1)),d=h12(i+vec2(1,1));
+        vec2 t=smoothstep(0.0,1.0,f);return mix(mix(a,b,t.x),mix(c,d,t.x),t.y);}
+      float fbm(vec2 p){float v=0.0,a=0.5;
+        for(int i=0;i&lt;OC;++i){v+=a*noise(p);p*=rot(0.45);p*=2.0;a*=0.5;}return v;}
+      void main(){
+        vec2 uv=gl_FragCoord.xy/iR; uv=2.0*uv-1.0;
+        uv.x*=iR.x/iR.y; uv.x+=uXOff;
+        uv+=2.0*fbm(uv*uSz+0.8*iT*uSpd)-1.0;
+        float dist=abs(uv.x);
+        vec3 base=hsv2rgb(vec3(uHue/360.0,0.7,0.8));
+        vec3 col=base*pow(mix(0.0,0.07,h11(iT*uSpd))/dist,1.0)*uInt;
+        gl_FragColor=vec4(col,1.0);}`;
+
+    function mk(src,type){const s=gl.createShader(type);
+      gl.shaderSource(s,src);gl.compileShader(s);return s;}
+    const prg=gl.createProgram();
+    gl.attachShader(prg,mk(vs,gl.VERTEX_SHADER));
+    gl.attachShader(prg,mk(fs,gl.FRAGMENT_SHADER));
+    gl.linkProgram(prg); gl.useProgram(prg);
+
+    const buf=gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(
+      [-1,-1,1,-1,-1,1,-1,1,1,-1,1,1]),gl.STATIC_DRAW);
+    const aP=gl.getAttribLocation(prg,'aP');
+    gl.enableVertexAttribArray(aP);
+    gl.vertexAttribPointer(aP,2,gl.FLOAT,false,0,0);
+
+    const loc=n=&gt;gl.getUniformLocation(prg,n);
+    const uR=loc('iR'),uT=loc('iT'),uH=loc('uHue'),
+          uX=loc('uXOff'),uS=loc('uSpd'),uI=loc('uInt'),uZ=loc('uSz');
+    const t0=performance.now();
+    (function draw(){
+      resize(); gl.viewport(0,0,canvas.width,canvas.height);
+      gl.uniform2f(uR,canvas.width,canvas.height);
+      gl.uniform1f(uT,(performance.now()-t0)/1000);
+      gl.uniform1f(uH,230); gl.uniform1f(uX,0);
+      gl.uniform1f(uS,1); gl.uniform1f(uI,1); gl.uniform1f(uZ,1);
+      gl.drawArrays(gl.TRIANGLES,0,6);
+      requestAnimationFrame(draw);
+    })();
+  })();
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+        </div>
+
+        <!-- Sunset Storm -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Sunset Storm <span class="badge">WebGL2 + GLSL</span></h3>
+            <a href="/Showcase/SunsetStorm" class="lp-card-link" target="_blank">
+                <div class="lp-card-preview lp-sunset-preview">
+                    <div class="lp-sunset-layer lp-sunset-sky"></div>
+                    <div class="lp-sunset-layer lp-sunset-clouds"></div>
+                    <div class="lp-sunset-horizon"></div>
+                    <div class="lp-sunset-flash"></div>
+                    <div class="lp-card-content">
+                        <span class="lp-card-title lp-sunset-title-text">SUNSET STORM</span>
+                        <span class="lp-card-sub">WebGL2 hero with animated shader sky</span>
+                    </div>
+                    <div class="lp-card-action" style="background:rgba(255,165,0,0.1);border-color:rgba(255,165,0,0.25);color:#ffa500;">
+                        <span class="lp-card-action-text">Open Live Demo</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6L10.5 13.5"/></svg>
+                    </div>
+                </div>
+            </a>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8" /&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+  &lt;title&gt;Sunset Storm&lt;/title&gt;
+  &lt;style&gt;
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{width:100%;height:100%;overflow:hidden;background:#000;
+      font-family:'Inter',system-ui,sans-serif}
+    .hero{position:relative;height:100vh;overflow:hidden;background:#000}
+    canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none}
+    .ov{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;
+      align-items:center;justify-content:center;color:#fff;text-align:center;
+      padding:20px;pointer-events:none}
+    .ov .content{max-width:900px}
+    h1{font-size:clamp(2.8rem,7vw,5.5rem);font-weight:800;margin:0;line-height:1.08;
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .g1{background-image:linear-gradient(90deg,#fdba74,#facc15,#fcd34d)}
+    .g2{background-image:linear-gradient(90deg,#fde047,#fb923c,#f87171)}
+    .sub{font-size:1.2rem;margin-top:18px;color:rgba(255,237,213,.88);
+      max-width:680px;margin-inline:auto;line-height:1.65;font-weight:300}
+    .btns{margin-top:36px;display:flex;gap:16px;justify-content:center;
+      flex-wrap:wrap;pointer-events:auto}
+    .bp{padding:15px 34px;background:linear-gradient(90deg,#f97316,#eab308);
+      color:#000;border-radius:50px;text-decoration:none;font-weight:700;
+      font-size:1rem;border:none;cursor:pointer;transition:.3s}
+    .bp:hover{transform:scale(1.06);box-shadow:0 0 35px rgba(249,115,22,.35)}
+    .bs{padding:15px 34px;background:rgba(249,115,22,.08);
+      border:1px solid rgba(253,186,116,.3);color:#fff1e6;border-radius:50px;
+      cursor:pointer;font-weight:600;font-size:1rem;font-family:inherit;
+      backdrop-filter:blur(8px);transition:.3s}
+    .badge{margin-bottom:28px;padding:9px 22px;background:rgba(249,115,22,.08);
+      backdrop-filter:blur(12px);border:1px solid rgba(253,186,116,.25);
+      border-radius:50px;font-size:.88rem;color:rgba(255,237,213,.85);
+      display:flex;align-items:center;gap:8px}
+    @@keyframes fiu{from{opacity:0;transform:translateY(35px)}to{opacity:1;transform:translateY(0)}}
+    @@keyframes fid{from{opacity:0;transform:translateY(-22px)}to{opacity:1;transform:translateY(0)}}
+    .fiu{animation:fiu .8s ease-out forwards;opacity:0}
+    .fid{animation:fid .8s ease-out forwards;opacity:0}
+    .d2{animation-delay:.2s}.d4{animation-delay:.4s}
+    .d6{animation-delay:.6s}.d8{animation-delay:.8s}
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;section class="hero"&gt;
+    &lt;canvas id="c"&gt;&lt;/canvas&gt;
+    &lt;div class="ov"&gt;
+      &lt;div class="badge fid"&gt;&lt;span&gt;✨&lt;/span&gt;
+        &lt;span&gt;Trusted by forward-thinking teams.&lt;/span&gt;&lt;/div&gt;
+      &lt;div class="content"&gt;
+        &lt;h1 class="g1 fiu d2"&gt;Launch Your&lt;/h1&gt;
+        &lt;h1 class="g2 fiu d4"&gt;Workflow Into Orbit&lt;/h1&gt;
+        &lt;p class="sub fiu d6"&gt;Supercharge productivity with AI-powered
+          automation built for the next generation of teams.&lt;/p&gt;
+        &lt;div class="btns fiu d8"&gt;
+          &lt;a href="#" class="bp"&gt;Get Started for Free&lt;/a&gt;
+          &lt;button class="bs"&gt;Explore Features&lt;/button&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+  &lt;script&gt;
+  (function(){
+    const c=document.getElementById("c");
+    const gl=c.getContext("webgl2"); if(!gl) return;
+    function resize(){const d=Math.max(1,.5*devicePixelRatio);
+      c.width=innerWidth*d;c.height=innerHeight*d;
+      gl.viewport(0,0,c.width,c.height);}
+    addEventListener("resize",resize); resize();
+    const vs=`#version 300 es
+      in vec4 position;
+      void main(){gl_Position=position;}`;
+    const fs=`#version 300 es
+      precision highp float; out vec4 O;
+      uniform vec2 resolution; uniform float time;
+      #define FC gl_FragCoord.xy
+      #define T time
+      #define R resolution
+      #define MN min(R.x,R.y)
+      float rnd(vec2 p){p=fract(p*vec2(12.9898,78.233));
+        p+=dot(p,p+34.56);return fract(p.x*p.y);}
+      float noise(vec2 p){vec2 i=floor(p),f=fract(p),
+        u=f*f*(3.-2.*f);float a=rnd(i),b=rnd(i+vec2(1,0)),
+        c=rnd(i+vec2(0,1)),d=rnd(i+1.);
+        return mix(mix(a,b,u.x),mix(c,d,u.x),u.y);}
+      float fbm(vec2 p){float t=.0,a=1.;
+        mat2 m=mat2(1.,-.5,.2,1.2);
+        for(int i=0;i&lt;5;i++){t+=a*noise(p);p*=2.*m;a*=.5;}
+        return t;}
+      float clouds(vec2 p){float d=1.,t=.0;
+        for(float i=.0;i&lt;3.;i++){
+          float a=d*fbm(i*10.+p.x*.2+.2*(1.+i)*p.y+d+i*i+p);
+          t=mix(t,d,a);d=a;p*=2./(i+1.);}return t;}
+      void main(){
+        vec2 uv=(FC-.5*R)/MN,st=uv*vec2(2,1);
+        vec3 col=vec3(0);
+        float bg=clouds(vec2(st.x+T*.5,-st.y));
+        uv*=1.-.3*(sin(T*.2)*.5+.5);
+        for(float i=1.;i&lt;12.;i++){
+          uv+=.1*cos(i*vec2(.1+.01*i,.8)+i*i+T*.5+.1*uv.x);
+          vec2 p=uv;float d=length(p);
+          col+=.00125/d*(cos(sin(i)*vec3(1,2,3))+1.);
+          float b=noise(i+p+bg*1.731);
+          col+=.002*b/length(max(p,vec2(b*p.x*.02,p.y)));
+          col=mix(col,vec3(bg*.25,bg*.137,bg*.05),d);}
+        O=vec4(col,1);}`;
+    function mk(s,t){const sh=gl.createShader(t);
+      gl.shaderSource(sh,s);gl.compileShader(sh);return sh;}
+    const prg=gl.createProgram();
+    gl.attachShader(prg,mk(vs,gl.VERTEX_SHADER));
+    gl.attachShader(prg,mk(fs,gl.FRAGMENT_SHADER));
+    gl.linkProgram(prg);gl.useProgram(prg);
+    const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+    gl.bufferData(gl.ARRAY_BUFFER,
+      new Float32Array([-1,1,-1,-1,1,1,1,-1]),gl.STATIC_DRAW);
+    const pos=gl.getAttribLocation(prg,"position");
+    gl.enableVertexAttribArray(pos);
+    gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+    const rL=gl.getUniformLocation(prg,"resolution");
+    const tL=gl.getUniformLocation(prg,"time");
+    (function draw(now){gl.clearColor(0,0,0,1);gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.uniform2f(rL,c.width,c.height);gl.uniform1f(tL,now*.001);
+      gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+      requestAnimationFrame(draw);})();
+  })();
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+        </div>
+
+        <!-- Green Lantern -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Green Lantern <span class="badge">WebGL2 + GLSL</span></h3>
+            <a href="/Showcase/GreenLantern" class="lp-card-link" target="_blank">
+                <div class="lp-card-preview lp-lantern-preview">
+                    <div class="lp-lantern-orb"></div>
+                    <div class="lp-lantern-ring lp-ring-1"></div>
+                    <div class="lp-lantern-ring lp-ring-2"></div>
+                    <div class="lp-lantern-ring lp-ring-3"></div>
+                    <div class="lp-card-content">
+                        <span class="lp-card-title lp-lantern-title-text">GREEN LANTERN</span>
+                        <span class="lp-card-sub">Emerald swirl shader — no libraries</span>
+                    </div>
+                    <div class="lp-card-action" style="background:rgba(52,211,153,0.1);border-color:rgba(52,211,153,0.25);color:#34d399;">
+                        <span class="lp-card-action-text">Open Live Demo</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6L10.5 13.5"/></svg>
+                    </div>
+                </div>
+            </a>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8" /&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+  &lt;title&gt;Green Lantern&lt;/title&gt;
+  &lt;style&gt;
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{width:100%;height:100%;overflow:hidden;background:#000;
+      font-family:'Inter',system-ui,sans-serif}
+    .hero{position:relative;display:flex;align-items:center;
+      justify-content:center;min-height:100vh;overflow:hidden}
+    canvas{position:absolute;inset:0;width:100%;height:100%}
+    .ov{position:relative;z-index:10;display:flex;flex-direction:column;
+      align-items:center;text-align:center;padding:24px;max-width:960px}
+    h1{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:300;
+      letter-spacing:-.02em;color:#fff;line-height:1.15;margin-bottom:16px}
+    .sub{font-size:1.15rem;color:rgba(236,253,245,.72);max-width:640px;
+      margin:0 auto 36px;font-weight:300;line-height:1.7}
+    .badge{margin-bottom:24px;display:inline-flex;align-items:center;gap:10px;
+      padding:7px 18px;background:rgba(255,255,255,.07);backdrop-filter:blur(14px);
+      border:1px solid rgba(255,255,255,.14);border-radius:50px;
+      text-transform:uppercase;letter-spacing:.12em;font-weight:500}
+    .badge .lbl{font-size:.6rem;letter-spacing:.18em;color:rgba(167,243,208,.7);font-weight:300}
+    .badge .dot{width:4px;height:4px;border-radius:50%;background:rgba(167,243,208,.5)}
+    .badge .val{font-size:.72rem;letter-spacing:.02em;color:rgba(167,243,208,.9);font-weight:300}
+    .btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+    .bp{padding:13px 32px;background:rgba(52,211,153,.78);color:#000;border:none;
+      border-radius:14px;font-size:.95rem;font-weight:500;cursor:pointer;
+      backdrop-filter:blur(12px);box-shadow:0 4px 24px rgba(52,211,153,.18);
+      transition:.3s;text-decoration:none;font-family:inherit}
+    .bp:hover{background:rgba(110,231,183,.82);box-shadow:0 6px 32px rgba(52,211,153,.3)}
+    .bo{padding:13px 32px;background:transparent;color:#fff;
+      border:1px solid rgba(255,255,255,.25);border-radius:14px;font-size:.95rem;
+      font-weight:500;cursor:pointer;backdrop-filter:blur(12px);transition:.3s;
+      text-decoration:none;font-family:inherit}
+    .bo:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.4)}
+    .micro{margin-top:32px;display:flex;flex-wrap:wrap;justify-content:center;
+      gap:22px;list-style:none}
+    .micro li{display:flex;align-items:center;gap:8px;font-size:.72rem;
+      font-weight:300;color:rgba(167,243,208,.6)}
+    .micro .md{width:4px;height:4px;border-radius:50%;background:rgba(167,243,208,.45)}
+    @@keyframes bi{from{opacity:0;filter:blur(16px);transform:translateY(20px) scale(1.04)}
+      to{opacity:1;filter:blur(0);transform:translateY(0) scale(1)}}
+    @@keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .ab{animation:fi .6s ease-out forwards;opacity:0}
+    .at{animation:bi .9s ease-out .15s forwards;opacity:0}
+    .as{animation:fi .6s ease-out .5s forwards;opacity:0}
+    .ac{animation:fi .6s ease-out .7s forwards;opacity:0}
+    .am{animation:fi .5s ease-out .9s forwards;opacity:0}
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;section class="hero"&gt;
+    &lt;canvas id="c"&gt;&lt;/canvas&gt;
+    &lt;div class="ov"&gt;
+      &lt;div class="badge ab"&gt;
+        &lt;span class="lbl"&gt;Experience&lt;/span&gt;
+        &lt;span class="dot"&gt;&lt;/span&gt;
+        &lt;span class="val"&gt;WebGL Shader&lt;/span&gt;
+      &lt;/div&gt;
+      &lt;h1 class="at"&gt;An experiment in light, motion,
+        and the quiet chaos between.&lt;/h1&gt;
+      &lt;p class="sub as"&gt;Experience a new dimension of interaction
+        — fluid, tactile, and alive.&lt;/p&gt;
+      &lt;div class="btns ac"&gt;
+        &lt;a href="#" class="bp"&gt;Explore the Canvas&lt;/a&gt;
+        &lt;a href="#" class="bo"&gt;Learn More&lt;/a&gt;
+      &lt;/div&gt;
+      &lt;ul class="micro am"&gt;
+        &lt;li&gt;&lt;span class="md"&gt;&lt;/span&gt;Immersive shader landscapes&lt;/li&gt;
+        &lt;li&gt;&lt;span class="md"&gt;&lt;/span&gt;Hand-tuned motion easing&lt;/li&gt;
+        &lt;li&gt;&lt;span class="md"&gt;&lt;/span&gt;Responsive, tactile feedback&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+  &lt;script&gt;
+  (function(){
+    const c=document.getElementById("c");
+    const gl=c.getContext("webgl2"); if(!gl) return;
+    function resize(){const d=Math.max(1,.5*devicePixelRatio);
+      c.width=innerWidth*d;c.height=innerHeight*d;
+      gl.viewport(0,0,c.width,c.height);}
+    addEventListener("resize",resize); resize();
+    const vs=`#version 300 es
+      in vec4 position;
+      void main(){gl_Position=position;}`;
+    const fs=`#version 300 es
+      precision highp float; out vec4 O;
+      uniform vec2 resolution; uniform float time;
+      vec2 toPolar(vec2 p){return vec2(length(p),atan(p.y,p.x));}
+      void main(){
+        vec2 fc=gl_FragCoord.xy;
+        vec2 p=6.*((fc-.5*resolution)/resolution.y);
+        vec2 pol=toPolar(p);float r=pol.x;
+        vec2 i=p;float c=0.,ut=time*.5;
+        float rot=r+ut+p.x*.1;
+        for(float n=0.;n&lt;4.;n++){
+          float rr=r+.15*sin(ut*.7+n+r*2.);
+          p*=mat2(cos(rot-sin(ut/10.)),sin(rot),
+            -sin(cos(rot)-ut/10.),cos(rot))*-.25;
+          float t=r-ut/(n+30.);
+          i-=p+sin(t-i.y)+rr;
+          c+=2.2/length(vec2(sin(i.x+t)/.15,cos(i.y+t)/.15));}
+        c/=8.;
+        vec3 base=vec3(.2,.7,.5);
+        O=vec4(base*smoothstep(0.,1.,c*.6),1.);}`;
+    function mk(s,t){const sh=gl.createShader(t);
+      gl.shaderSource(sh,s);gl.compileShader(sh);return sh;}
+    const prg=gl.createProgram();
+    gl.attachShader(prg,mk(vs,gl.VERTEX_SHADER));
+    gl.attachShader(prg,mk(fs,gl.FRAGMENT_SHADER));
+    gl.linkProgram(prg);gl.useProgram(prg);
+    const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+    gl.bufferData(gl.ARRAY_BUFFER,
+      new Float32Array([-1,1,-1,-1,1,1,1,-1]),gl.STATIC_DRAW);
+    const pos=gl.getAttribLocation(prg,"position");
+    gl.enableVertexAttribArray(pos);
+    gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
+    const rL=gl.getUniformLocation(prg,"resolution");
+    const tL=gl.getUniformLocation(prg,"time");
+    (function draw(now){gl.clearColor(0,0,0,1);gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.uniform2f(rL,c.width,c.height);gl.uniform1f(tL,now*.001);
+      gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+      requestAnimationFrame(draw);})();
+  })();
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+            </div>
+        </div>
+
+        <!-- Left and Right -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Left &amp; Right <span class="badge">CSS + JS</span></h3>
+            <a href="/Showcase/LeftAndRight" class="lp-card-link" target="_blank">
+                <div class="lp-card-preview lp-lr-preview">
+                    <div class="lp-lr-side lp-lr-left">
+                        <div class="lp-lr-circle lp-lr-circle-blue"></div>
+                        <span class="lp-lr-label">L</span>
+                    </div>
+                    <div class="lp-lr-divider"></div>
+                    <div class="lp-lr-side lp-lr-right">
+                        <div class="lp-lr-circle lp-lr-circle-green"></div>
+                        <span class="lp-lr-label">R</span>
+                    </div>
+                    <div class="lp-card-content">
+                        <span class="lp-card-title lp-lr-title-text">LEFT &amp; RIGHT</span>
+                        <span class="lp-card-sub">Product showcase with side switcher</span>
+                    </div>
+                    <div class="lp-card-action" style="background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.25);color:#818cf8;">
+                        <span class="lp-card-action-text">Open Live Demo</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6L10.5 13.5"/></svg>
+                    </div>
+                </div>
+            </a>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-markup">&lt;!-- Left &amp; Right — Spatial Product Showcase --&gt;
+&lt;!-- Pure HTML/CSS/JS — no frameworks --&gt;
+
+&lt;!-- HTML Structure --&gt;
+&lt;body data-side="left"&gt;
+  &lt;div class="bg-glow"&gt;&lt;/div&gt;
+  &lt;main class="showcase"&gt;
+    &lt;div class="showcase-inner"&gt;
+      &lt;!-- Product Visual --&gt;
+      &lt;div class="product-visual"&gt;
+        &lt;div class="visual-ring"&gt;&lt;/div&gt;
+        &lt;div class="visual-glow"&gt;&lt;/div&gt;
+        &lt;div class="visual-circle"&gt;
+          &lt;img id="product-img" src="left-earbud.png" /&gt;
+        &lt;/div&gt;
+        &lt;div class="status-pill"&gt;
+          &lt;span class="status-dot"&gt;&lt;/span&gt;
+          &lt;span id="status-text"&gt;Connected&lt;/span&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;!-- Details Panel --&gt;
+      &lt;div class="details"&gt;
+        &lt;div class="details-label"&gt;Left Earbud&lt;/div&gt;
+        &lt;div class="details-title"&gt;Spatial Anchor&lt;/div&gt;
+        &lt;p class="details-desc"&gt;Primary node for
+          binaural sync...&lt;/p&gt;
+        &lt;div class="feature-card"&gt;
+          &lt;div class="feature-row"&gt;
+            &lt;div class="feature-header"&gt;
+              &lt;span class="feature-label"&gt;Latency&lt;/span&gt;
+              &lt;span class="feature-value"&gt;12%&lt;/span&gt;
+            &lt;/div&gt;
+            &lt;div class="feature-track"&gt;
+              &lt;div class="feature-fill"&gt;&lt;/div&gt;
+            &lt;/div&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/main&gt;
+  &lt;!-- Bottom Switcher --&gt;
+  &lt;div class="switcher"&gt;
+    &lt;button class="sw-btn active"
+      data-target="left"&gt;Left&lt;/button&gt;
+    &lt;button class="sw-btn"
+      data-target="right"&gt;Right&lt;/button&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+
+&lt;!-- CSS (key rules) --&gt;
+&lt;style&gt;
+[data-side="left"] .bg-glow {
+  background: radial-gradient(circle at 0% 50%,
+    rgba(59,130,246,0.15), transparent 50%);
+}
+[data-side="right"] .bg-glow {
+  background: radial-gradient(circle at 100% 50%,
+    rgba(16,185,129,0.15), transparent 50%);
+}
+[data-side="right"] .showcase-inner {
+  flex-direction: row-reverse;
+}
+.visual-ring {
+  position: absolute; inset: -20%;
+  border-radius: 50%;
+  border: 1px dashed rgba(255,255,255,0.08);
+  animation: spin-ring 20s linear infinite;
+}
+.visual-glow {
+  position: absolute; inset: 0;
+  border-radius: 50%; filter: blur(40px);
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+.feature-fill {
+  height: 100%; border-radius: 99px;
+  width: 0;
+  transition: width 1s cubic-bezier(0.16,1,0.3,1);
+}
+[data-side="left"] .feature-fill {
+  left: 0; background: #3b82f6;
+}
+[data-side="right"] .feature-fill {
+  right: 0; background: #10b981;
+}
+&lt;/style&gt;
+
+&lt;!-- JavaScript (switcher logic) --&gt;
+&lt;script&gt;
+const DATA = {
+  left:  { label:'Left Earbud',
+           title:'Spatial Anchor',
+           image:'left-earbud.png',
+           f1:{ name:'Latency', value:12 },
+           f2:{ name:'Sync Rate', value:98 } },
+  right: { label:'Right Earbud',
+           title:'Vocal Clarity',
+           image:'right-earbud.png',
+           f1:{ name:'Bitrate', value:94 },
+           f2:{ name:'Clarifier', value:88 } }
+};
+function switchSide(side) {
+  document.body.setAttribute('data-side', side);
+  // Animate image swap
+  img.classList.add('img-entering');
+  setTimeout(() =&gt; {
+    img.src = DATA[side].image;
+    setTimeout(() =&gt;
+      img.classList.remove('img-entering'), 30);
+  }, 300);
+  // Animate feature bars
+  f1Fill.style.width = '0';
+  f2Fill.style.width = '0';
+  setTimeout(() =&gt;
+    f1Fill.style.width = DATA[side].f1.value+'%'
+  , 500);
+  setTimeout(() =&gt;
+    f2Fill.style.width = DATA[side].f2.value+'%'
+  , 650);
+}
+// Bind switcher buttons
+document.querySelectorAll('.sw-btn')
+  .forEach(b =&gt; b.addEventListener('click',
+    () =&gt; switchSide(b.dataset.target)));
+&lt;/script&gt;</code></pre>
+            </div>
+        </div>
+
+        <!-- Floating Lines -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Floating Lines <span class="badge">Three.js + GLSL</span></h3>
+            <a href="/Showcase/FloatingLines" class="lp-card-link" target="_blank">
+                <div class="lp-card-preview lp-floatinglines-preview">
+                    <div class="lp-fl-wave lp-fl-wave-1"></div>
+                    <div class="lp-fl-wave lp-fl-wave-2"></div>
+                    <div class="lp-fl-wave lp-fl-wave-3"></div>
+                    <div class="lp-fl-wave lp-fl-wave-4"></div>
+                    <div class="lp-fl-wave lp-fl-wave-5"></div>
+                    <div class="lp-fl-glow"></div>
+                    <div class="lp-card-content">
+                        <span class="lp-card-title lp-fl-title-text">FLOATING LINES</span>
+                        <span class="lp-card-sub">Move cursor to bend the wave field</span>
+                    </div>
+                    <div class="lp-card-action" style="background:rgba(233,71,245,0.1);border-color:rgba(233,71,245,0.25);color:#e947f5;">
+                        <span class="lp-card-action-text">Open Live Demo</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6L10.5 13.5"/></svg>
+                    </div>
+                </div>
+            </a>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">GLSL + JS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-javascript">&lt;!-- Floating Lines — Three.js + GLSL --&gt;
+&lt;div id="scene-container"&gt;&lt;/div&gt;
+
+&lt;script type="module"&gt;
+import { Scene, OrthographicCamera, WebGLRenderer,
+  PlaneGeometry, Mesh, ShaderMaterial,
+  Vector3, Vector2, Clock
+} from 'https://esm.sh/three@@0.170.0';
+
+// Vertex shader
+const vertexShader = `
+  precision highp float;
+  void main() {
+    gl_Position = projectionMatrix
+      * modelViewMatrix * vec4(position,1.0);
+  }`;
+
+// Fragment shader (GLSL)
+const fragmentShader = `
+  precision highp float;
+  uniform float iTime;
+  uniform vec3  iResolution;
+  uniform float animationSpeed;
+  uniform bool enableTop, enableMiddle, enableBottom;
+  uniform int topLineCount, middleLineCount,
+    bottomLineCount;
+  uniform float topLineDistance, middleLineDistance,
+    bottomLineDistance;
+  uniform vec3 topWavePosition, middleWavePosition,
+    bottomWavePosition;
+  uniform vec2 iMouse;
+  uniform bool interactive;
+  uniform float bendRadius, bendStrength,
+    bendInfluence;
+  uniform bool parallax;
+  uniform vec2 parallaxOffset;
+
+  const vec3 BLACK = vec3(0.0);
+  const vec3 PINK  = vec3(233,71,245) / 255.0;
+  const vec3 BLUE  = vec3(47,75,162)  / 255.0;
+
+  mat2 rotate(float r) {
+    return mat2(cos(r),sin(r),-sin(r),cos(r));
+  }
+
+  vec3 background_color(vec2 uv) {
+    vec3 col = vec3(0.0);
+    float y = sin(uv.x - 0.2) * 0.3 - 0.1;
+    float m = uv.y - y;
+    col += mix(BLUE,BLACK,
+      smoothstep(0.0,1.0,abs(m)));
+    col += mix(PINK,BLACK,
+      smoothstep(0.0,1.0,abs(m - 0.8)));
+    return col * 0.5;
+  }
+
+  float wave(vec2 uv, float offset,
+    vec2 screenUv, vec2 mouseUv, bool bend) {
+    float time = iTime * animationSpeed;
+    float amp = sin(offset + time*0.2) * 0.3;
+    float y = sin(uv.x + offset
+      + time*0.1) * amp;
+    if (bend) {
+      vec2 d = screenUv - mouseUv;
+      float inf = exp(-dot(d,d) * bendRadius);
+      y += (mouseUv.y - screenUv.y)
+        * inf * bendStrength * bendInfluence;
+    }
+    float m = uv.y - y;
+    return 0.0175 / max(abs(m)+0.01,1e-3)+0.01;
+  }
+
+  void mainImage(out vec4 fragColor,
+    in vec2 fragCoord) {
+    vec2 uv = (2.0*fragCoord - iResolution.xy)
+      / iResolution.y;
+    uv.y *= -1.0;
+    if (parallax) uv += parallaxOffset;
+    vec3 col = vec3(0.0);
+    vec3 b = background_color(uv);
+    vec2 mUv = vec2(0.0);
+    if (interactive) {
+      mUv = (2.0*iMouse - iResolution.xy)
+        / iResolution.y;
+      mUv.y *= -1.0;
+    }
+    // Middle wave layer (main)
+    for (int i=0; i &lt; middleLineCount; ++i) {
+      float fi = float(i);
+      float angle = middleWavePosition.z
+        * log(length(uv)+1.0);
+      vec2 ruv = uv * rotate(angle);
+      col += b * wave(
+        ruv + vec2(middleLineDistance*fi
+          + middleWavePosition.x,
+          middleWavePosition.y),
+        2.0 + 0.15*fi, uv, mUv, interactive);
+    }
+    // + top &amp; bottom layers (similar loops)
+    fragColor = vec4(col, 1.0);
+  }
+
+  void main() {
+    vec4 c = vec4(0.0);
+    mainImage(c, gl_FragCoord.xy);
+    gl_FragColor = c;
+  }`;
+
+// Setup
+const container =
+  document.getElementById('scene-container');
+const scene  = new Scene();
+const camera = new OrthographicCamera(
+  -1,1,1,-1,0,1);
+const renderer = new WebGLRenderer(
+  { antialias:true });
+container.appendChild(renderer.domElement);
+
+const uniforms = {
+  iTime:           { value: 0 },
+  iResolution:     { value: new Vector3(1,1,1) },
+  animationSpeed:  { value: 1 },
+  enableTop:       { value: true },
+  enableMiddle:    { value: true },
+  enableBottom:    { value: true },
+  topLineCount:    { value: 6 },
+  middleLineCount: { value: 6 },
+  bottomLineCount: { value: 6 },
+  topLineDistance:    { value: 0.05 },
+  middleLineDistance: { value: 0.05 },
+  bottomLineDistance: { value: 0.05 },
+  topWavePosition:    { value:
+    new Vector3(10,0.5,-0.4) },
+  middleWavePosition: { value:
+    new Vector3(5,0,0.2) },
+  bottomWavePosition: { value:
+    new Vector3(2,-0.7,0.4) },
+  iMouse:       { value: new Vector2(-1e3,-1e3) },
+  interactive:  { value: true },
+  bendRadius:   { value: 5.0 },
+  bendStrength: { value: -0.5 },
+  bendInfluence:{ value: 0 },
+  parallax:       { value: true },
+  parallaxOffset: { value: new Vector2(0,0) }
+};
+
+const mat = new ShaderMaterial(
+  { uniforms, vertexShader, fragmentShader });
+scene.add(new Mesh(new PlaneGeometry(2,2), mat));
+
+const clock = new Clock();
+const tMouse = new Vector2(-1e3,-1e3);
+const cMouse = new Vector2(-1e3,-1e3);
+let tInf = 0, cInf = 0;
+const tPar = new Vector2(), cPar = new Vector2();
+const damp = 0.05;
+
+renderer.domElement.addEventListener(
+  'pointermove', e =&gt; {
+  const r = renderer.domElement
+    .getBoundingClientRect();
+  const dpr = renderer.getPixelRatio();
+  tMouse.set(
+    (e.clientX-r.left)*dpr,
+    (r.height-(e.clientY-r.top))*dpr);
+  tInf = 1;
+  tPar.set(
+    ((e.clientX-r.left)-r.width/2)/r.width*0.2,
+   -((e.clientY-r.top)-r.height/2)/r.height*0.2);
+});
+renderer.domElement.addEventListener(
+  'pointerleave', () =&gt; { tInf = 0; });
+
+(function loop() {
+  uniforms.iTime.value = clock.getElapsedTime();
+  cMouse.lerp(tMouse, damp);
+  uniforms.iMouse.value.copy(cMouse);
+  cInf += (tInf - cInf) * damp;
+  uniforms.bendInfluence.value = cInf;
+  cPar.lerp(tPar, damp);
+  uniforms.parallaxOffset.value.copy(cPar);
+  renderer.render(scene, camera);
+  requestAnimationFrame(loop);
+})();
+&lt;/script&gt;</code></pre>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .lp-card-link {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+    }
+    .lp-card-preview {
+        position: relative;
+        height: 320px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.4s ease;
+    }
+    .lp-card-preview:hover {
+        transform: scale(1.005);
+    }
+    .lp-card-preview:hover .lp-card-action {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Hyperspeed preview — stylized CSS-only road scene */
+    .lp-hyperspeed-preview {
+        background: radial-gradient(ellipse at 50% 80%, #0a1628 0%, #000 70%);
+    }
+
+    .lp-card-road {
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%) perspective(600px) rotateX(55deg);
+        width: 280px;
+        height: 400px;
+        background: linear-gradient(180deg, transparent 0%, #111 30%, #080808 100%);
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+        padding-top: 80px;
+    }
+    .lp-card-lane {
+        width: 2px;
+        height: 100%;
+        background: repeating-linear-gradient(180deg, rgba(255,255,255,0.15) 0px, rgba(255,255,255,0.15) 20px, transparent 20px, transparent 50px);
+        animation: lp-lane-scroll 1.5s linear infinite;
+    }
+    @@keyframes lp-lane-scroll {
+        to { background-position: 0 50px; }
+    }
+
+    .lp-card-lights {
+        position: absolute;
+        bottom: 30%;
+        width: 120px;
+        height: 3px;
+        border-radius: 2px;
+        filter: blur(4px);
+        animation: lp-lights-pulse 2s ease-in-out infinite alternate;
+    }
+    .lp-lights-left {
+        left: 15%;
+        background: linear-gradient(90deg, transparent, #d856bf, #6750a2, transparent);
+        box-shadow: 0 0 20px rgba(216,86,191,0.4);
+    }
+    .lp-lights-right {
+        right: 15%;
+        background: linear-gradient(90deg, transparent, #03b3c3, #0e5ea5, transparent);
+        box-shadow: 0 0 20px rgba(3,179,195,0.4);
+    }
+    @@keyframes lp-lights-pulse {
+        from { opacity: 0.5; width: 100px; }
+        to { opacity: 1; width: 160px; }
+    }
+
+    .lp-card-content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+    }
+    .lp-card-title {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        font-weight: 900;
+        letter-spacing: 0.15em;
+        color: #fff;
+        text-shadow: 0 0 40px rgba(0,229,255,0.3), 0 0 80px rgba(139,92,246,0.15);
+    }
+    .lp-card-sub {
+        font-size: 0.85rem;
+        color: rgba(255,255,255,0.4);
+        margin-top: 0.4rem;
+        letter-spacing: 0.08em;
+    }
+
+    .lp-card-action {
+        position: absolute;
+        bottom: 1.25rem;
+        right: 1.25rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 99px;
+        background: rgba(0,229,255,0.1);
+        border: 1px solid rgba(0,229,255,0.25);
+        color: var(--accent-cyan, #00e5ff);
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        opacity: 0;
+        transform: translateY(8px);
+        transition: all 0.3s ease;
+        z-index: 3;
+    }
+    .lp-card-action-text { white-space: nowrap; }
+
+    /* Lightning preview */
+    .lp-lightning-preview {
+        background: radial-gradient(ellipse at 50% 50%, #0a0e1f 0%, #000 70%);
+    }
+    .lp-lightning-bolt {
+        position: absolute;
+        top: 10%;
+        bottom: 10%;
+        width: 2px;
+        background: linear-gradient(180deg, transparent 0%, rgba(130,170,255,0.6) 30%, rgba(180,200,255,0.9) 50%, rgba(130,170,255,0.6) 70%, transparent 100%);
+        filter: blur(1px);
+        opacity: 0;
+    }
+    .lp-bolt-1 {
+        left: 50%;
+        animation: lp-bolt-flash 2.5s ease-in-out infinite;
+        box-shadow: 0 0 15px 4px rgba(100,140,255,0.4), 0 0 40px 8px rgba(80,100,220,0.2);
+    }
+    .lp-bolt-2 {
+        left: 45%;
+        animation: lp-bolt-flash 2.5s ease-in-out 0.8s infinite;
+        box-shadow: 0 0 12px 3px rgba(100,140,255,0.3);
+        width: 1px;
+    }
+    .lp-bolt-3 {
+        left: 56%;
+        animation: lp-bolt-flash 2.5s ease-in-out 1.6s infinite;
+        box-shadow: 0 0 10px 3px rgba(100,140,255,0.25);
+        width: 1px;
+    }
+    @@keyframes lp-bolt-flash {
+        0%, 100% { opacity: 0; }
+        5% { opacity: 1; }
+        8% { opacity: 0.2; }
+        10% { opacity: 0.9; }
+        15% { opacity: 0; }
+        50% { opacity: 0; }
+    }
+    .lp-lightning-glow {
+        position: absolute;
+        top: 30%;
+        left: 35%;
+        width: 30%;
+        height: 40%;
+        background: radial-gradient(ellipse, rgba(100,140,255,0.08) 0%, transparent 70%);
+        animation: lp-glow-pulse 2.5s ease-in-out infinite;
+    }
+    @@keyframes lp-glow-pulse {
+        0%, 100% { opacity: 0.3; }
+        8% { opacity: 1; }
+        15% { opacity: 0.3; }
+    }
+
+    /* Sunset Storm preview */
+    .lp-sunset-preview {
+        background: linear-gradient(180deg, #1a0525 0%, #4a1535 25%, #8b3a1a 50%, #d4781a 75%, #f5a623 100%);
+    }
+    .lp-sunset-layer {
+        position: absolute;
+        inset: 0;
+    }
+    .lp-sunset-sky {
+        background: linear-gradient(180deg,
+            rgba(26,5,37,0.9) 0%,
+            rgba(120,30,50,0.6) 35%,
+            rgba(200,80,20,0.4) 60%,
+            rgba(245,166,35,0.3) 100%);
+        animation: lp-sunset-shift 8s ease-in-out infinite alternate;
+    }
+    @@keyframes lp-sunset-shift {
+        from { opacity: 0.8; }
+        to { opacity: 1; }
+    }
+    .lp-sunset-clouds {
+        background:
+            radial-gradient(ellipse at 20% 40%, rgba(80,20,40,0.5) 0%, transparent 50%),
+            radial-gradient(ellipse at 70% 35%, rgba(60,15,30,0.4) 0%, transparent 45%),
+            radial-gradient(ellipse at 45% 50%, rgba(100,30,20,0.3) 0%, transparent 55%);
+        animation: lp-clouds-drift 12s ease-in-out infinite alternate;
+    }
+    @@keyframes lp-clouds-drift {
+        from { transform: translateX(-5px); }
+        to { transform: translateX(5px); }
+    }
+    .lp-sunset-horizon {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 30%;
+        background: linear-gradient(180deg, transparent 0%, rgba(245,166,35,0.15) 60%, rgba(255,200,50,0.08) 100%);
+    }
+    .lp-sunset-flash {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse at 60% 30%, rgba(255,220,180,0.15) 0%, transparent 50%);
+        opacity: 0;
+        animation: lp-sunset-lightning 4s ease-in-out infinite;
+    }
+    @@keyframes lp-sunset-lightning {
+        0%, 100% { opacity: 0; }
+        45% { opacity: 0; }
+        47% { opacity: 0.6; }
+        49% { opacity: 0; }
+        51% { opacity: 0.4; }
+        53% { opacity: 0; }
+    }
+    .lp-sunset-title-text {
+        text-shadow: 0 0 40px rgba(255,165,0,0.4), 0 0 80px rgba(200,60,20,0.2) !important;
+    }
+
+    /* Green Lantern preview */
+    .lp-lantern-preview {
+        background: radial-gradient(ellipse at 50% 50%, #071a14 0%, #000 70%);
+    }
+    .lp-lantern-orb {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(52,211,153,0.35) 0%, rgba(52,211,153,0.08) 50%, transparent 70%);
+        box-shadow: 0 0 40px 10px rgba(52,211,153,0.12), 0 0 80px 20px rgba(52,211,153,0.06);
+        animation: lp-orb-pulse 3s ease-in-out infinite alternate;
+    }
+    @@keyframes lp-orb-pulse {
+        from { transform: translate(-50%, -50%) scale(0.9); opacity: 0.7; }
+        to { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+    }
+    .lp-lantern-ring {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        border-radius: 50%;
+        border: 1px solid rgba(52,211,153,0.12);
+        transform: translate(-50%, -50%);
+    }
+    .lp-ring-1 {
+        width: 120px; height: 120px;
+        animation: lp-ring-expand 4s ease-in-out infinite;
+    }
+    .lp-ring-2 {
+        width: 180px; height: 180px;
+        animation: lp-ring-expand 4s ease-in-out 1s infinite;
+    }
+    .lp-ring-3 {
+        width: 250px; height: 250px;
+        animation: lp-ring-expand 4s ease-in-out 2s infinite;
+    }
+    @@keyframes lp-ring-expand {
+        0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+        50% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+    }
+    .lp-lantern-title-text {
+        text-shadow: 0 0 40px rgba(52,211,153,0.4), 0 0 80px rgba(16,185,129,0.2) !important;
+    }
+
+    /* Left & Right preview */
+    .lp-lr-preview {
+        background: #000;
+        display: flex;
+        align-items: stretch;
+        overflow: hidden;
+    }
+    .lp-lr-side {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+    .lp-lr-left {
+        background: radial-gradient(circle at 50% 50%, rgba(59,130,246,0.12) 0%, transparent 60%);
+    }
+    .lp-lr-right {
+        background: radial-gradient(circle at 50% 50%, rgba(16,185,129,0.12) 0%, transparent 60%);
+    }
+    .lp-lr-divider {
+        width: 1px;
+        background: linear-gradient(180deg, transparent 10%, rgba(255,255,255,0.06) 50%, transparent 90%);
+        z-index: 1;
+    }
+    .lp-lr-circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 1px dashed rgba(255,255,255,0.1);
+        position: relative;
+    }
+    .lp-lr-circle-blue {
+        border-left-color: rgba(59,130,246,0.4);
+        animation: spin-ring-preview 12s linear infinite;
+        box-shadow: inset 0 0 30px rgba(59,130,246,0.08);
+    }
+    .lp-lr-circle-green {
+        border-right-color: rgba(16,185,129,0.4);
+        animation: spin-ring-preview 12s linear infinite reverse;
+        box-shadow: inset 0 0 30px rgba(16,185,129,0.08);
+    }
+    @@keyframes spin-ring-preview { to { transform: rotate(360deg); } }
+    .lp-lr-label {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: rgba(255,255,255,0.15);
+        letter-spacing: 0.05em;
+    }
+    .lp-lr-title-text {
+        text-shadow: 0 0 40px rgba(99,102,241,0.35), 0 0 80px rgba(59,130,246,0.15) !important;
+    }
+
+    /* Floating Lines preview */
+    .lp-floatinglines-preview {
+        background: radial-gradient(ellipse at 50% 60%, #0f1a3a 0%, #000 70%);
+        overflow: hidden;
+    }
+    .lp-fl-wave {
+        position: absolute;
+        left: -10%;
+        right: -10%;
+        height: 2px;
+        border-radius: 1px;
+        filter: blur(0.5px);
+        animation: lp-fl-drift 4s ease-in-out infinite alternate;
+    }
+    .lp-fl-wave-1 {
+        top: 35%;
+        background: linear-gradient(90deg, transparent 5%, rgba(233,71,245,0.5) 30%, rgba(47,75,162,0.6) 70%, transparent 95%);
+        box-shadow: 0 0 8px rgba(233,71,245,0.3);
+        animation-duration: 3.5s;
+    }
+    .lp-fl-wave-2 {
+        top: 42%;
+        background: linear-gradient(90deg, transparent 8%, rgba(47,75,162,0.5) 35%, rgba(233,71,245,0.4) 65%, transparent 92%);
+        box-shadow: 0 0 6px rgba(47,75,162,0.25);
+        animation-duration: 4.2s;
+        animation-delay: 0.3s;
+    }
+    .lp-fl-wave-3 {
+        top: 50%;
+        background: linear-gradient(90deg, transparent 10%, rgba(233,71,245,0.4) 40%, rgba(100,140,255,0.5) 60%, transparent 90%);
+        box-shadow: 0 0 10px rgba(233,71,245,0.2);
+        animation-duration: 5s;
+        animation-delay: 0.7s;
+    }
+    .lp-fl-wave-4 {
+        top: 57%;
+        background: linear-gradient(90deg, transparent 5%, rgba(47,75,162,0.4) 25%, rgba(233,71,245,0.3) 75%, transparent 95%);
+        box-shadow: 0 0 6px rgba(47,75,162,0.2);
+        animation-duration: 3.8s;
+        animation-delay: 1s;
+    }
+    .lp-fl-wave-5 {
+        top: 63%;
+        background: linear-gradient(90deg, transparent 15%, rgba(233,71,245,0.3) 45%, rgba(47,75,162,0.4) 55%, transparent 85%);
+        box-shadow: 0 0 5px rgba(100,140,255,0.15);
+        animation-duration: 4.5s;
+        animation-delay: 0.5s;
+    }
+    .lp-fl-glow {
+        position: absolute;
+        top: 30%;
+        left: 25%;
+        width: 50%;
+        height: 40%;
+        background: radial-gradient(ellipse, rgba(233,71,245,0.06) 0%, rgba(47,75,162,0.04) 40%, transparent 70%);
+        animation: lp-fl-glow-pulse 4s ease-in-out infinite alternate;
+    }
+    @@keyframes lp-fl-drift {
+        0% { transform: translateY(0) scaleY(1); }
+        50% { transform: translateY(-6px) scaleY(1.5); }
+        100% { transform: translateY(4px) scaleY(0.8); }
+    }
+    @@keyframes lp-fl-glow-pulse {
+        from { opacity: 0.5; transform: scale(0.95); }
+        to { opacity: 1; transform: scale(1.05); }
+    }
+    .lp-fl-title-text {
+        text-shadow: 0 0 40px rgba(233,71,245,0.4), 0 0 80px rgba(47,75,162,0.2) !important;
+    }
+</style>

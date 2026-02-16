@@ -586,5 +586,147 @@ card.addEventListener('mousemove', (e) => {
             </div>
         </div>
 
+            <!-- Evervault Card -->
+            <div class="showcase-item reveal">
+                <h3 class="showcase-item-title">Evervault <span class="badge">CSS + JS</span></h3>
+                <div class="preview-panel">
+                    <div class="card-evervault" data-evervault>
+                        <div class="card-evervault-chars" aria-hidden="true"></div>
+                        <div class="card-evervault-gradient"></div>
+                        <div class="card-evervault-chars-overlay" aria-hidden="true"></div>
+                        <div class="card-evervault-center">
+                            <div class="card-evervault-blur"></div>
+                            <span class="card-evervault-text">hover</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-panel">
+                    <div class="code-header">
+                        <span class="code-lang">CSS + JS</span>
+                        <button class="copy-btn" onclick="copyCode(this)">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                            <span class="copy-text">Copy</span>
+                        </button>
+                    </div>
+                                    <pre><code class="language-javascript">/* CSS */
+                    .card-evervault {
+                      position: relative;
+                      width: 300px;
+                      aspect-ratio: 1;
+                      border-radius: 24px;
+                      overflow: hidden;
+                      cursor: crosshair;
+                    }
+
+                    /* Random character layer */
+                    .card-evervault-chars {
+                      position: absolute; inset: 0;
+                      font: bold 0.7rem monospace;
+                      color: #fff; word-break: break-all;
+                      white-space: pre-wrap; opacity: 0;
+                      transition: opacity 0.5s;
+                    }
+                    .card-evervault:hover .card-evervault-chars {
+                      opacity: 0.5;
+                    }
+
+                    /* Gradient revealed via radial mask at cursor */
+                    .card-evervault-gradient {
+                      position: absolute; inset: 0;
+                      background: linear-gradient(135deg, #22c55e, #2563eb);
+                      opacity: 0;
+                      mask-image: radial-gradient(250px circle
+                        at var(--mx) var(--my), white, transparent);
+                      -webkit-mask-image: radial-gradient(250px circle
+                        at var(--mx) var(--my), white, transparent);
+                      backdrop-filter: blur(12px);
+                      transition: opacity 0.5s;
+                    }
+                    .card-evervault:hover .card-evervault-gradient {
+                      opacity: 1;
+                    }
+
+                    /* Overlay chars — visible through gradient mask */
+                    .card-evervault-chars-overlay {
+                      position: absolute; inset: 0;
+                      font: bold 0.7rem monospace;
+                      color: rgba(255,255,255,0.9);
+                      word-break: break-all;
+                      white-space: pre-wrap; opacity: 0;
+                      mix-blend-mode: overlay;
+                      mask-image: radial-gradient(250px circle
+                        at var(--mx) var(--my), white, transparent);
+                      transition: opacity 0.5s;
+                    }
+                    .card-evervault:hover .card-evervault-chars-overlay {
+                      opacity: 1;
+                    }
+
+                    /* Center blurred orb with text */
+                    .card-evervault-center {
+                      position: absolute;
+                      top: 50%; left: 50%;
+                      transform: translate(-50%, -50%);
+                      width: 176px; height: 176px;
+                      border-radius: 50%;
+                      display: flex; align-items: center;
+                      justify-content: center; z-index: 10;
+                    }
+                    .card-evervault-blur {
+                      position: absolute; inset: 0;
+                      background: rgba(0,0,0,0.8);
+                      border-radius: 50%;
+                      filter: blur(4px);
+                    }
+                    .card-evervault-text {
+                      position: relative; z-index: 1;
+                      color: #fff; font: bold 2rem sans-serif;
+                    }
+
+                    /* ---- JavaScript ---- */
+                    const chars =
+                      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+                    function generateRandomString(len) {
+                      let result = '';
+                      for (let i = 0; i &lt; len; i++) {
+                        result += chars.charAt(
+                          Math.floor(Math.random() * chars.length)
+                        );
+                      }
+                      return result;
+                    }
+
+                    document.querySelectorAll('[data-evervault]')
+                      .forEach(card =&gt; {
+                        const charsEl =
+                          card.querySelector('.card-evervault-chars');
+                        const overlayEl =
+                          card.querySelector('.card-evervault-chars-overlay');
+
+                        // Initial fill
+                        if (charsEl)
+                          charsEl.textContent = generateRandomString(1500);
+                        if (overlayEl)
+                          overlayEl.textContent = generateRandomString(1500);
+
+                        card.addEventListener('mousemove', (e) =&gt; {
+                          const rect = card.getBoundingClientRect();
+                          const x = e.clientX - rect.left;
+                          const y = e.clientY - rect.top;
+
+                          // Move radial mask to cursor position
+                          card.style.setProperty('--mx', x + 'px');
+                          card.style.setProperty('--my', y + 'px');
+
+                          // Regenerate characters each move
+                          const str = generateRandomString(1500);
+                          if (charsEl) charsEl.textContent = str;
+                          if (overlayEl) overlayEl.textContent = str;
+                        });
+                      });</code></pre>
+                </div>
+            </div>
+
+        </div>
     </div>
-</div>
