@@ -7,13 +7,13 @@
 <div class="showcase-page">
     <div class="showcase-header">
         <h1>Card Effects</h1>
-        <p>Beautiful card components with glass, 3D tilt, spotlight tracking, animated borders, and immersive water effects.</p>
+        <p>Beautiful card components with glass, 3D tilt, spotlight tracking, animated borders, and immersive effects. Click any to get the code.</p>
     </div>
 
-    <div class="showcase-grid">
+    <div class="showcase-grid showcase-grid-cards">
 
         <!-- Glass Card -->
-        <div class="showcase-item reveal">
+        <a href="/Showcase/GetCode?category=Cards&component=glassmorphism" class="showcase-item showcase-item-link reveal">
             <h3 class="showcase-item-title">Glassmorphism <span class="badge">CSS</span></h3>
             <div class="preview-panel">
                 <div class="card-glass">
@@ -22,62 +22,13 @@
                     <p>A frosted glass effect with a rotating conic-gradient border that creates a mesmerizing glow.</p>
                 </div>
             </div>
-            <div class="code-panel">
-                <div class="code-header">
-                    <span class="code-lang">CSS</span>
-                    <button class="copy-btn" onclick="copyCode(this)">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
-                        <span class="copy-text">Copy</span>
-                    </button>
-                </div>
-                <pre><code class="language-css">.card-glass {
-  width: 300px;
-  padding: 2rem;
-  background: rgba(255,255,255,0.04);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 20px;
-  position: relative;
-  overflow: hidden;
-  transition: all 0.4s ease;
-}
-
-/* Rotating gradient border */
-.card-glass::before {
-  content: '';
-  position: absolute;
-  top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0%,
-    rgba(0,229,255,0.1) 25%,
-    transparent 50%,
-    rgba(139,92,246,0.1) 75%,
-    transparent 100%
-  );
-  animation: rotate 8s linear infinite;
-  z-index: -1;
-}
-
-/* Inner background fill */
-.card-glass::after {
-  content: '';
-  position: absolute;
-  inset: 1px;
-  background: rgba(8,8,13,0.9);
-  border-radius: 19px;
-  z-index: -1;
-}
-
-@@keyframes rotate {
-  to { transform: rotate(360deg); }
-}</code></pre>
+            <div class="showcase-item-footer">
+                <span class="getcode-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg> Get Code</span>
             </div>
-        </div>
+        </a>
 
         <!-- 3D Tilt Card -->
-        <div class="showcase-item reveal">
+        <a href="/Showcase/GetCode?category=Cards&component=3d-tilt" class="showcase-item showcase-item-link reveal">
             <h3 class="showcase-item-title">3D Tilt <span class="badge">CSS + JS</span></h3>
             <div class="preview-panel">
                 <div class="card-tilt">
@@ -87,56 +38,13 @@
                     </div>
                 </div>
             </div>
-            <div class="code-panel">
-                <div class="code-header">
-                    <span class="code-lang">CSS + JS</span>
-                    <button class="copy-btn" onclick="copyCode(this)">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
-                        <span class="copy-text">Copy</span>
-                    </button>
-                </div>
-                <pre><code class="language-css">/* CSS */
-.card-tilt {
-  width: 300px;
-  height: 200px;
-  background: linear-gradient(
-    135deg,
-    rgba(139,92,246,0.1),
-    rgba(0,229,255,0.05)
-  );
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transform-style: preserve-3d;
-  perspective: 1000px;
-  cursor: pointer;
-  will-change: transform;
-}
-
-/* JavaScript */
-card.addEventListener('mousemove', (e) => {
-  const rect = card.getBoundingClientRect();
-  const x = e.clientX - rect.left;
-  const y = e.clientY - rect.top;
-  const cx = rect.width / 2;
-  const cy = rect.height / 2;
-  const rx = ((y - cy) / cy) * -12;
-  const ry = ((x - cx) / cx) * 12;
-  card.style.transform =
-    `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg)`;
-});
-
-card.addEventListener('mouseleave', () => {
-  card.style.transform =
-    'perspective(1000px) rotateX(0) rotateY(0)';
-});</code></pre>
+            <div class="showcase-item-footer">
+                <span class="getcode-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg> Get Code</span>
             </div>
-        </div>
+        </a>
 
         <!-- Spotlight Card -->
-        <div class="showcase-item reveal">
+        <a href="/Showcase/GetCode?category=Cards&component=spotlight-tracking" class="showcase-item showcase-item-link reveal">
             <h3 class="showcase-item-title">Spotlight Tracking <span class="badge">CSS + JS</span></h3>
             <div class="preview-panel">
                 <div class="card-spotlight">
@@ -144,58 +52,13 @@ card.addEventListener('mouseleave', () => {
                     <p>Move your cursor over this card to see a radial light follow your mouse position.</p>
                 </div>
             </div>
-            <div class="code-panel">
-                <div class="code-header">
-                    <span class="code-lang">CSS + JS</span>
-                    <button class="copy-btn" onclick="copyCode(this)">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
-                        <span class="copy-text">Copy</span>
-                    </button>
-                </div>
-                <pre><code class="language-css">/* CSS */
-.card-spotlight {
-  position: relative;
-  width: 300px;
-  padding: 2rem;
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-.card-spotlight::before {
-  content: '';
-  position: absolute;
-  width: 250px; height: 250px;
-  background: radial-gradient(
-    circle,
-    rgba(0,229,255,0.15) 0%,
-    transparent 70%
-  );
-  border-radius: 50%;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease;
-  transform: translate(-50%, -50%);
-  left: var(--spot-x, 50%);
-  top: var(--spot-y, 50%);
-}
-
-.card-spotlight:hover::before { opacity: 1; }
-
-/* JavaScript */
-card.addEventListener('mousemove', (e) => {
-  const rect = card.getBoundingClientRect();
-  card.style.setProperty('--spot-x',
-    (e.clientX - rect.left) + 'px');
-  card.style.setProperty('--spot-y',
-    (e.clientY - rect.top) + 'px');
-});</code></pre>
+            <div class="showcase-item-footer">
+                <span class="getcode-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg> Get Code</span>
             </div>
-        </div>
+        </a>
 
         <!-- Animated Border Card -->
-        <div class="showcase-item reveal">
+        <a href="/Showcase/GetCode?category=Cards&component=animated-border" class="showcase-item showcase-item-link reveal">
             <h3 class="showcase-item-title">Animated Border <span class="badge">CSS</span></h3>
             <div class="preview-panel">
                 <div class="card-animated-border">
@@ -203,146 +66,30 @@ card.addEventListener('mousemove', (e) => {
                     <p>A continuously rotating conic gradient creates a stunning animated border effect around the card.</p>
                 </div>
             </div>
-            <div class="code-panel">
-                <div class="code-header">
-                    <span class="code-lang">CSS</span>
-                    <button class="copy-btn" onclick="copyCode(this)">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
-                        <span class="copy-text">Copy</span>
-                    </button>
-                </div>
-                <pre><code class="language-css">@@property --border-angle {
-  syntax: '&lt;angle&gt;';
-  initial-value: 0deg;
-  inherits: false;
-}
-
-.card-animated-border {
-  position: relative;
-  width: 300px;
-  padding: 2rem;
-  border-radius: 20px;
-  background: #0e0e16;
-  z-index: 1;
-}
-
-/* Gradient border layer */
-.card-animated-border::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  border-radius: 22px;
-  background: conic-gradient(
-    from var(--border-angle, 0deg),
-    #00e5ff, #8b5cf6, #ec4899, #00e5ff
-  );
-  z-index: -2;
-  animation: spin 4s linear infinite;
-}
-
-/* Solid fill on top */
-.card-animated-border::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: 20px;
-  background: #0e0e16;
-  z-index: -1;
-}
-
-@@keyframes spin {
-  to { --border-angle: 360deg; }
-}</code></pre>
+            <div class="showcase-item-footer">
+                <span class="getcode-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg> Get Code</span>
             </div>
-        </div>
+        </a>
 
         <!-- Deep Sea Caustics Card -->
-        <div class="showcase-item reveal">
+        <a href="/Showcase/GetCode?category=Cards&component=deep-sea-caustics" class="showcase-item showcase-item-link reveal">
             <h3 class="showcase-item-title">Deep Sea Caustics <span class="badge badge-water">CSS</span></h3>
             <div class="preview-panel">
                 <div class="card-deep-sea">
                     <div class="card-deep-sea-caustics"></div>
-                    <div class="bubble"></div>
-                    <div class="bubble"></div>
-                    <div class="bubble"></div>
-                    <div class="bubble"></div>
-                    <div class="bubble"></div>
+                    <div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div><div class="bubble"></div>
                     <div class="deep-sea-icon"><i class="fas fa-water"></i></div>
                     <h3>Deep Sea</h3>
                     <p>Animated underwater caustic light patterns with gently rising bubbles create an immersive oceanic depth effect.</p>
                 </div>
             </div>
-            <div class="code-panel">
-                <div class="code-header">
-                    <span class="code-lang">CSS</span>
-                    <button class="copy-btn" onclick="copyCode(this)">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
-                        <span class="copy-text">Copy</span>
-                    </button>
-                </div>
-                <pre><code class="language-css">.card-deep-sea {
-  position: relative;
-  width: 300px;
-  padding: 2rem;
-  background: linear-gradient(180deg, #002233, #001018);
-  border: 1px solid rgba(0,229,255,0.1);
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-/* Caustic light layer using a helper div */
-.card-deep-sea-caustics {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.card-deep-sea-caustics::before,
-.card-deep-sea-caustics::after {
-  content: '';
-  position: absolute;
-  width: 150%; height: 150%;
-  top: -25%; left: -25%;
-}
-
-.card-deep-sea-caustics::before {
-  background:
-    radial-gradient(circle 60px at 30% 40%,
-      rgba(0,229,255,0.2), transparent),
-    radial-gradient(circle 80px at 75% 25%,
-      rgba(0,180,220,0.15), transparent);
-  animation: seaCaustic1 8s ease-in-out infinite;
-}
-
-@@keyframes seaCaustic1 {
-  0%, 100% {
-    transform: translate(0, 0) rotate(0deg);
-  }
-  50% {
-    transform: translate(-8px, 12px) rotate(-1deg);
-  }
-}
-
-/* Bubbles */
-.card-deep-sea .bubble {
-  position: absolute;
-  border-radius: 50%;
-  background: radial-gradient(circle at 30% 30%,
-    rgba(255,255,255,0.15), transparent);
-  border: 1px solid rgba(255,255,255,0.06);
-  animation: deepSeaBubble linear infinite;
-}
-
-@@keyframes deepSeaBubble {
-  0% { bottom: -5%; opacity: 0; }
-  10% { opacity: 0.7; }
-  100% { bottom: 105%; opacity: 0; }
-}</code></pre>
+            <div class="showcase-item-footer">
+                <span class="getcode-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg> Get Code</span>
             </div>
-        </div>
+        </a>
 
         <!-- Liquid Glass Card -->
-        <div class="showcase-item reveal">
+        <a href="/Showcase/GetCode?category=Cards&component=liquid-glass" class="showcase-item showcase-item-link reveal">
             <h3 class="showcase-item-title">Liquid Glass <span class="badge badge-water">CSS</span></h3>
             <div class="preview-panel">
                 <div class="card-liquid-glass">
@@ -350,386 +97,69 @@ card.addEventListener('mousemove', (e) => {
                     <p>Dual animated waves flow across the top edge, creating the illusion of a card partially submerged in water.</p>
                 </div>
             </div>
-            <div class="code-panel">
-                <div class="code-header">
-                    <span class="code-lang">CSS</span>
-                    <button class="copy-btn" onclick="copyCode(this)">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
-                        <span class="copy-text">Copy</span>
-                    </button>
-                </div>
-                <pre><code class="language-css">.card-liquid-glass {
-  position: relative;
-  width: 300px;
-  padding: 2.5rem 2rem 2rem;
-  background: linear-gradient(
-    180deg,
-    rgba(0,60,90,0.4) 0%,
-    rgba(8,8,13,0.95) 50%
-  );
-  border: 1px solid rgba(0,180,220,0.1);
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-/* Wave layer 1 */
-.card-liquid-glass::before {
-  content: '';
-  position: absolute;
-  top: -20px; left: -20%;
-  width: 140%; height: 60px;
-  background: rgba(0,229,255,0.08);
-  border-radius: 0 0 50% 50%;
-  animation: wave1 5s ease-in-out infinite;
-}
-
-/* Wave layer 2 */
-.card-liquid-glass::after {
-  content: '';
-  position: absolute;
-  top: -25px; left: -30%;
-  width: 160%; height: 55px;
-  background: rgba(0,180,220,0.05);
-  border-radius: 0 0 45% 55%;
-  animation: wave2 4s ease-in-out infinite;
-}
-
-@@keyframes wave1 {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(8%); }
-}
-
-@@keyframes wave2 {
-  0%, 100% { transform: translateX(0); }
-  50% { transform: translateX(-6%); }
-}</code></pre>
+            <div class="showcase-item-footer">
+                <span class="getcode-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg> Get Code</span>
             </div>
-        </div>
+        </a>
 
         <!-- Arctic Frost Card -->
-        <div class="showcase-item reveal">
+        <a href="/Showcase/GetCode?category=Cards&component=arctic-frost" class="showcase-item showcase-item-link reveal">
             <h3 class="showcase-item-title">Arctic Frost <span class="badge" style="background:linear-gradient(135deg,rgba(180,220,255,0.12),rgba(100,180,255,0.15));color:#8ecfff;">CSS</span></h3>
             <div class="preview-panel">
                 <div class="card-arctic">
                     <div class="card-arctic-aurora"></div>
                     <div class="card-arctic-frost-layer"></div>
-                    <div class="ice-shard"></div>
-                    <div class="ice-shard"></div>
-                    <div class="ice-shard"></div>
-                    <div class="ice-shard"></div>
-                    <div class="ice-shard"></div>
+                    <div class="ice-shard"></div><div class="ice-shard"></div><div class="ice-shard"></div><div class="ice-shard"></div><div class="ice-shard"></div>
                     <div class="arctic-icon"><i class="fas fa-snowflake"></i></div>
                     <h3>Arctic Frost</h3>
                     <p>A frozen landscape with crystalline ice shards that slowly rotate, an aurora borealis ripple, and a spreading frost layer at the edges.</p>
                 </div>
             </div>
-            <div class="code-panel">
-                <div class="code-header">
-                    <span class="code-lang">CSS</span>
-                    <button class="copy-btn" onclick="copyCode(this)">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
-                        <span class="copy-text">Copy</span>
-                    </button>
-                </div>
-                <pre><code class="language-css">.card-arctic {
-  position: relative;
-  width: 300px; padding: 2rem;
-  background: linear-gradient(165deg, #070e1a, #0b1a30, #0a1225);
-  border: 1px solid rgba(140,207,255,0.08);
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-/* Aurora borealis ribbon */
-.card-arctic-aurora::before {
-  content: '';
-  position: absolute;
-  top: -60%; left: -20%;
-  width: 140%; height: 120%;
-  background: linear-gradient(
-    180deg, transparent 30%,
-    rgba(100,220,255,0.04) 40%,
-    rgba(80,200,180,0.06) 45%,
-    rgba(120,180,255,0.04) 50%,
-    transparent 60%);
-  animation: auroraWave 8s ease-in-out infinite;
-  filter: blur(20px);
-}
-
-@@keyframes auroraWave {
-  0%, 100% { transform: translateY(0) skewY(-2deg); }
-  50%      { transform: translateY(15px) skewY(2deg); }
-}
-
-/* Frost creep from edges */
-.card-arctic-frost-layer::before,
-.card-arctic-frost-layer::after {
-  content: '';
-  position: absolute;
-  background: radial-gradient(ellipse,
-    rgba(180,220,255,0.06), transparent 70%);
-  border-radius: 50%;
-  animation: frostPulse 6s ease-in-out infinite;
-}
-
-/* Ice shards — thin rotated rectangles */
-.card-arctic .ice-shard {
-  position: absolute;
-  background: linear-gradient(180deg,
-    rgba(180,220,255,0.15),
-    rgba(200,240,255,0.03));
-  border-radius: 2px;
-  pointer-events: none;
-  animation: shardFloat ease-in-out infinite;
-}
-
-@@keyframes shardFloat {
-  0%, 100% { opacity: 0.3; transform: rotate(var(--r))
-    translateY(0); }
-  50%      { opacity: 0.7; transform: rotate(var(--r))
-    translateY(-8px); }
-}</code></pre>
+            <div class="showcase-item-footer">
+                <span class="getcode-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg> Get Code</span>
             </div>
-        </div>
+        </a>
 
         <!-- Nebula Storm Card -->
-        <div class="showcase-item reveal">
+        <a href="/Showcase/GetCode?category=Cards&component=nebula-storm" class="showcase-item showcase-item-link reveal">
             <h3 class="showcase-item-title">Nebula Storm <span class="badge" style="background:linear-gradient(135deg,rgba(160,80,255,0.12),rgba(100,50,200,0.15));color:#b07fff;">CSS</span></h3>
             <div class="preview-panel">
                 <div class="card-nebula">
                     <div class="card-nebula-clouds"></div>
                     <div class="card-nebula-flare"></div>
-                    <div class="star-particle"></div>
-                    <div class="star-particle"></div>
-                    <div class="star-particle"></div>
-                    <div class="star-particle"></div>
-                    <div class="star-particle"></div>
-                    <div class="star-particle"></div>
-                    <div class="star-particle"></div>
-                    <div class="star-particle"></div>
+                    <div class="star-particle"></div><div class="star-particle"></div><div class="star-particle"></div><div class="star-particle"></div>
+                    <div class="star-particle"></div><div class="star-particle"></div><div class="star-particle"></div><div class="star-particle"></div>
                     <div class="nebula-icon"><i class="fas fa-meteor"></i></div>
                     <h3>Nebula Storm</h3>
                     <p>Layered cosmic gas clouds rotate and morph while a pulsing core flare radiates outward and stars drift through the void.</p>
                 </div>
             </div>
-            <div class="code-panel">
-                <div class="code-header">
-                    <span class="code-lang">CSS</span>
-                    <button class="copy-btn" onclick="copyCode(this)">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
-                        <span class="copy-text">Copy</span>
-                    </button>
-                </div>
-                <pre><code class="language-css">.card-nebula {
-  position: relative;
-  width: 300px; padding: 2rem;
-  background: radial-gradient(ellipse at 30% 50%,
-    #1a0836, #0d0520 60%, #08021a);
-  border: 1px solid rgba(160,80,255,0.08);
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-/* Dual rotating gas clouds */
-.card-nebula-clouds::before {
-  content: '';
-  position: absolute;
-  width: 200%; height: 200%;
-  top: -50%; left: -50%;
-  background:
-    radial-gradient(circle 90px at 40% 45%,
-      rgba(139,92,246,0.12), transparent),
-    radial-gradient(circle 60px at 65% 60%,
-      rgba(236,72,153,0.1), transparent);
-  animation: nebulaSwirl1 14s linear infinite;
-}
-
-@@keyframes nebulaSwirl1 {
-  to { transform: rotate(360deg); }
-}
-
-/* Core flare pulse */
-.card-nebula-flare::before {
-  content: '';
-  position: absolute;
-  width: 120px; height: 120px;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%);
-  background: radial-gradient(circle,
-    rgba(160,80,255,0.15), transparent 70%);
-  animation: nebulaPulse 4s ease-in-out infinite;
-}
-
-@@keyframes nebulaPulse {
-  0%, 100% { transform: translate(-50%,-50%) scale(0.8);
-    opacity: 0.5; }
-  50%      { transform: translate(-50%,-50%) scale(1.3);
-    opacity: 1; }
-}
-
-/* Star particles with drift */
-.card-nebula .star-particle {
-  position: absolute;
-  border-radius: 50%;
-  background: #fff;
-  box-shadow: 0 0 3px rgba(255,255,255,0.4);
-  animation: starDrift ease-in-out infinite;
-}
-
-@@keyframes starDrift {
-  0%, 100% { opacity: 0; transform: translate(0,0); }
-  30%      { opacity: 1; }
-  70%      { opacity: 1; }
-  100%     { opacity: 0; transform:
-    translate(var(--dx), var(--dy)); }
-}</code></pre>
+            <div class="showcase-item-footer">
+                <span class="getcode-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg> Get Code</span>
             </div>
-        </div>
+        </a>
 
-            <!-- Evervault Card -->
-            <div class="showcase-item reveal">
-                <h3 class="showcase-item-title">Evervault <span class="badge">CSS + JS</span></h3>
-                <div class="preview-panel">
-                    <div class="card-evervault" data-evervault>
-                        <div class="card-evervault-chars" aria-hidden="true"></div>
-                        <div class="card-evervault-gradient"></div>
-                        <div class="card-evervault-chars-overlay" aria-hidden="true"></div>
-                        <div class="card-evervault-center">
-                            <div class="card-evervault-blur"></div>
-                            <span class="card-evervault-text">hover</span>
-                        </div>
+        <!-- Evervault Card -->
+        <a href="/Showcase/GetCode?category=Cards&component=evervault" class="showcase-item showcase-item-link reveal">
+            <h3 class="showcase-item-title">Evervault <span class="badge">CSS + JS</span></h3>
+            <div class="preview-panel">
+                <div class="card-evervault" data-evervault>
+                    <div class="card-evervault-chars" aria-hidden="true"></div>
+                    <div class="card-evervault-gradient"></div>
+                    <div class="card-evervault-chars-overlay" aria-hidden="true"></div>
+                    <div class="card-evervault-center">
+                        <div class="card-evervault-blur"></div>
+                        <span class="card-evervault-text">hover</span>
                     </div>
                 </div>
-                <div class="code-panel">
-                    <div class="code-header">
-                        <span class="code-lang">CSS + JS</span>
-                        <button class="copy-btn" onclick="copyCode(this)">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
-                            <span class="copy-text">Copy</span>
-                        </button>
-                    </div>
-                                    <pre><code class="language-javascript">/* CSS */
-                    .card-evervault {
-                      position: relative;
-                      width: 300px;
-                      aspect-ratio: 1;
-                      border-radius: 24px;
-                      overflow: hidden;
-                      cursor: crosshair;
-                    }
-
-                    /* Random character layer */
-                    .card-evervault-chars {
-                      position: absolute; inset: 0;
-                      font: bold 0.7rem monospace;
-                      color: #fff; word-break: break-all;
-                      white-space: pre-wrap; opacity: 0;
-                      transition: opacity 0.5s;
-                    }
-                    .card-evervault:hover .card-evervault-chars {
-                      opacity: 0.5;
-                    }
-
-                    /* Gradient revealed via radial mask at cursor */
-                    .card-evervault-gradient {
-                      position: absolute; inset: 0;
-                      background: linear-gradient(135deg, #22c55e, #2563eb);
-                      opacity: 0;
-                      mask-image: radial-gradient(250px circle
-                        at var(--mx) var(--my), white, transparent);
-                      -webkit-mask-image: radial-gradient(250px circle
-                        at var(--mx) var(--my), white, transparent);
-                      backdrop-filter: blur(12px);
-                      transition: opacity 0.5s;
-                    }
-                    .card-evervault:hover .card-evervault-gradient {
-                      opacity: 1;
-                    }
-
-                    /* Overlay chars — visible through gradient mask */
-                    .card-evervault-chars-overlay {
-                      position: absolute; inset: 0;
-                      font: bold 0.7rem monospace;
-                      color: rgba(255,255,255,0.9);
-                      word-break: break-all;
-                      white-space: pre-wrap; opacity: 0;
-                      mix-blend-mode: overlay;
-                      mask-image: radial-gradient(250px circle
-                        at var(--mx) var(--my), white, transparent);
-                      transition: opacity 0.5s;
-                    }
-                    .card-evervault:hover .card-evervault-chars-overlay {
-                      opacity: 1;
-                    }
-
-                    /* Center blurred orb with text */
-                    .card-evervault-center {
-                      position: absolute;
-                      top: 50%; left: 50%;
-                      transform: translate(-50%, -50%);
-                      width: 176px; height: 176px;
-                      border-radius: 50%;
-                      display: flex; align-items: center;
-                      justify-content: center; z-index: 10;
-                    }
-                    .card-evervault-blur {
-                      position: absolute; inset: 0;
-                      background: rgba(0,0,0,0.8);
-                      border-radius: 50%;
-                      filter: blur(4px);
-                    }
-                    .card-evervault-text {
-                      position: relative; z-index: 1;
-                      color: #fff; font: bold 2rem sans-serif;
-                    }
-
-                    /* ---- JavaScript ---- */
-                    const chars =
-                      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-                    function generateRandomString(len) {
-                      let result = '';
-                      for (let i = 0; i &lt; len; i++) {
-                        result += chars.charAt(
-                          Math.floor(Math.random() * chars.length)
-                        );
-                      }
-                      return result;
-                    }
-
-                    document.querySelectorAll('[data-evervault]')
-                      .forEach(card =&gt; {
-                        const charsEl =
-                          card.querySelector('.card-evervault-chars');
-                        const overlayEl =
-                          card.querySelector('.card-evervault-chars-overlay');
-
-                        // Initial fill
-                        if (charsEl)
-                          charsEl.textContent = generateRandomString(1500);
-                        if (overlayEl)
-                          overlayEl.textContent = generateRandomString(1500);
-
-                        card.addEventListener('mousemove', (e) =&gt; {
-                          const rect = card.getBoundingClientRect();
-                          const x = e.clientX - rect.left;
-                          const y = e.clientY - rect.top;
-
-                          // Move radial mask to cursor position
-                          card.style.setProperty('--mx', x + 'px');
-                          card.style.setProperty('--my', y + 'px');
-
-                          // Regenerate characters each move
-                          const str = generateRandomString(1500);
-                          if (charsEl) charsEl.textContent = str;
-                          if (overlayEl) overlayEl.textContent = str;
-                        });
-                      });</code></pre>
-                </div>
             </div>
+            <div class="showcase-item-footer">
+                <span class="getcode-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg> Get Code</span>
+            </div>
+        </a>
 
         <!-- Cyberpunk Card -->
-        <div class="showcase-item reveal">
+        <a href="/Showcase/GetCode?category=Cards&component=cyberpunk" class="showcase-item showcase-item-link reveal">
             <h3 class="showcase-item-title">Cyberpunk <span class="badge">CSS</span></h3>
             <div class="preview-panel">
                 <div class="card-cyber">
@@ -739,68 +169,17 @@ card.addEventListener('mousemove', (e) => {
                     <div class="card-cyber-tag">SYS://ONLINE</div>
                     <h3>NEURAL<br>INTERFACE</h3>
                     <p>Biometric authentication enabled. Synaptic bridge active. Latency: 0.02ms.</p>
-                    <div class="card-cyber-bar">
-                        <span class="card-cyber-bar-fill"></span>
-                    </div>
-                    <div class="card-cyber-status">
-                        <span class="card-cyber-dot"></span> CONNECTED
-                    </div>
+                    <div class="card-cyber-bar"><span class="card-cyber-bar-fill"></span></div>
+                    <div class="card-cyber-status"><span class="card-cyber-dot"></span> CONNECTED</div>
                 </div>
             </div>
-            <div class="code-panel">
-                <div class="code-header">
-                    <span class="code-lang">CSS</span>
-                    <button class="copy-btn" onclick="copyCode(this)">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
-                        <span class="copy-text">Copy</span>
-                    </button>
-                </div>
-                <pre><code class="language-css">.card-cyber {
-  position: relative;
-  width: 300px; padding: 2rem;
-  background: rgba(0,0,0,0.85);
-  border: 1px solid rgba(0,255,200,0.15);
-  clip-path: polygon(
-    0 12px, 12px 0, 100% 0,
-    100% calc(100% - 12px),
-    calc(100% - 12px) 100%, 0 100%);
-  font-family: 'JetBrains Mono', monospace;
-  overflow: hidden;
-}
-/* Scanline overlay */
-.card-cyber-scanline {
-  position: absolute; inset: 0;
-  background: repeating-linear-gradient(
-    0deg, transparent,
-    transparent 2px,
-    rgba(0,255,200,0.02) 2px,
-    rgba(0,255,200,0.02) 4px);
-  pointer-events: none;
-  animation: scanScroll 8s linear infinite;
-}
-/* Clipped corners */
-.card-cyber-corner {
-  position: absolute;
-  width: 18px; height: 18px;
-  border: 2px solid rgba(0,255,200,0.5);
-}
-.card-cyber-tl {
-  top: -1px; left: -1px;
-  border-right: none; border-bottom: none;
-}
-.card-cyber-br {
-  bottom: -1px; right: -1px;
-  border-left: none; border-top: none;
-}
-
-@@keyframes scanScroll {
-  to { background-position: 0 100%; }
-}</code></pre>
+            <div class="showcase-item-footer">
+                <span class="getcode-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg> Get Code</span>
             </div>
-        </div>
+        </a>
 
         <!-- Holographic Card -->
-        <div class="showcase-item reveal">
+        <a href="/Showcase/GetCode?category=Cards&component=holographic" class="showcase-item showcase-item-link reveal">
             <h3 class="showcase-item-title">Holographic <span class="badge">CSS</span></h3>
             <div class="preview-panel">
                 <div class="card-holo">
@@ -812,46 +191,13 @@ card.addEventListener('mousemove', (e) => {
                     </div>
                 </div>
             </div>
-            <div class="code-panel">
-                <div class="code-header">
-                    <span class="code-lang">CSS</span>
-                    <button class="copy-btn" onclick="copyCode(this)">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
-                        <span class="copy-text">Copy</span>
-                    </button>
-                </div>
-                <pre><code class="language-css">.card-holo {
-  position: relative;
-  width: 300px;
-  padding: 2rem;
-  background: linear-gradient(135deg,
-    #1a1a2e 0%, #16213e 100%);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 20px;
-  overflow: hidden;
-}
-/* Rainbow shimmer sweep */
-.card-holo-shine {
-  position: absolute; inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 30%,
-    rgba(255,0,128,0.08) 38%,
-    rgba(100,100,255,0.08) 42%,
-    rgba(0,255,200,0.08) 46%,
-    rgba(255,200,0,0.06) 50%,
-    transparent 58%);
-  animation: holoSweep 4s ease-in-out infinite;
-}
-@@keyframes holoSweep {
-  0%   { transform: translateX(-100%); }
-  100% { transform: translateX(200%); }
-}</code></pre>
+            <div class="showcase-item-footer">
+                <span class="getcode-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg> Get Code</span>
             </div>
-        </div>
+        </a>
 
         <!-- Terminal Card -->
-        <div class="showcase-item reveal">
+        <a href="/Showcase/GetCode?category=Cards&component=terminal" class="showcase-item showcase-item-link reveal">
             <h3 class="showcase-item-title">Terminal <span class="badge">CSS</span></h3>
             <div class="preview-panel">
                 <div class="card-terminal">
@@ -871,54 +217,13 @@ card.addEventListener('mousemove', (e) => {
                     </div>
                 </div>
             </div>
-            <div class="code-panel">
-                <div class="code-header">
-                    <span class="code-lang">CSS</span>
-                    <button class="copy-btn" onclick="copyCode(this)">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
-                        <span class="copy-text">Copy</span>
-                    </button>
-                </div>
-                <pre><code class="language-css">.card-terminal {
-  width: 340px;
-  background: #1a1a1a;
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 12px;
-  overflow: hidden;
-  font-family: 'JetBrains Mono', monospace;
-}
-.card-terminal-header {
-  display: flex; align-items: center;
-  gap: 6px; padding: 12px 16px;
-  background: rgba(255,255,255,0.03);
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.card-terminal-dot {
-  width: 12px; height: 12px;
-  border-radius: 50%;
-}
-.card-terminal-body {
-  padding: 16px;
-  font-size: 0.78rem;
-  line-height: 1.7;
-}
-.card-terminal-prompt {
-  color: #00e5ff;
-}
-.card-terminal-cmd { color: #fff; }
-.card-terminal-dim { color: #555; }
-.card-terminal-success { color: #28c840; }
-.card-terminal-cursor {
-  animation: blink 1s step-end infinite;
-}
-@@keyframes blink {
-  50% { opacity: 0; }
-}</code></pre>
+            <div class="showcase-item-footer">
+                <span class="getcode-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg> Get Code</span>
             </div>
-        </div>
+        </a>
 
         <!-- Radar Pulse Card -->
-        <div class="showcase-item reveal">
+        <a href="/Showcase/GetCode?category=Cards&component=radar-pulse" class="showcase-item showcase-item-link reveal">
             <h3 class="showcase-item-title">Radar Pulse <span class="badge">CSS</span></h3>
             <div class="preview-panel">
                 <div class="card-radar">
@@ -935,58 +240,10 @@ card.addEventListener('mousemove', (e) => {
                     </div>
                 </div>
             </div>
-            <div class="code-panel">
-                <div class="code-header">
-                    <span class="code-lang">CSS</span>
-                    <button class="copy-btn" onclick="copyCode(this)">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
-                        <span class="copy-text">Copy</span>
-                    </button>
-                </div>
-                <pre><code class="language-css">.card-radar {
-  position: relative;
-  width: 300px; height: 300px;
-  background: radial-gradient(circle,
-    rgba(0,255,100,0.03) 0%,
-    rgba(0,0,0,0.95) 70%);
-  border: 1px solid rgba(0,255,100,0.1);
-  border-radius: 50%;
-  overflow: hidden;
-}
-/* Rotating sweep beam */
-.card-radar-sweep {
-  position: absolute;
-  inset: 0;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    rgba(0,255,100,0.15) 30deg,
-    transparent 60deg);
-  animation: radarSpin 3s linear infinite;
-}
-/* Concentric rings */
-.card-radar-ring {
-  position: absolute;
-  border: 1px solid rgba(0,255,100,0.08);
-  border-radius: 50%;
-}
-/* Blinking target blips */
-.card-radar-blip {
-  position: absolute;
-  width: 6px; height: 6px;
-  background: #00ff64;
-  border-radius: 50%;
-  box-shadow: 0 0 8px rgba(0,255,100,0.6);
-  animation: blipPulse 2s ease-in-out infinite;
-}
-
-@@keyframes radarSpin { to { transform: rotate(360deg); } }
-@@keyframes blipPulse {
-  0%,100% { opacity:0.3; transform:scale(0.8); }
-  50% { opacity:1; transform:scale(1.3); }
-}</code></pre>
+            <div class="showcase-item-footer">
+                <span class="getcode-label"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75L22.5 12l-5.25 5.25m-10.5 0L1.5 12l5.25-5.25m7.5-3l-4.5 16.5"/></svg> Get Code</span>
             </div>
-        </div>
+        </a>
 
     </div>
 </div>

@@ -478,52 +478,110 @@
 &lt;html lang="en"&gt;
 &lt;head&gt;
   &lt;meta charset="utf-8" /&gt;
-  &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+  &lt;meta name="viewport"
+    content="width=device-width, initial-scale=1.0" /&gt;
   &lt;title&gt;Green Lantern&lt;/title&gt;
+  &lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@@300;400;500;600;700;800&amp;display=swap"
+    rel="stylesheet" /&gt;
   &lt;style&gt;
     *{margin:0;padding:0;box-sizing:border-box}
-    html,body{width:100%;height:100%;overflow:hidden;background:#000;
-      font-family:'Inter',system-ui,sans-serif}
-    .hero{position:relative;display:flex;align-items:center;
-      justify-content:center;min-height:100vh;overflow:hidden}
-    canvas{position:absolute;inset:0;width:100%;height:100%}
-    .ov{position:relative;z-index:10;display:flex;flex-direction:column;
-      align-items:center;text-align:center;padding:24px;max-width:960px}
-    h1{font-size:clamp(2.5rem,6vw,4.5rem);font-weight:300;
-      letter-spacing:-.02em;color:#fff;line-height:1.15;margin-bottom:16px}
-    .sub{font-size:1.15rem;color:rgba(236,253,245,.72);max-width:640px;
+    html,body{width:100%;height:100%;overflow:hidden;
+      background:#000;font-family:'Inter',sans-serif}
+
+    /* Full-screen hero with canvas behind */
+    .hero{position:relative;display:flex;
+      align-items:center;justify-content:center;
+      min-height:100vh;overflow:hidden}
+    #c{position:absolute;inset:0;
+      width:100%;height:100%;display:block}
+
+    /* Overlay content */
+    .ov{position:relative;z-index:10;display:flex;
+      flex-direction:column;align-items:center;
+      text-align:center;padding:24px;max-width:960px}
+
+    /* Badge pill */
+    .badge{margin-bottom:24px;display:inline-flex;
+      align-items:center;gap:10px;padding:7px 18px;
+      background:rgba(255,255,255,.07);
+      backdrop-filter:blur(14px);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:50px;text-transform:uppercase;
+      letter-spacing:.12em;font-weight:500}
+    .badge .lbl{font-size:.6rem;letter-spacing:.18em;
+      color:rgba(167,243,208,.7);font-weight:300}
+    .badge .dot{width:4px;height:4px;border-radius:50%;
+      background:rgba(167,243,208,.5)}
+    .badge .val{font-size:.72rem;letter-spacing:.02em;
+      color:rgba(167,243,208,.9);font-weight:300}
+
+    /* Heading */
+    h1{font-size:clamp(2.5rem,6vw,4.5rem);
+      font-weight:300;letter-spacing:-.02em;
+      color:#fff;line-height:1.15;margin-bottom:16px;
+      max-width:820px}
+
+    /* Subtitle */
+    .sub{font-size:clamp(1rem,1.8vw,1.15rem);
+      color:rgba(236,253,245,.72);max-width:640px;
       margin:0 auto 36px;font-weight:300;line-height:1.7}
-    .badge{margin-bottom:24px;display:inline-flex;align-items:center;gap:10px;
-      padding:7px 18px;background:rgba(255,255,255,.07);backdrop-filter:blur(14px);
-      border:1px solid rgba(255,255,255,.14);border-radius:50px;
-      text-transform:uppercase;letter-spacing:.12em;font-weight:500}
-    .badge .lbl{font-size:.6rem;letter-spacing:.18em;color:rgba(167,243,208,.7);font-weight:300}
-    .badge .dot{width:4px;height:4px;border-radius:50%;background:rgba(167,243,208,.5)}
-    .badge .val{font-size:.72rem;letter-spacing:.02em;color:rgba(167,243,208,.9);font-weight:300}
-    .btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
-    .bp{padding:13px 32px;background:rgba(52,211,153,.78);color:#000;border:none;
-      border-radius:14px;font-size:.95rem;font-weight:500;cursor:pointer;
-      backdrop-filter:blur(12px);box-shadow:0 4px 24px rgba(52,211,153,.18);
-      transition:.3s;text-decoration:none;font-family:inherit}
-    .bp:hover{background:rgba(110,231,183,.82);box-shadow:0 6px 32px rgba(52,211,153,.3)}
-    .bo{padding:13px 32px;background:transparent;color:#fff;
-      border:1px solid rgba(255,255,255,.25);border-radius:14px;font-size:.95rem;
-      font-weight:500;cursor:pointer;backdrop-filter:blur(12px);transition:.3s;
+
+    /* CTA buttons */
+    .btns{display:flex;gap:14px;flex-wrap:wrap;
+      justify-content:center}
+    .bp{padding:13px 32px;
+      background:rgba(52,211,153,.78);color:#000;
+      border:none;border-radius:14px;font-size:.95rem;
+      font-weight:500;cursor:pointer;
+      backdrop-filter:blur(12px);
+      box-shadow:0 4px 24px rgba(52,211,153,.18);
+      transition:.3s;text-decoration:none;
+      font-family:inherit}
+    .bp:hover{background:rgba(110,231,183,.82);
+      box-shadow:0 6px 32px rgba(52,211,153,.3)}
+    .bo{padding:13px 32px;background:transparent;
+      color:#fff;
+      border:1px solid rgba(255,255,255,.25);
+      border-radius:14px;font-size:.95rem;
+      font-weight:500;cursor:pointer;
+      backdrop-filter:blur(12px);transition:.3s;
       text-decoration:none;font-family:inherit}
-    .bo:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.4)}
-    .micro{margin-top:32px;display:flex;flex-wrap:wrap;justify-content:center;
-      gap:22px;list-style:none}
-    .micro li{display:flex;align-items:center;gap:8px;font-size:.72rem;
-      font-weight:300;color:rgba(167,243,208,.6)}
-    .micro .md{width:4px;height:4px;border-radius:50%;background:rgba(167,243,208,.45)}
-    @@keyframes bi{from{opacity:0;filter:blur(16px);transform:translateY(20px) scale(1.04)}
-      to{opacity:1;filter:blur(0);transform:translateY(0) scale(1)}}
-    @@keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .bo:hover{background:rgba(255,255,255,.08);
+      border-color:rgba(255,255,255,.4)}
+
+    /* Micro detail list */
+    .micro{margin-top:32px;display:flex;flex-wrap:wrap;
+      justify-content:center;gap:22px;list-style:none}
+    .micro li{display:flex;align-items:center;gap:8px;
+      font-size:.72rem;font-weight:300;
+      color:rgba(167,243,208,.6)}
+    .micro .md{width:4px;height:4px;border-radius:50%;
+      background:rgba(167,243,208,.45)}
+
+    /* Entrance animations */
+    @@keyframes bi{
+      from{opacity:0;filter:blur(16px);
+        transform:translateY(20px) scale(1.04)}
+      to{opacity:1;filter:blur(0);
+        transform:translateY(0) scale(1)}}
+    @@keyframes fi{
+      from{opacity:0;transform:translateY(10px)}
+      to{opacity:1;transform:translateY(0)}}
     .ab{animation:fi .6s ease-out forwards;opacity:0}
-    .at{animation:bi .9s ease-out .15s forwards;opacity:0}
-    .as{animation:fi .6s ease-out .5s forwards;opacity:0}
-    .ac{animation:fi .6s ease-out .7s forwards;opacity:0}
-    .am{animation:fi .5s ease-out .9s forwards;opacity:0}
+    .at{animation:bi .9s ease-out .15s forwards;
+      opacity:0}
+    .as{animation:fi .6s ease-out .5s forwards;
+      opacity:0}
+    .ac{animation:fi .6s ease-out .7s forwards;
+      opacity:0}
+    .am{animation:fi .5s ease-out .9s forwards;
+      opacity:0}
+
+    /* Responsive */
+    @@media(max-width:640px){
+      .btns{flex-direction:column;align-items:center}
+      .micro{flex-direction:column;align-items:center;
+        gap:12px}}
   &lt;/style&gt;
 &lt;/head&gt;
 &lt;body&gt;
@@ -537,68 +595,125 @@
       &lt;/div&gt;
       &lt;h1 class="at"&gt;An experiment in light, motion,
         and the quiet chaos between.&lt;/h1&gt;
-      &lt;p class="sub as"&gt;Experience a new dimension of interaction
-        — fluid, tactile, and alive.&lt;/p&gt;
+      &lt;p class="sub as"&gt;Experience a new dimension of
+        interaction — fluid, tactile, and alive.
+        Designed for creators who see beauty
+        in motion.&lt;/p&gt;
       &lt;div class="btns ac"&gt;
         &lt;a href="#" class="bp"&gt;Explore the Canvas&lt;/a&gt;
         &lt;a href="#" class="bo"&gt;Learn More&lt;/a&gt;
       &lt;/div&gt;
       &lt;ul class="micro am"&gt;
-        &lt;li&gt;&lt;span class="md"&gt;&lt;/span&gt;Immersive shader landscapes&lt;/li&gt;
-        &lt;li&gt;&lt;span class="md"&gt;&lt;/span&gt;Hand-tuned motion easing&lt;/li&gt;
-        &lt;li&gt;&lt;span class="md"&gt;&lt;/span&gt;Responsive, tactile feedback&lt;/li&gt;
+        &lt;li&gt;&lt;span class="md"&gt;&lt;/span&gt;
+          Immersive shader landscapes&lt;/li&gt;
+        &lt;li&gt;&lt;span class="md"&gt;&lt;/span&gt;
+          Hand-tuned motion easing&lt;/li&gt;
+        &lt;li&gt;&lt;span class="md"&gt;&lt;/span&gt;
+          Responsive, tactile feedback&lt;/li&gt;
       &lt;/ul&gt;
     &lt;/div&gt;
   &lt;/section&gt;
+
   &lt;script&gt;
   (function(){
-    const c=document.getElementById("c");
-    const gl=c.getContext("webgl2"); if(!gl) return;
-    function resize(){const d=Math.max(1,.5*devicePixelRatio);
-      c.width=innerWidth*d;c.height=innerHeight*d;
-      gl.viewport(0,0,c.width,c.height);}
-    addEventListener("resize",resize); resize();
-    const vs=`#version 300 es
+    const c = document.getElementById("c");
+    const gl = c.getContext("webgl2");
+    if (!gl) return;
+
+    // Resize canvas to fill viewport
+    function resize() {
+      const d = Math.max(1, 0.5 * devicePixelRatio);
+      c.width  = innerWidth * d;
+      c.height = innerHeight * d;
+      gl.viewport(0, 0, c.width, c.height);
+    }
+    addEventListener("resize", resize);
+    resize();
+
+    // Vertex shader — full-screen quad
+    const vs = `#version 300 es
       in vec4 position;
-      void main(){gl_Position=position;}`;
-    const fs=`#version 300 es
-      precision highp float; out vec4 O;
-      uniform vec2 resolution; uniform float time;
-      vec2 toPolar(vec2 p){return vec2(length(p),atan(p.y,p.x));}
-      void main(){
-        vec2 fc=gl_FragCoord.xy;
-        vec2 p=6.*((fc-.5*resolution)/resolution.y);
-        vec2 pol=toPolar(p);float r=pol.x;
-        vec2 i=p;float c=0.,ut=time*.5;
-        float rot=r+ut+p.x*.1;
-        for(float n=0.;n&lt;4.;n++){
-          float rr=r+.15*sin(ut*.7+n+r*2.);
-          p*=mat2(cos(rot-sin(ut/10.)),sin(rot),
-            -sin(cos(rot)-ut/10.),cos(rot))*-.25;
-          float t=r-ut/(n+30.);
-          i-=p+sin(t-i.y)+rr;
-          c+=2.2/length(vec2(sin(i.x+t)/.15,cos(i.y+t)/.15));}
-        c/=8.;
-        vec3 base=vec3(.2,.7,.5);
-        O=vec4(base*smoothstep(0.,1.,c*.6),1.);}`;
-    function mk(s,t){const sh=gl.createShader(t);
-      gl.shaderSource(sh,s);gl.compileShader(sh);return sh;}
-    const prg=gl.createProgram();
+      void main() { gl_Position = position; }`;
+
+    // Fragment shader — green swirl
+    const fs = `#version 300 es
+      precision highp float;
+      out vec4 O;
+      uniform vec2 resolution;
+      uniform float time;
+
+      vec2 toPolar(vec2 p) {
+        return vec2(length(p), atan(p.y, p.x));
+      }
+
+      void main() {
+        vec2 fc = gl_FragCoord.xy;
+        vec2 p = 6.0 * ((fc - 0.5 * resolution)
+          / resolution.y);
+        vec2 pol = toPolar(p);
+        float r = pol.x;
+        vec2 i = p;
+        float c = 0.0;
+        float ut = time * 0.5;
+        float rot = r + ut + p.x * 0.1;
+
+        for (float n = 0.0; n &lt; 4.0; n++) {
+          float rr = r
+            + 0.15 * sin(ut*0.7 + n + r*2.0);
+          p *= mat2(
+            cos(rot - sin(ut/10.0)), sin(rot),
+            -sin(cos(rot) - ut/10.0), cos(rot)
+          ) * -0.25;
+          float t = r - ut / (n + 30.0);
+          i -= p + sin(t - i.y) + rr;
+          c += 2.2 / length(vec2(
+            sin(i.x+t) / 0.15,
+            cos(i.y+t) / 0.15));
+        }
+        c /= 8.0;
+
+        vec3 base = vec3(0.2, 0.7, 0.5);
+        O = vec4(
+          base * smoothstep(0.0, 1.0, c * 0.6),
+          1.0);
+      }`;
+
+    // Compile &amp; link
+    function mk(src, type) {
+      const sh = gl.createShader(type);
+      gl.shaderSource(sh, src);
+      gl.compileShader(sh);
+      return sh;
+    }
+    const prg = gl.createProgram();
     gl.attachShader(prg,mk(vs,gl.VERTEX_SHADER));
     gl.attachShader(prg,mk(fs,gl.FRAGMENT_SHADER));
-    gl.linkProgram(prg);gl.useProgram(prg);
-    const buf=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,buf);
+    gl.linkProgram(prg);
+    gl.useProgram(prg);
+
+    // Full-screen quad geometry
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
     gl.bufferData(gl.ARRAY_BUFFER,
-      new Float32Array([-1,1,-1,-1,1,1,1,-1]),gl.STATIC_DRAW);
-    const pos=gl.getAttribLocation(prg,"position");
+      new Float32Array([-1,1,-1,-1,1,1,1,-1]),
+      gl.STATIC_DRAW);
+    const pos = gl.getAttribLocation(prg,"position");
     gl.enableVertexAttribArray(pos);
     gl.vertexAttribPointer(pos,2,gl.FLOAT,false,0,0);
-    const rL=gl.getUniformLocation(prg,"resolution");
-    const tL=gl.getUniformLocation(prg,"time");
-    (function draw(now){gl.clearColor(0,0,0,1);gl.clear(gl.COLOR_BUFFER_BIT);
-      gl.uniform2f(rL,c.width,c.height);gl.uniform1f(tL,now*.001);
-      gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
-      requestAnimationFrame(draw);})();
+
+    // Uniforms
+    const rL = gl.getUniformLocation(prg,"resolution");
+    const tL = gl.getUniformLocation(prg,"time");
+
+    // Render loop
+    (function draw(now) {
+      gl.clearColor(0, 0, 0, 1);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.uniform2f(rL, c.width, c.height);
+      gl.uniform1f(tL, now * 0.001);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      requestAnimationFrame(draw);
+    })();
   })();
   &lt;/script&gt;
 &lt;/body&gt;
@@ -1367,6 +1482,304 @@ function animate() {
   // requestAnimationFrame(animate)
   // Full source on the live demo page
 }</code></pre>
+            </div>
+        </div>
+
+        <!-- Pixie Dust -->
+        <div class="showcase-item reveal">
+            <h3 class="showcase-item-title">Pixie Dust <span class="badge">Canvas 2D + Simplex</span></h3>
+            <a href="/Showcase/PixieDust" class="lp-card-link" target="lp-PixieDust">
+                <div class="lp-card-preview lp-pixie-preview">
+                    <div class="lp-pixie-particle lp-pp-1"></div>
+                    <div class="lp-pixie-particle lp-pp-2"></div>
+                    <div class="lp-pixie-particle lp-pp-3"></div>
+                    <div class="lp-pixie-particle lp-pp-4"></div>
+                    <div class="lp-pixie-particle lp-pp-5"></div>
+                    <div class="lp-pixie-particle lp-pp-6"></div>
+                    <div class="lp-pixie-particle lp-pp-7"></div>
+                    <div class="lp-pixie-particle lp-pp-8"></div>
+                    <div class="lp-pixie-glow lp-pg-1"></div>
+                    <div class="lp-pixie-glow lp-pg-2"></div>
+                    <div class="lp-card-content">
+                        <span class="lp-card-title lp-pixie-title-text">PIXIE DUST</span>
+                        <span class="lp-card-sub">Simplex noise particle vortex</span>
+                        <span class="lp-card-tagline">700 particles · noise-driven flow</span>
+                    </div>
+                    <div class="lp-card-action" style="background:rgba(99,102,241,0.1);border-color:rgba(99,102,241,0.25);color:#818cf8;">
+                        <span class="lp-card-action-text">Open Live Demo</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5M15 3h6m0 0v6m0-6L10.5 13.5"/></svg>
+                    </div>
+                </div>
+            </a>
+            <div class="code-panel">
+                <div class="code-header">
+                    <span class="code-lang">HTML + CSS + JS</span>
+                    <button class="copy-btn" onclick="copyCode(this)">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5" /></svg>
+                        <span class="copy-text">Copy</span>
+                    </button>
+                </div>
+                <pre><code class="language-markup">&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8" /&gt;
+  &lt;meta name="viewport"
+    content="width=device-width, initial-scale=1.0" /&gt;
+  &lt;title&gt;Pixie Dust&lt;/title&gt;
+  &lt;link href="https://fonts.googleapis.com/css2?family=Inter:wght@@300;400;600;700;800;900&amp;display=swap"
+    rel="stylesheet" /&gt;
+  &lt;style&gt;
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{width:100%;height:100%;overflow:hidden;
+      font-family:'Inter',sans-serif;background:#000}
+    #c{position:fixed;inset:0;width:100%;height:100%}
+    .ov{position:fixed;inset:0;z-index:10;display:flex;
+      flex-direction:column;align-items:center;
+      justify-content:center;text-align:center;
+      padding:2rem;pointer-events:none}
+    /* Badge */
+    .badge{pointer-events:auto;margin-bottom:1.5rem;
+      display:inline-flex;align-items:center;gap:10px;
+      padding:7px 20px;background:rgba(255,255,255,.06);
+      backdrop-filter:blur(14px);
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:50px;
+      animation:fdw .6s ease-out forwards;opacity:0}
+    .badge-dot{width:6px;height:6px;border-radius:50%;
+      background:#818cf8;
+      box-shadow:0 0 8px rgba(129,140,248,.6);
+      animation:pulse 2s ease-in-out infinite}
+    .badge-txt{font-size:.7rem;letter-spacing:.14em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.6);font-weight:500}
+    /* Heading */
+    h1{font-size:clamp(2.8rem,7vw,5.5rem);font-weight:800;
+      letter-spacing:-.03em;color:#fff;line-height:1.08;
+      max-width:900px;margin-bottom:1.25rem;
+      animation:blur 1s ease-out .15s forwards;opacity:0}
+    .accent{background:linear-gradient(135deg,
+      #818cf8,#c084fc,#f472b6);
+      -webkit-background-clip:text;
+      -webkit-text-fill-color:transparent;
+      background-clip:text}
+    /* Sub */
+    .sub{font-size:clamp(1rem,2vw,1.2rem);
+      color:rgba(255,255,255,.5);max-width:580px;
+      line-height:1.7;font-weight:300;margin-bottom:2.5rem;
+      animation:fup .7s ease-out .45s forwards;opacity:0}
+    /* CTA */
+    .btns{pointer-events:auto;display:flex;flex-wrap:wrap;
+      gap:14px;justify-content:center;
+      animation:fup .6s ease-out .65s forwards;opacity:0}
+    .bp{padding:14px 36px;
+      background:linear-gradient(135deg,#6366f1,#8b5cf6);
+      color:#fff;border:none;border-radius:14px;
+      font-size:.95rem;font-weight:600;cursor:pointer;
+      box-shadow:0 4px 24px rgba(99,102,241,.3),
+        inset 0 1px 0 rgba(255,255,255,.15);
+      transition:.3s;text-decoration:none;
+      font-family:inherit}
+    .bp:hover{box-shadow:0 8px 40px rgba(99,102,241,.45);
+      transform:translateY(-2px)}
+    .bo{padding:14px 36px;background:transparent;
+      color:rgba(255,255,255,.7);
+      border:1px solid rgba(255,255,255,.15);
+      border-radius:14px;font-size:.95rem;font-weight:500;
+      cursor:pointer;backdrop-filter:blur(12px);
+      transition:.3s;text-decoration:none;
+      font-family:inherit}
+    .bo:hover{background:rgba(255,255,255,.06);
+      border-color:rgba(255,255,255,.3);color:#fff}
+    /* Stats */
+    .stats{pointer-events:auto;margin-top:3.5rem;
+      display:flex;gap:3rem;
+      animation:fup .5s ease-out .85s forwards;opacity:0}
+    .sv{display:block;font-size:1.5rem;font-weight:700;
+      color:#fff;letter-spacing:-.02em}
+    .sl{font-size:.68rem;color:rgba(255,255,255,.35);
+      text-transform:uppercase;letter-spacing:.1em;
+      margin-top:4px}
+    /* Keyframes */
+    @@keyframes blur{
+      from{opacity:0;filter:blur(16px);
+        transform:translateY(24px) scale(1.04)}
+      to{opacity:1;filter:blur(0);
+        transform:translateY(0) scale(1)}}
+    @@keyframes fup{
+      from{opacity:0;transform:translateY(14px)}
+      to{opacity:1;transform:translateY(0)}}
+    @@keyframes fdw{
+      from{opacity:0;transform:translateY(-10px)}
+      to{opacity:1;transform:translateY(0)}}
+    @@keyframes pulse{
+      0%,100%{opacity:1}50%{opacity:.5}}
+    @@media(max-width:640px){
+      .btns{flex-direction:column;align-items:center}
+      .stats{gap:1.5rem}}
+  &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;canvas id="c"&gt;&lt;/canvas&gt;
+  &lt;div class="ov"&gt;
+    &lt;div class="badge"&gt;
+      &lt;span class="badge-dot"&gt;&lt;/span&gt;
+      &lt;span class="badge-txt"&gt;Now in Beta&lt;/span&gt;
+    &lt;/div&gt;
+    &lt;h1&gt;Build something&lt;br&gt;
+      &lt;span class="accent"&gt;extraordinary.&lt;/span&gt;&lt;/h1&gt;
+    &lt;p class="sub"&gt;Ship faster with an engine built
+      for scale. Effortless performance, beautiful
+      defaults, and the developer experience you
+      deserve.&lt;/p&gt;
+    &lt;div class="btns"&gt;
+      &lt;a href="#" class="bp"&gt;Get Early Access&lt;/a&gt;
+      &lt;a href="#" class="bo"&gt;See it in action&lt;/a&gt;
+    &lt;/div&gt;
+    &lt;div class="stats"&gt;
+      &lt;div&gt;&lt;span class="sv"&gt;4.2k&lt;/span&gt;
+        &lt;span class="sl"&gt;Stars&lt;/span&gt;&lt;/div&gt;
+      &lt;div&gt;&lt;span class="sv"&gt;99.9%&lt;/span&gt;
+        &lt;span class="sl"&gt;Uptime&lt;/span&gt;&lt;/div&gt;
+      &lt;div&gt;&lt;span class="sv"&gt;&amp;lt;12ms&lt;/span&gt;
+        &lt;span class="sl"&gt;Latency&lt;/span&gt;&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;script&gt;
+  (function(){
+    // --- Simplex noise 3D (inline) ---
+    const F3=1/3, G3=1/6;
+    const grad3=[[1,1,0],[-1,1,0],[1,-1,0],[-1,-1,0],
+      [1,0,1],[-1,0,1],[1,0,-1],[-1,0,-1],
+      [0,1,1],[0,-1,1],[0,1,-1],[0,-1,-1]];
+    const perm=new Uint8Array(512);
+    const p=new Uint8Array(256);
+    for(let i=0;i&lt;256;i++) p[i]=i;
+    for(let i=255;i&gt;0;i--){
+      const j=(Math.random()*(i+1))|0;
+      [p[i],p[j]]=[p[j],p[i]];}
+    for(let i=0;i&lt;512;i++) perm[i]=p[i&amp;255];
+    function dot3(g,x,y,z){
+      return g[0]*x+g[1]*y+g[2]*z;}
+    function noise3D(xin,yin,zin){
+      const s=(xin+yin+zin)*F3;
+      const i=Math.floor(xin+s),
+            j=Math.floor(yin+s),
+            k=Math.floor(zin+s);
+      const t=(i+j+k)*G3;
+      const x0=xin-(i-t),y0=yin-(j-t),z0=zin-(k-t);
+      let i1,j1,k1,i2,j2,k2;
+      if(x0&gt;=y0){
+        if(y0&gt;=z0){i1=1;j1=0;k1=0;i2=1;j2=1;k2=0}
+        else if(x0&gt;=z0){i1=1;j1=0;k1=0;i2=1;j2=0;k2=1}
+        else{i1=0;j1=0;k1=1;i2=1;j2=0;k2=1}
+      }else{
+        if(y0&lt;z0){i1=0;j1=0;k1=1;i2=0;j2=1;k2=1}
+        else if(x0&lt;z0){i1=0;j1=1;k1=0;i2=0;j2=1;k2=1}
+        else{i1=0;j1=1;k1=0;i2=1;j2=1;k2=0}}
+      const x1=x0-i1+G3,y1=y0-j1+G3,z1=z0-k1+G3;
+      const x2=x0-i2+2*G3,y2=y0-j2+2*G3,z2=z0-k2+2*G3;
+      const x3=x0-1+3*G3,y3=y0-1+3*G3,z3=z0-1+3*G3;
+      const ii=i&amp;255,jj=j&amp;255,kk=k&amp;255;
+      let t0=.6-x0*x0-y0*y0-z0*z0,
+          t1=.6-x1*x1-y1*y1-z1*z1,
+          t2=.6-x2*x2-y2*y2-z2*z2,
+          t3=.6-x3*x3-y3*y3-z3*z3;
+      const n0=t0&lt;0?0:(t0*=t0,t0*t0*dot3(
+        grad3[perm[ii+perm[jj+perm[kk]]]%12],
+        x0,y0,z0));
+      const n1=t1&lt;0?0:(t1*=t1,t1*t1*dot3(
+        grad3[perm[ii+i1+perm[jj+j1+perm[kk+k1]]]%12],
+        x1,y1,z1));
+      const n2=t2&lt;0?0:(t2*=t2,t2*t2*dot3(
+        grad3[perm[ii+i2+perm[jj+j2+perm[kk+k2]]]%12],
+        x2,y2,z2));
+      const n3=t3&lt;0?0:(t3*=t3,t3*t3*dot3(
+        grad3[perm[ii+1+perm[jj+1+perm[kk+1]]]%12],
+        x3,y3,z3));
+      return 32*(n0+n1+n2+n3);}
+
+    // --- Particle Vortex ---
+    const canvas=document.getElementById('c');
+    const ctx=canvas.getContext('2d');
+    const COUNT=700, PROPS=9;
+    const props=new Float32Array(COUNT*PROPS);
+    const TAU=2*Math.PI;
+    let tick=0, cx=0, cy=0;
+
+    function rand(n){return n*Math.random()}
+    function randR(n){return n-rand(2*n)}
+    function fade(t,m){
+      const h=.5*m;
+      return Math.abs(((t+h)%m)-h)/h;}
+    function lerp(a,b,t){return(1-t)*a+t*b}
+
+    function resize(){
+      canvas.width=innerWidth;
+      canvas.height=innerHeight;
+      cx=.5*canvas.width;
+      cy=.5*canvas.height;}
+
+    function initP(i){
+      props[i]=rand(canvas.width);
+      props[i+1]=cy+randR(800);
+      props[i+2]=0;props[i+3]=0;props[i+4]=0;
+      props[i+5]=50+rand(150);
+      props[i+6]=rand(1.5);
+      props[i+7]=1+rand(2);
+      props[i+8]=220+rand(100);}
+
+    function initAll(){tick=0;
+      for(let i=0;i&lt;COUNT*PROPS;i+=PROPS)initP(i)}
+
+    function update(i){
+      let x=props[i],y=props[i+1];
+      const n=noise3D(x*.00125,y*.00125,
+        tick*.0005)*3*TAU;
+      const vx=lerp(props[i+2],Math.cos(n),.5);
+      const vy=lerp(props[i+3],Math.sin(n),.5);
+      const life=props[i+4],ttl=props[i+5];
+      const spd=props[i+6];
+      const x2=x+vx*spd,y2=y+vy*spd;
+      ctx.save();ctx.lineCap='round';
+      ctx.lineWidth=props[i+7];
+      ctx.strokeStyle='hsla('+props[i+8]
+        +',100%,60%,'+fade(life,ttl)+')';
+      ctx.beginPath();ctx.moveTo(x,y);
+      ctx.lineTo(x2,y2);ctx.stroke();ctx.restore();
+      props[i]=x2;props[i+1]=y2;
+      props[i+2]=vx;props[i+3]=vy;
+      props[i+4]=life+1;
+      if(x2&gt;canvas.width||x2&lt;0
+        ||y2&gt;canvas.height||y2&lt;0
+        ||life+1&gt;ttl)initP(i);}
+
+    function draw(){
+      tick++;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle='#000';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      for(let i=0;i&lt;COUNT*PROPS;i+=PROPS)update(i);
+      // Glow passes
+      ctx.save();
+      ctx.filter='blur(8px) brightness(200%)';
+      ctx.globalCompositeOperation='lighter';
+      ctx.drawImage(canvas,0,0);ctx.restore();
+      ctx.save();
+      ctx.filter='blur(4px) brightness(200%)';
+      ctx.globalCompositeOperation='lighter';
+      ctx.drawImage(canvas,0,0);ctx.restore();
+      ctx.save();
+      ctx.globalCompositeOperation='lighter';
+      ctx.drawImage(canvas,0,0);ctx.restore();
+      requestAnimationFrame(draw);}
+
+    resize();initAll();draw();
+    addEventListener('resize',resize);
+  })();
+  &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
             </div>
         </div>
 
@@ -2265,5 +2678,101 @@ function animate() {
 
     .lp-silk-title-text {
         text-shadow: 0 0 24px rgba(140,130,150,0.2), 0 0 50px rgba(123,116,129,0.1) !important;
+    }
+
+    /* Pixie Dust preview */
+    .lp-pixie-preview {
+        background: radial-gradient(ellipse at 50% 50%, #0c0a1a 0%, #000 70%);
+        overflow: hidden;
+    }
+    .lp-pixie-particle {
+        position: absolute;
+        width: 3px;
+        height: 3px;
+        border-radius: 50%;
+        filter: blur(0.5px);
+    }
+    .lp-pp-1 {
+        top: 30%; left: 20%;
+        background: #818cf8;
+        box-shadow: 0 0 8px rgba(129,140,248,0.8), 0 0 20px rgba(129,140,248,0.3);
+        animation: lp-pixie-float 3s ease-in-out infinite;
+    }
+    .lp-pp-2 {
+        top: 55%; left: 35%;
+        background: #a78bfa;
+        box-shadow: 0 0 8px rgba(167,139,250,0.7), 0 0 18px rgba(167,139,250,0.3);
+        animation: lp-pixie-float 3.5s ease-in-out 0.4s infinite;
+    }
+    .lp-pp-3 {
+        top: 40%; left: 60%;
+        background: #c084fc;
+        box-shadow: 0 0 8px rgba(192,132,252,0.7), 0 0 18px rgba(192,132,252,0.3);
+        animation: lp-pixie-float 2.8s ease-in-out 0.8s infinite;
+    }
+    .lp-pp-4 {
+        top: 65%; left: 75%;
+        background: #f472b6;
+        box-shadow: 0 0 8px rgba(244,114,182,0.7), 0 0 18px rgba(244,114,182,0.3);
+        animation: lp-pixie-float 4s ease-in-out 0.2s infinite;
+    }
+    .lp-pp-5 {
+        top: 25%; left: 45%;
+        background: #60a5fa;
+        box-shadow: 0 0 6px rgba(96,165,250,0.6);
+        animation: lp-pixie-float 3.2s ease-in-out 1s infinite;
+        width: 2px; height: 2px;
+    }
+    .lp-pp-6 {
+        top: 70%; left: 50%;
+        background: #818cf8;
+        box-shadow: 0 0 6px rgba(129,140,248,0.5);
+        animation: lp-pixie-float 3.8s ease-in-out 0.6s infinite;
+        width: 2px; height: 2px;
+    }
+    .lp-pp-7 {
+        top: 45%; left: 80%;
+        background: #a78bfa;
+        box-shadow: 0 0 5px rgba(167,139,250,0.5);
+        animation: lp-pixie-float 2.6s ease-in-out 1.3s infinite;
+        width: 2px; height: 2px;
+    }
+    .lp-pp-8 {
+        top: 60%; left: 15%;
+        background: #c084fc;
+        box-shadow: 0 0 5px rgba(192,132,252,0.5);
+        animation: lp-pixie-float 3.4s ease-in-out 0.9s infinite;
+        width: 2px; height: 2px;
+    }
+    .lp-pixie-glow {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(40px);
+        opacity: 0.15;
+    }
+    .lp-pg-1 {
+        top: 25%; left: 30%;
+        width: 200px; height: 200px;
+        background: radial-gradient(circle, #6366f1, transparent 70%);
+        animation: lp-pixie-glow-pulse 4s ease-in-out infinite alternate;
+    }
+    .lp-pg-2 {
+        top: 45%; left: 55%;
+        width: 160px; height: 160px;
+        background: radial-gradient(circle, #c084fc, transparent 70%);
+        animation: lp-pixie-glow-pulse 5s ease-in-out 1s infinite alternate;
+    }
+    @@keyframes lp-pixie-float {
+        0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+        25% { transform: translate(12px, -18px) scale(1.3); opacity: 1; }
+        50% { transform: translate(-8px, -30px) scale(0.8); opacity: 0.4; }
+        75% { transform: translate(15px, -12px) scale(1.1); opacity: 0.9; }
+    }
+    @@keyframes lp-pixie-glow-pulse {
+        from { opacity: 0.1; transform: scale(0.9); }
+        to { opacity: 0.2; transform: scale(1.1); }
+    }
+    .lp-pixie-title-text {
+        text-shadow: 0 0 40px rgba(99,102,241,0.4), 0 0 80px rgba(192,132,252,0.2) !important;
     }
 </style>

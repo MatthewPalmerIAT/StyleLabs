@@ -758,6 +758,13 @@ body::before {
     gap: 2.5rem;
 }
 
+/* Card-style grid for browse pages (no code panels) */
+.showcase-grid-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 1.5rem;
+}
+
 .showcase-item {
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
@@ -771,6 +778,42 @@ body::before {
 .showcase-item:hover {
     border-color: rgba(255,255,255,0.12);
     box-shadow: 0 20px 80px rgba(0,0,0,0.25);
+}
+
+/* Clickable item link variant */
+a.showcase-item-link {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+a.showcase-item-link:hover {
+    border-color: rgba(0,229,255,0.2);
+}
+a.showcase-item-link:hover .showcase-item-footer {
+    border-color: rgba(0,229,255,0.15);
+    background: rgba(0,229,255,0.04);
+}
+a.showcase-item-link:hover .getcode-label {
+    color: var(--accent-cyan, #00e5ff);
+}
+
+.showcase-item-footer {
+    border-top: 1px solid var(--glass-border);
+    padding: 0.6rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    transition: all 0.3s ease;
+}
+.getcode-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted, rgba(255,255,255,0.35));
+    letter-spacing: 0.04em;
+    transition: color 0.3s ease;
 }
 
 .showcase-item-title {
