@@ -1,0 +1,365 @@
+@page
+@model Personal.Pages.Showcase.PlasmaVortexModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plasma Vortex — Style Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; background: #000; }
+
+        canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+
+        .overlay {
+            position: fixed; inset: 0; z-index: 10;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-align: center; padding: 2rem;
+            pointer-events: none;
+        }
+
+        .badge {
+            pointer-events: auto;
+            margin-bottom: 1.5rem;
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 7px 20px;
+            background: rgba(251,146,60,0.06);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(251,146,60,0.15);
+            border-radius: 50px;
+            animation: fdw .6s ease-out forwards; opacity: 0;
+        }
+        .badge-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #fb923c;
+            box-shadow: 0 0 8px rgba(251,146,60,0.7);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .badge-txt {
+            font-size: .7rem; letter-spacing: .14em;
+            text-transform: uppercase;
+            color: rgba(251,146,60,0.7); font-weight: 500;
+        }
+
+        h1 {
+            font-size: clamp(2.8rem,7vw,5.5rem); font-weight: 900;
+            letter-spacing: -.03em; color: #fff; line-height: 1.08;
+            max-width: 900px; margin-bottom: 1.25rem;
+            animation: blur 1s ease-out .15s forwards; opacity: 0;
+        }
+        .accent {
+            background: linear-gradient(135deg, #fb923c, #f43f5e, #e879f9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sub {
+            font-size: clamp(1rem,2vw,1.2rem);
+            color: rgba(255,255,255,0.42); max-width: 560px;
+            line-height: 1.7; font-weight: 300; margin-bottom: 2.5rem;
+            animation: fup .7s ease-out .45s forwards; opacity: 0;
+        }
+
+        .btns {
+            pointer-events: auto; display: flex; flex-wrap: wrap;
+            gap: 14px; justify-content: center;
+            animation: fup .6s ease-out .65s forwards; opacity: 0;
+        }
+        .bp {
+            padding: 14px 36px;
+            background: linear-gradient(135deg, #f97316, #ef4444);
+            color: #fff; border: none; border-radius: 14px;
+            font-size: .95rem; font-weight: 700; cursor: pointer;
+            box-shadow: 0 4px 24px rgba(249,115,22,0.35),
+                inset 0 1px 0 rgba(255,255,255,0.15);
+            transition: .3s; text-decoration: none; font-family: inherit;
+        }
+        .bp:hover { box-shadow: 0 8px 40px rgba(249,115,22,0.5); transform: translateY(-2px); }
+        .bo {
+            padding: 14px 36px; background: transparent;
+            color: rgba(255,255,255,0.6);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 14px; font-size: .95rem; font-weight: 500;
+            cursor: pointer; backdrop-filter: blur(12px);
+            transition: .3s; text-decoration: none; font-family: inherit;
+        }
+        .bo:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.25); color: #fff; }
+
+        .stats {
+            pointer-events: auto; margin-top: 3.5rem;
+            display: flex; gap: 3rem;
+            animation: fup .5s ease-out .85s forwards; opacity: 0;
+        }
+        .sv { display: block; font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: -.02em; }
+        .sl { font-size: .68rem; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: .1em; margin-top: 4px; }
+
+        @@keyframes blur {
+            from { opacity: 0; filter: blur(16px); transform: translateY(24px) scale(1.04); }
+            to { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
+        }
+        @@keyframes fup {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @@keyframes fdw {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .5; } }
+        @@media (max-width:640px) {
+            .btns { flex-direction: column; align-items: center; }
+            .stats { gap: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="c"></canvas>
+    <div class="overlay">
+        <div class="badge">
+            <span class="badge-dot"></span>
+            <span class="badge-txt">Volumetric Ray-march</span>
+        </div>
+        <h1>Harness the<br><span class="accent">raw energy.</span></h1>
+        <p class="sub">Volumetric 3D plasma with spiraling turbulence, density accumulation,
+            god-ray scattering, and domain-warped noise fields. Zero libraries.</p>
+        <div class="btns">
+            <a href="#" class="bp">Ignite Engine</a>
+            <a href="#" class="bo">Documentation</a>
+        </div>
+        <div class="stats">
+            <div><span class="sv">64</span><span class="sl">Volume Steps</span></div>
+            <div><span class="sv">5 oct</span><span class="sl">Turbulence</span></div>
+            <div><span class="sv">60fps</span><span class="sl">Real-time</span></div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        const c = document.getElementById('c');
+        const gl = c.getContext('webgl2');
+        if (!gl) return;
+
+        function resize() {
+            const d = Math.max(1, 0.5 * devicePixelRatio);
+            c.width = innerWidth * d;
+            c.height = innerHeight * d;
+            gl.viewport(0, 0, c.width, c.height);
+        }
+        addEventListener('resize', resize);
+        resize();
+
+        const vs = `#version 300 es
+            in vec4 position;
+            void main() { gl_Position = position; }`;
+
+        const fs = `#version 300 es
+            precision highp float;
+            out vec4 O;
+            uniform vec2 resolution;
+            uniform float time;
+
+            #define PI 3.14159265
+            #define VOL_STEPS 64
+            #define MAX_DIST 30.0
+
+            // 3D hash
+            float hash(vec3 p) {
+                p = fract(p * 0.3183099 + 0.1);
+                p *= 17.0;
+                return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+            }
+
+            // 3D value noise
+            float noise3(vec3 x) {
+                vec3 i = floor(x), f = fract(x);
+                f = f * f * (3.0 - 2.0 * f);
+                return mix(
+                    mix(mix(hash(i),              hash(i + vec3(1,0,0)), f.x),
+                        mix(hash(i + vec3(0,1,0)),hash(i + vec3(1,1,0)), f.x), f.y),
+                    mix(mix(hash(i + vec3(0,0,1)),hash(i + vec3(1,0,1)), f.x),
+                        mix(hash(i + vec3(0,1,1)),hash(i + vec3(1,1,1)), f.x), f.y), f.z);
+            }
+
+            // Rotation matrix
+            mat2 rot(float a) {
+                float s = sin(a), c = cos(a);
+                return mat2(c, -s, s, c);
+            }
+
+            // Turbulent FBM with domain-warped spiraling
+            float turbulence(vec3 p, float t) {
+                float v = 0.0, a = 0.5;
+                // Spiral twist around Y axis
+                float twist = p.y * 0.6 + t * 0.4;
+                p.xz = rot(twist) * p.xz;
+
+                for (int i = 0; i < 5; i++) {
+                    float n = noise3(p + t * 0.15 * float(i + 1) * 0.3);
+                    v += a * abs(n * 2.0 - 1.0); // ridged noise
+                    p = p * 2.1 + vec3(0.0, t * 0.1, 0.0);
+                    p.xz = rot(0.45) * p.xz; // domain rotation per octave
+                    a *= 0.5;
+                }
+                return v;
+            }
+
+            // Density function for the vortex volume
+            float density(vec3 p, float t) {
+                // Cylindrical bounds
+                float r = length(p.xz);
+                float falloff = exp(-r * r * 0.25); // radial falloff
+
+                // Vertical confinement
+                float yFade = smoothstep(6.0, 0.0, abs(p.y));
+
+                // Core twist intensity increases near center
+                float coreTwist = 1.0 + 2.0 * exp(-r * r);
+                vec3 tp = p;
+                tp.xz = rot(p.y * 0.3 * coreTwist + t * 0.5) * tp.xz;
+
+                float turb = turbulence(tp * 0.8, t);
+
+                // Shape the density
+                float d = turb * falloff * yFade;
+
+                // Subtract out the very center for a hollow-core look
+                d -= 0.15 * exp(-r * r * 8.0);
+
+                return max(d, 0.0);
+            }
+
+            void main() {
+                vec2 uv = (gl_FragCoord.xy - 0.5 * resolution) / resolution.y;
+                float t = time;
+
+                // Camera orbiting the vortex
+                float camAngle = t * 0.15;
+                float camH = 2.0 + sin(t * 0.1) * 1.0;
+                vec3 ro = vec3(8.0 * sin(camAngle), camH, 8.0 * cos(camAngle));
+                vec3 ta = vec3(0.0, 1.0, 0.0);
+                vec3 ww = normalize(ta - ro);
+                vec3 uu = normalize(cross(ww, vec3(0.0, 1.0, 0.0)));
+                vec3 vv = cross(uu, ww);
+                vec3 rd = normalize(uv.x * uu + uv.y * vv + 1.6 * ww);
+
+                // Volumetric ray march
+                vec3 col = vec3(0.0);
+                float transmittance = 1.0;
+
+                // Find entry/exit of bounding cylinder (r=5, y=-5..8)
+                float tNear = 0.1;
+                float tFar = MAX_DIST;
+
+                float stepSize = (tFar - tNear) / float(VOL_STEPS);
+
+                for (int i = 0; i < VOL_STEPS; i++) {
+                    float tt = tNear + (float(i) + 0.5) * stepSize;
+                    vec3 p = ro + rd * tt;
+
+                    float d = density(p, t);
+
+                    if (d > 0.001) {
+                        // Temperature-based coloring
+                        float r = length(p.xz);
+                        float temp = d * exp(-r * 0.4);
+
+                        // Hot core: white -> yellow -> orange
+                        // Cool exterior: red -> magenta -> purple -> blue
+                        vec3 hotCol = mix(vec3(1.0, 0.6, 0.1), vec3(1.0, 0.95, 0.8), temp * 2.0);
+                        vec3 warmCol = mix(vec3(0.9, 0.15, 0.05), vec3(1.0, 0.5, 0.05), temp);
+                        vec3 coolCol = mix(vec3(0.15, 0.02, 0.25), vec3(0.6, 0.05, 0.2), temp);
+
+                        vec3 emissive;
+                        if (temp > 0.4) {
+                            emissive = mix(warmCol, hotCol, (temp - 0.4) / 0.6);
+                        } else {
+                            emissive = mix(coolCol, warmCol, temp / 0.4);
+                        }
+
+                        // Absorption
+                        float absorption = d * stepSize * 3.0;
+                        col += emissive * absorption * transmittance * 4.0;
+                        transmittance *= exp(-absorption * 1.5);
+
+                        if (transmittance < 0.01) break;
+                    }
+                }
+
+                // Background: dark with subtle gradient
+                vec3 bg = mix(vec3(0.01, 0.005, 0.02), vec3(0.02, 0.008, 0.05), uv.y * 0.5 + 0.5);
+
+                // Background stars
+                float star = pow(hash(vec3(floor(uv * 350.0), 7.0)), 28.0);
+                bg += star * vec3(0.7, 0.65, 0.9) * transmittance;
+
+                col += bg * transmittance;
+
+                // God rays from core
+                float godRay = 0.0;
+                vec2 screenCenter = vec2(0.0, 0.05);
+                vec2 delta = (uv - screenCenter) * 0.03;
+                vec2 tc = uv;
+                for (int i = 0; i < 16; i++) {
+                    tc -= delta;
+                    float samp = max(col.r + col.g * 0.5, 0.0);
+                    godRay += samp * 0.02;
+                }
+                col += vec3(1.0, 0.4, 0.15) * godRay * 0.3;
+
+                // Vignette
+                vec2 q = gl_FragCoord.xy / resolution;
+                col *= 0.5 + 0.5 * pow(16.0 * q.x * q.y * (1.0 - q.x) * (1.0 - q.y), 0.12);
+
+                // Tone map
+                col = col / (1.0 + col);
+                col = pow(col, vec3(0.9));
+
+                O = vec4(col, 1.0);
+            }`;
+
+        function mk(src, type) {
+            const sh = gl.createShader(type);
+            gl.shaderSource(sh, src);
+            gl.compileShader(sh);
+            if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS))
+                console.error(gl.getShaderInfoLog(sh));
+            return sh;
+        }
+        const prg = gl.createProgram();
+        gl.attachShader(prg, mk(vs, gl.VERTEX_SHADER));
+        gl.attachShader(prg, mk(fs, gl.FRAGMENT_SHADER));
+        gl.linkProgram(prg);
+        gl.useProgram(prg);
+
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER,
+            new Float32Array([-1, 1, -1, -1, 1, 1, 1, -1]), gl.STATIC_DRAW);
+        const pos = gl.getAttribLocation(prg, 'position');
+        gl.enableVertexAttribArray(pos);
+        gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+
+        const rL = gl.getUniformLocation(prg, 'resolution');
+        const tL = gl.getUniformLocation(prg, 'time');
+
+        (function draw(now) {
+            gl.clearColor(0, 0, 0, 1);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.uniform2f(rL, c.width, c.height);
+            gl.uniform1f(tL, now * 0.001);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            requestAnimationFrame(draw);
+        })();
+    })();
+    </script>
+</body>
+</html>

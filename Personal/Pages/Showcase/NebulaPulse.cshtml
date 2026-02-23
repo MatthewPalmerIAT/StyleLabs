@@ -1,0 +1,279 @@
+@page
+@model Personal.Pages.Showcase.NebulaPulseModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Nebula Pulse — Style Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; background: #000; }
+
+        canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+
+        .overlay {
+            position: fixed; inset: 0; z-index: 10;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-align: center; padding: 2rem;
+            pointer-events: none;
+        }
+
+        .badge {
+            pointer-events: auto;
+            margin-bottom: 1.5rem;
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 7px 20px;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50px;
+            animation: fdw .6s ease-out forwards; opacity: 0;
+        }
+        .badge-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: #e879f9;
+            box-shadow: 0 0 8px rgba(232,121,249,0.6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .badge-txt {
+            font-size: .7rem; letter-spacing: .14em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.6); font-weight: 500;
+        }
+
+        h1 {
+            font-size: clamp(2.8rem,7vw,5.5rem); font-weight: 800;
+            letter-spacing: -.03em; color: #fff; line-height: 1.08;
+            max-width: 900px; margin-bottom: 1.25rem;
+            animation: blur 1s ease-out .15s forwards; opacity: 0;
+        }
+        .accent {
+            background: linear-gradient(135deg, #e879f9, #818cf8, #38bdf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .sub {
+            font-size: clamp(1rem,2vw,1.2rem);
+            color: rgba(255,255,255,0.5); max-width: 580px;
+            line-height: 1.7; font-weight: 300; margin-bottom: 2.5rem;
+            animation: fup .7s ease-out .45s forwards; opacity: 0;
+        }
+
+        .btns {
+            pointer-events: auto; display: flex; flex-wrap: wrap;
+            gap: 14px; justify-content: center;
+            animation: fup .6s ease-out .65s forwards; opacity: 0;
+        }
+        .bp {
+            padding: 14px 36px;
+            background: linear-gradient(135deg, #a855f7, #6366f1);
+            color: #fff; border: none; border-radius: 14px;
+            font-size: .95rem; font-weight: 600; cursor: pointer;
+            box-shadow: 0 4px 24px rgba(168,85,247,0.3),
+                inset 0 1px 0 rgba(255,255,255,0.15);
+            transition: .3s; text-decoration: none; font-family: inherit;
+        }
+        .bp:hover { box-shadow: 0 8px 40px rgba(168,85,247,0.45); transform: translateY(-2px); }
+        .bo {
+            padding: 14px 36px; background: transparent;
+            color: rgba(255,255,255,0.7);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 14px; font-size: .95rem; font-weight: 500;
+            cursor: pointer; backdrop-filter: blur(12px);
+            transition: .3s; text-decoration: none; font-family: inherit;
+        }
+        .bo:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.3); color: #fff; }
+
+        .stats {
+            pointer-events: auto; margin-top: 3.5rem;
+            display: flex; gap: 3rem;
+            animation: fup .5s ease-out .85s forwards; opacity: 0;
+        }
+        .sv { display: block; font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: -.02em; }
+        .sl { font-size: .68rem; color: rgba(255,255,255,0.35); text-transform: uppercase; letter-spacing: .1em; margin-top: 4px; }
+
+        @@keyframes blur {
+            from { opacity: 0; filter: blur(16px); transform: translateY(24px) scale(1.04); }
+            to { opacity: 1; filter: blur(0); transform: translateY(0) scale(1); }
+        }
+        @@keyframes fup {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @@keyframes fdw {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .5; } }
+        @@media (max-width:640px) {
+            .btns { flex-direction: column; align-items: center; }
+            .stats { gap: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="c"></canvas>
+    <div class="overlay">
+        <div class="badge">
+            <span class="badge-dot"></span>
+            <span class="badge-txt">Deep Space Engine</span>
+        </div>
+        <h1>Explore the<br><span class="accent">infinite cosmos.</span></h1>
+        <p class="sub">Harness the power of distributed computing across galaxies of data.
+            Built for teams that think beyond the horizon.</p>
+        <div class="btns">
+            <a href="#" class="bp">Launch Mission</a>
+            <a href="#" class="bo">View Telemetry</a>
+        </div>
+        <div class="stats">
+            <div><span class="sv">∞</span><span class="sl">Scale</span></div>
+            <div><span class="sv">0.3ms</span><span class="sl">Response</span></div>
+            <div><span class="sv">99.99%</span><span class="sl">Uptime</span></div>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        const c = document.getElementById('c');
+        const gl = c.getContext('webgl2');
+        if (!gl) return;
+
+        function resize() {
+            const d = Math.max(1, 0.5 * devicePixelRatio);
+            c.width = innerWidth * d;
+            c.height = innerHeight * d;
+            gl.viewport(0, 0, c.width, c.height);
+        }
+        addEventListener('resize', resize);
+        resize();
+
+        const vs = `#version 300 es
+            in vec4 position;
+            void main() { gl_Position = position; }`;
+
+        const fs = `#version 300 es
+            precision highp float;
+            out vec4 O;
+            uniform vec2 resolution;
+            uniform float time;
+
+            #define PI 3.14159265
+            #define ITER 6
+
+            float hash(vec2 p) {
+                vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+                p3 += dot(p3, p3.yzx + 33.33);
+                return fract((p3.x + p3.y) * p3.z);
+            }
+
+            float noise(vec2 p) {
+                vec2 i = floor(p), f = fract(p);
+                float a = hash(i), b = hash(i + vec2(1, 0)),
+                      c = hash(i + vec2(0, 1)), d = hash(i + vec2(1, 1));
+                vec2 u = f * f * (3.0 - 2.0 * f);
+                return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+            }
+
+            float fbm(vec2 p) {
+                float v = 0.0, a = 0.5;
+                mat2 rot = mat2(0.8, 0.6, -0.6, 0.8);
+                for (int i = 0; i < ITER; i++) {
+                    v += a * noise(p);
+                    p = rot * p * 2.0;
+                    a *= 0.5;
+                }
+                return v;
+            }
+
+            vec3 nebula(vec2 uv, float t) {
+                vec2 q = vec2(fbm(uv + t * 0.15),
+                              fbm(uv + vec2(1.7, 9.2) + t * 0.12));
+                vec2 r = vec2(fbm(uv + 4.0 * q + vec2(1.7, 9.2) + t * 0.1),
+                              fbm(uv + 4.0 * q + vec2(8.3, 2.8) + t * 0.08));
+                float f = fbm(uv + 4.0 * r);
+
+                vec3 col = vec3(0.0);
+                col = mix(vec3(0.05, 0.02, 0.12), vec3(0.35, 0.05, 0.45), clamp(f * f * 4.0, 0.0, 1.0));
+                col = mix(col, vec3(0.1, 0.15, 0.55), clamp(q.x, 0.0, 1.0));
+                col = mix(col, vec3(0.55, 0.12, 0.65), clamp(pow(r.x, 2.0), 0.0, 1.0));
+                col = mix(col, vec3(0.85, 0.3, 0.95), clamp(pow(r.y * f, 3.0), 0.0, 1.0));
+
+                // Stars
+                float star = pow(hash(floor(uv * 200.0)), 22.0);
+                float twinkle = sin(t * 3.0 + hash(floor(uv * 200.0)) * 60.0) * 0.5 + 0.5;
+                col += star * twinkle * vec3(0.9, 0.85, 1.0);
+
+                // Core glow
+                float d = length(uv);
+                col += 0.015 / (d + 0.3) * vec3(0.5, 0.2, 0.8)
+                     * (0.8 + 0.2 * sin(t * 0.5));
+
+                return col;
+            }
+
+            void main() {
+                vec2 uv = (gl_FragCoord.xy - 0.5 * resolution) / resolution.y;
+                float t = time;
+
+                // Slow rotation
+                float angle = t * 0.03;
+                mat2 rot = mat2(cos(angle), sin(angle), -sin(angle), cos(angle));
+                uv = rot * uv;
+
+                vec3 col = nebula(uv * 3.0, t);
+
+                // Vignette
+                float vig = 1.0 - 0.4 * length(gl_FragCoord.xy / resolution - 0.5);
+                col *= vig;
+
+                // Tone mapping
+                col = pow(col, vec3(0.85));
+
+                O = vec4(col, 1.0);
+            }`;
+
+        function mk(src, type) {
+            const sh = gl.createShader(type);
+            gl.shaderSource(sh, src);
+            gl.compileShader(sh);
+            return sh;
+        }
+        const prg = gl.createProgram();
+        gl.attachShader(prg, mk(vs, gl.VERTEX_SHADER));
+        gl.attachShader(prg, mk(fs, gl.FRAGMENT_SHADER));
+        gl.linkProgram(prg);
+        gl.useProgram(prg);
+
+        const buf = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER,
+            new Float32Array([-1, 1, -1, -1, 1, 1, 1, -1]), gl.STATIC_DRAW);
+        const pos = gl.getAttribLocation(prg, 'position');
+        gl.enableVertexAttribArray(pos);
+        gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+
+        const rL = gl.getUniformLocation(prg, 'resolution');
+        const tL = gl.getUniformLocation(prg, 'time');
+
+        (function draw(now) {
+            gl.clearColor(0, 0, 0, 1);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.uniform2f(rL, c.width, c.height);
+            gl.uniform1f(tL, now * 0.001);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            requestAnimationFrame(draw);
+        })();
+    })();
+    </script>
+</body>
+</html>

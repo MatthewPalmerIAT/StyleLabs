@@ -1,0 +1,238 @@
+@page
+@model Personal.Pages.Showcase.AuroraBorealisModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aurora Borealis — Style Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Inter', sans-serif; background: #000; }
+        canvas { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+        .overlay {
+            position: fixed; inset: 0; z-index: 10;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-align: center; padding: 2rem; pointer-events: none;
+        }
+        .badge {
+            pointer-events: auto; margin-bottom: 1.5rem;
+            display: inline-flex; align-items: center; gap: 10px;
+            padding: 7px 20px; background: rgba(52,211,153,0.06);
+            backdrop-filter: blur(14px); border: 1px solid rgba(52,211,153,0.15);
+            border-radius: 50px; animation: fdw .6s ease-out forwards; opacity: 0;
+        }
+        .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #34d399; box-shadow: 0 0 8px rgba(52,211,153,0.7); animation: pulse 2s ease-in-out infinite; }
+        .badge-txt { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: rgba(52,211,153,0.7); font-weight: 500; }
+        h1 { font-size: clamp(2.8rem,7vw,5.5rem); font-weight: 800; letter-spacing: -.03em; color: #fff; line-height: 1.08; max-width: 900px; margin-bottom: 1.25rem; animation: blur 1s ease-out .15s forwards; opacity: 0; }
+        .accent { background: linear-gradient(135deg, #34d399, #22d3ee, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .sub { font-size: clamp(1rem,2vw,1.2rem); color: rgba(255,255,255,0.4); max-width: 560px; line-height: 1.7; font-weight: 300; margin-bottom: 2.5rem; animation: fup .7s ease-out .45s forwards; opacity: 0; }
+        .btns { pointer-events: auto; display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; animation: fup .6s ease-out .65s forwards; opacity: 0; }
+        .bp { padding: 14px 36px; background: linear-gradient(135deg, #059669, #0891b2); color: #fff; border: none; border-radius: 14px; font-size: .95rem; font-weight: 700; cursor: pointer; box-shadow: 0 4px 24px rgba(5,150,105,0.3); transition: .3s; text-decoration: none; font-family: inherit; }
+        .bp:hover { box-shadow: 0 8px 40px rgba(5,150,105,0.5); transform: translateY(-2px); }
+        .bo { padding: 14px 36px; background: transparent; color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; font-size: .95rem; font-weight: 500; cursor: pointer; backdrop-filter: blur(12px); transition: .3s; text-decoration: none; font-family: inherit; }
+        .bo:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.25); color: #fff; }
+        .stats { pointer-events: auto; margin-top: 3.5rem; display: flex; gap: 3rem; animation: fup .5s ease-out .85s forwards; opacity: 0; }
+        .sv { display: block; font-size: 1.5rem; font-weight: 700; color: #fff; letter-spacing: -.02em; }
+        .sl { font-size: .68rem; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: .1em; margin-top: 4px; }
+        @@keyframes blur { from { opacity:0; filter:blur(16px); transform:translateY(24px) scale(1.04); } to { opacity:1; filter:blur(0); transform:translateY(0) scale(1); } }
+        @@keyframes fup { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+        @@keyframes fdw { from { opacity:0; transform:translateY(-10px); } to { opacity:1; transform:translateY(0); } }
+        @@keyframes pulse { 0%,100% { opacity:1; } 50% { opacity:.5; } }
+        @@media (max-width:640px) { .btns { flex-direction:column; align-items:center; } .stats { gap:1.5rem; } }
+    </style>
+</head>
+<body>
+    <canvas id="c"></canvas>
+    <div class="overlay">
+        <div class="badge"><span class="badge-dot"></span><span class="badge-txt">Procedural Aurora</span></div>
+        <h1>Lights above the<br><span class="accent">frozen horizon.</span></h1>
+        <p class="sub">Swaying curtains of northern light driven by layered noise fields, a procedural starfield, and a silhouetted mountain range. Pure GLSL.</p>
+        <div class="btns">
+            <a href="#" class="bp">Watch the Sky</a>
+            <a href="#" class="bo">View Source</a>
+        </div>
+        <div class="stats">
+            <div><span class="sv">Noise</span><span class="sl">Curtain Field</span></div>
+            <div><span class="sv">3 layers</span><span class="sl">Aurora Bands</span></div>
+            <div><span class="sv">60fps</span><span class="sl">Real-time</span></div>
+        </div>
+    </div>
+    <script>
+    (function () {
+        const c = document.getElementById('c');
+        const gl = c.getContext('webgl2');
+        if (!gl) return;
+        function resize() {
+            const d = Math.max(1, 0.75 * devicePixelRatio);
+            c.width = innerWidth * d; c.height = innerHeight * d;
+            gl.viewport(0, 0, c.width, c.height);
+        }
+        addEventListener('resize', resize); resize();
+
+        const vs = `#version 300 es
+            in vec4 position;
+            void main() { gl_Position = position; }`;
+
+        const fs = `#version 300 es
+            precision highp float;
+            out vec4 O;
+            uniform vec2 resolution;
+            uniform float time;
+
+            float hash(vec2 p) {
+                vec3 p3 = fract(vec3(p.xyx) * 0.1031);
+                p3 += dot(p3, p3.yzx + 33.33);
+                return fract((p3.x + p3.y) * p3.z);
+            }
+
+            float noise(vec2 p) {
+                vec2 i = floor(p), f = fract(p);
+                float a = hash(i), b = hash(i + vec2(1, 0)),
+                      c = hash(i + vec2(0, 1)), d = hash(i + vec2(1, 1));
+                vec2 u = f * f * (3.0 - 2.0 * f);
+                return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
+            }
+
+            float fbm(vec2 p) {
+                float v = 0.0, a = 0.5;
+                mat2 rot = mat2(0.8, 0.6, -0.6, 0.8);
+                for (int i = 0; i < 4; i++) {
+                    v += a * noise(p);
+                    p = rot * p * 2.0;
+                    a *= 0.5;
+                }
+                return v;
+            }
+
+            // Mountain silhouette
+            float mountain(float x) {
+                float h = 0.0;
+                h += noise(vec2(x * 1.5, 0.0)) * 0.12;
+                h += noise(vec2(x * 3.0, 1.0)) * 0.06;
+                h += noise(vec2(x * 7.0, 2.0)) * 0.03;
+                return h;
+            }
+
+            // Aurora curtain
+            vec3 aurora(vec2 uv, float t, float offset, vec3 col1, vec3 col2) {
+                // Curtain wave
+                float wave = sin(uv.x * 3.0 + t * 0.4 + offset) * 0.08
+                           + sin(uv.x * 5.5 - t * 0.3 + offset * 2.0) * 0.05
+                           + sin(uv.x * 1.2 + t * 0.2) * 0.12;
+
+                float curtainY = 0.35 + wave + offset * 0.08;
+                float dist = uv.y - curtainY;
+
+                // Vertical extent with noise modulation
+                float density = fbm(vec2(uv.x * 4.0 + t * 0.15 + offset, uv.y * 2.0 - t * 0.1));
+                density *= smoothstep(-0.02, 0.05, dist) * smoothstep(0.35, 0.05, dist);
+
+                // Horizontal variation
+                float hVar = fbm(vec2(uv.x * 6.0 + t * 0.2 + offset * 3.0, t * 0.05));
+                density *= 0.5 + hVar * 1.0;
+
+                vec3 col = mix(col1, col2, smoothstep(0.0, 0.2, dist));
+                return col * density * 1.8;
+            }
+
+            void main() {
+                vec2 uv = gl_FragCoord.xy / resolution;
+                vec2 centered = (gl_FragCoord.xy - 0.5 * resolution) / resolution.y;
+                float t = time;
+
+                // Sky gradient: deep navy to near-black
+                vec3 col = mix(vec3(0.0, 0.01, 0.04), vec3(0.02, 0.04, 0.1), uv.y);
+
+                // Stars — sub-pixel distance for crisp points
+                float starMask = smoothstep(0.2, 0.35, uv.y);
+                if (starMask > 0.0) {
+                    float starScale = 120.0;
+                    vec2 starUV = centered * starScale;
+                    vec2 starID = floor(starUV);
+                    vec2 starF = fract(starUV);
+                    // Random position within the cell
+                    vec2 starPos = vec2(hash(starID), hash(starID + 73.1));
+                    float dist = length(starF - starPos) * starScale;
+                    // Random brightness threshold — only ~15% of cells have visible stars
+                    float appear = hash(starID + 37.0);
+                    float starBright = smoothstep(0.82, 1.0, appear);
+                    // Random size: most are tiny, a few are bigger
+                    float starSize = 0.6 + hash(starID + 50.0) * 0.8;
+                    float star = starBright * smoothstep(starSize, 0.0, dist);
+                    // Twinkle
+                    float twinkle = 0.6 + 0.4 * sin(t * (1.5 + hash(starID + 200.0) * 3.0) + hash(starID + 100.0) * 40.0);
+                    // Color temperature variation: warm white / cool blue-white
+                    float temp = hash(starID + 150.0);
+                    vec3 starCol = mix(vec3(0.75, 0.8, 1.0), vec3(1.0, 0.95, 0.85), temp);
+                    col += star * twinkle * starMask * starCol;
+                }
+
+                // Aurora layers
+                col += aurora(uv, t, 0.0, vec3(0.1, 0.8, 0.4), vec3(0.05, 0.5, 0.7));
+                col += aurora(uv, t, 1.5, vec3(0.05, 0.4, 0.7), vec3(0.3, 0.2, 0.8)) * 0.6;
+                col += aurora(uv, t, 3.2, vec3(0.2, 0.7, 0.5), vec3(0.1, 0.3, 0.6)) * 0.4;
+
+                // Aurora reflection on atmosphere
+                float glow = smoothstep(0.2, 0.5, uv.y) * smoothstep(0.8, 0.4, uv.y);
+                col += vec3(0.02, 0.06, 0.04) * glow;
+
+                // Mountain silhouette
+                float mtn = mountain(uv.x);
+                float mtnMask = smoothstep(mtn + 0.005, mtn - 0.005, uv.y - 0.05);
+                vec3 mtnCol = vec3(0.005, 0.008, 0.015);
+                // Snow caps
+                float snow = smoothstep(mtn - 0.01, mtn + 0.005, uv.y - 0.05)
+                           * smoothstep(0.09, 0.11, mtn);
+                mtnCol = mix(mtnCol, vec3(0.08, 0.1, 0.12), snow * 0.5);
+                col = mix(col, mtnCol, mtnMask);
+
+                // Subtle ground glow from aurora light
+                float groundGlow = mtnMask * smoothstep(0.0, 0.1, uv.y) * 0.15;
+                col += vec3(0.02, 0.05, 0.03) * groundGlow;
+
+                // Vignette
+                vec2 q = gl_FragCoord.xy / resolution;
+                col *= 0.5 + 0.5 * pow(16.0 * q.x * q.y * (1.0 - q.x) * (1.0 - q.y), 0.15);
+
+                // Tone map
+                col = pow(col, vec3(0.9));
+
+                O = vec4(col, 1.0);
+            }`;
+
+        function mk(src, type) {
+            const sh = gl.createShader(type);
+            gl.shaderSource(sh, src); gl.compileShader(sh);
+            if (!gl.getShaderParameter(sh, gl.COMPILE_STATUS)) console.error(gl.getShaderInfoLog(sh));
+            return sh;
+        }
+        const prg = gl.createProgram();
+        gl.attachShader(prg, mk(vs, gl.VERTEX_SHADER));
+        gl.attachShader(prg, mk(fs, gl.FRAGMENT_SHADER));
+        gl.linkProgram(prg); gl.useProgram(prg);
+        const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,1,-1,-1,1,1,1,-1]), gl.STATIC_DRAW);
+        const pos = gl.getAttribLocation(prg, 'position');
+        gl.enableVertexAttribArray(pos);
+        gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
+        const rL = gl.getUniformLocation(prg, 'resolution');
+        const tL = gl.getUniformLocation(prg, 'time');
+        (function draw(now) {
+            gl.clearColor(0,0,0,1); gl.clear(gl.COLOR_BUFFER_BIT);
+            gl.uniform2f(rL, c.width, c.height);
+            gl.uniform1f(tL, now * 0.001);
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+            requestAnimationFrame(draw);
+        })();
+    })();
+    </script>
+</body>
+</html>
